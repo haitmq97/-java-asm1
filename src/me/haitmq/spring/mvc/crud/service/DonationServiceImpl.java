@@ -37,6 +37,7 @@ public class DonationServiceImpl implements DonationService {
 	}
 
 	@Override
+	@Transactional
 	public void delete(int theId) {
 		donationDAO.delete(theId);
 		

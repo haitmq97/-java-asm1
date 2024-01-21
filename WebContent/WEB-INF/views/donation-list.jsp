@@ -47,9 +47,9 @@
 					<th>Số điện thoại</th>
 					<th>Tổng tiền</th>
 					<th>Trạng thái</th>
-					<%--
+
 					<th>Hành động</th>
- --%>
+
 				</tr>
 			</thead>
 
@@ -64,9 +64,7 @@
 						<c:param name="userId" value="${tempUser.id}" />
 					</c:url>
 
-					<c:url var="deleteLink" value="/user/deleteUser">
-						<c:param name="userId" value="${tempUser.id}" />
-					</c:url>
+					
 
 					<c:url var="setStatus" value="/user/lockOrUnlock">
 						<c:param name="userId" value="${tempUser.id}" />
@@ -76,6 +74,14 @@
 						<c:param name="userId" value="${tempUser.id}" />
 					</c:url>
  --%>
+					<c:url var="deleteLink" value="/donation/delete">
+						<c:param name="id" value="${tempDonation.id}" />
+					</c:url>
+					
+					<c:url var ="updateLink" value="/donation/updateForm">
+						<c:param name="id" value="${tempDonation.id}"/>
+					</c:url>
+
 					<tr>
 						<td>${tempDonation.code}</td>
 						<td>${tempDonation.name}</td>
@@ -86,22 +92,28 @@
 						<td>${tempDonation.status}</td>
 
 
-<%--
 
-						<td><a href="${updateLink}">Update</a> | <a
+
+						<td>
+						<a href="${updateLink}" >Update</a>
+						<a
 							href="${deleteLink}"
-							onclick="if(!confirm('Are you sure you want to delete this user?')) return false;">Delete</a>
+							onclick="if(!confirm('Are you sure you want to delete this donation?')) return false;">Delete</a>
+							<%--
+						<a href="${updateLink}">Update</a> | 
 							<a href="${setStatus}"
 							onclick="if(!confirm('Are you sure you want to lock this user?')) return false;"><c:out
 									value="${tempUser.status == 1 ? 'lock' : 'unlock'}" /></a> <a
-							href="${details}">Details</a></td>
-							 --%>
+							href="${details}">Details</a>
+							--%>
+						</td>
+
 
 					</tr>
 				</c:forEach>
 			</tbody>
 		</table>
-<p>sgasiopjofs</p>
+		<p>sgasiopjofs</p>
 	</div>
 </body>
 </html>

@@ -1,7 +1,10 @@
 package me.haitmq.spring.mvc.crud.controller;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
+
 import java.util.List;
 
+import org.hibernate.search.exception.impl.LogErrorHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Controller;
@@ -54,6 +57,22 @@ public class DonationController {
 		donationService.saveOrUpdate(donation);
 		
 		return "redirect:/donation/list";
+	}
+	
+	@GetMapping("/delete")
+	public String delete(@RequestParam("id") int theId) {
+		System.out.println("test 1");
+		donationService.delete(theId);
+		System.out.println("test 2");
+		return "redirect:/donation/list";
+	}
+	
+	@GetMapping("/updateForm")
+	public String updateForm(@RequestParam("id") int theId, Model theModel) {
+		Donation tempDonation = donationService.getDonation(theId);
+		theModel.addAttribute("donation", tempDonation);
+		
+		return "donation-form";
 	}
 	
 	

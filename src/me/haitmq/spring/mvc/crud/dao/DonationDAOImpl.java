@@ -26,7 +26,7 @@ public class DonationDAOImpl implements DonationDAO {
 
 	@Override
 	public void saveOrUpdate(Donation donation) {
-		getSession().save(donation);
+		getSession().saveOrUpdate(donation);
 
 	}
 	
@@ -60,7 +60,12 @@ public class DonationDAOImpl implements DonationDAO {
 
 	@Override
 	public void delete(int theId) {
-		// TODO Auto-generated method stub
+		Session session = sessionFactory.getCurrentSession();
+		Query theQuery = session.createQuery("delete from Donation where id=:theId");
+
+		theQuery.setParameter("theId", theId);
+
+		theQuery.executeUpdate();
 		
 	}
 	
