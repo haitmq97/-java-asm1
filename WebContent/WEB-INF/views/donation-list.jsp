@@ -40,6 +40,7 @@
 			class="table table-bordered table-striped border-black table-success">
 			<thead>
 				<tr class="table-dark">
+					<th>id</th>
 					<th>Mã</th>
 					<th>Tên</th>
 					<th>Ngày bắt đầu</th>
@@ -83,6 +84,7 @@
 					</c:url>
 
 					<tr>
+						<td>${tempDonation.id}</td>
 						<td>${tempDonation.code}</td>
 						<td>${tempDonation.name}</td>
 						<td>${tempDonation.startDate}</td>

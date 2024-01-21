@@ -52,7 +52,7 @@ INSERT INTO `user` (`full_name`, `user_name`, `password`, `email`, `phone_number
 
 
 INSERT INTO `donation` (`code`, `name`, `phone_number`, `organization`, `created`, `status` ,`start_date`,`end_date`) VALUES 
-	('QG001', 'donation 1', '0123456789', 'organization 1' , '01/01/2024', 0, '02/01/2024', '10/01/2024'),
+	('QG001', 'donation 1', '0123456789', 'organization 1' , '01/01/2024', 0, '2024-01-01', '2024-01-10'),
     ('QG002', 'donation 2', '0123456799', 'organization 2' , '02/01/2024', 1, '02/01/2024', '15/01/2024'),
     ('QG003', 'donation 3', '0123456799', 'organization 2' , '01/01/2024', 2, '06/01/2024', '15/01/2024'),
     ('QG004', 'donation 4', '0123456666', 'organization 3' , '01/01/2024', 4, '06/01/2024', '15/01/2024');

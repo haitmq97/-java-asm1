@@ -1,7 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html>
+<html lang="vi-VN">
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
@@ -23,7 +23,10 @@
 <a href="${pageContext.request.contextPath}/user/listByPage">list by page</a>
 
 <br>
-<a href="${pageContext.request.contextPath}/donation/list">list by page</a>
+<a href="${pageContext.request.contextPath}/donation/list">Donation list</a>
+<br>
+
+<a href="${pageContext.request.contextPath}/donation/datetest">Donation list</a>
 
 </body>
 </html>

@@ -75,6 +75,17 @@ public class DonationController {
 		return "donation-form";
 	}
 	
+	@GetMapping("datetest")
+	public String dateTest() {
+		
+		return "datetest";
+	}
 	
-
+	@GetMapping("/detail")
+	public String detail(@RequestParam("id") int theId, Model theModel) {
+		
+		
+		
+		return "donation-detail";
+	}
 }

@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -31,10 +32,10 @@
 		<%-- add customer form --%>
 		<form:form class=" col-8 mx-auto" action="save-donation"
 			modelAttribute="donation" method="POST">
-			<%--
-			form:hidden path="id" />
 			
-			 --%>
+			<form:hidden path="id" />
+			
+			 
 			<table class="col-8 mx-auto">
 
 <%-- 
@@ -130,6 +131,17 @@
 			<a href="${pageContext.request.contextPath}/donation/list">Back
 				to List</a>
 		</p>
+		
+		<%--
+		<form:form action="" method="POST">
+			<form:input type="date" value="05/07/2023"/>
+		</form:form>
+		
+		 --%>
+		 
+		 <form action="" method="post">
+		 	<input>
+		 </form>
 	</div>
 </body>
 </html>
