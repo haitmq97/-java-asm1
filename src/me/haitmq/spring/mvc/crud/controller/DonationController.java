@@ -83,9 +83,25 @@ public class DonationController {
 	
 	@GetMapping("/detail")
 	public String detail(@RequestParam("id") int theId, Model theModel) {
+		Donation donation = donationService.getDonation(theId);
+		
+		theModel.addAttribute("donation", donation);
 		
 		
 		
 		return "donation-detail";
+	}
+	
+	@GetMapping("/donation-table")
+	public String donationTable(Model theModel) {
+		List<Donation> donations = donationService.getDonationList();
+		
+		theModel.addAttribute("donations",donations);
+		return "donation-table";
+	}
+	
+	@GetMapping("/master")
+	public String master() {
+		return "master-layout-donation";
 	}
 }

@@ -30,7 +30,7 @@ public class Donation {
 	private String organization;
 
 	@Column(name = "created")
-	private String creadted;
+	private String created;
 	
 	@Column(name = "money")
 	private int money;
@@ -61,7 +61,7 @@ public class Donation {
 		this.name = name;
 		this.phoneNumber = phoneNumber;
 		this.organization = organization;
-		this.creadted = creadted;
+		this.created = creadted;
 		this.money = money;
 		this.description = description;
 		this.status = status;
@@ -120,13 +120,13 @@ public class Donation {
 	}
 
 
-	public String getCreadted() {
-		return creadted;
+	public String getCreated() {
+		return created;
 	}
 
 
-	public void setCreadted(String creadted) {
-		this.creadted = creadted;
+	public void setCreated(String created) {
+		this.created = created;
 	}
 
 
@@ -183,7 +183,7 @@ public class Donation {
 	@Override
 	public String toString() {
 		return "Donation [id=" + id + ", code=" + code + ", name=" + name + ", phoneNumber=" + phoneNumber
-				+ ", organization=" + organization + ", creadted=" + creadted + ", money=" + money + ", description="
+				+ ", organization=" + organization + ", creadted=" + created + ", money=" + money + ", description="
 				+ description + ", status=" + status + ", startDate=" + startDate + ", endDate=" + endDate + "]";
 	}
 	

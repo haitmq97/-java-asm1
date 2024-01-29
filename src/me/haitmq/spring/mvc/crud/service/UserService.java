@@ -18,11 +18,11 @@ public interface UserService  {
 	
 	public List<User> getUserList();
 	
-	 public Page<User> getPaginatedData(int page, int size);
+	public Page<User> getPaginatedData(int page, int size);
 	
-	 public Page<User> findAllByEmailOrPhoneNumber(int page, int size, String searchingValue);
+	public Page<User> findAllByEmailOrPhoneNumber(int page, int size, String searchingValue);
 	 
-	 public void deleteUser(int theId);
+	public void deleteUser(int theId);
 	 
 
 }

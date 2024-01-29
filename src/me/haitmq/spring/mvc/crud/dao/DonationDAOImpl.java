@@ -7,8 +7,10 @@ import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 import me.haitmq.spring.mvc.crud.entity.Donation;
@@ -41,22 +43,10 @@ public class DonationDAOImpl implements DonationDAO {
 	public List<Donation> getDonationList() {
 		Query<Donation> theQuery = getSession().createQuery("from Donation", Donation.class);
 
-		// execute the query and return user list
-
 		return theQuery.getResultList();
 	}
 
-	@Override
-	public Page<Donation> findAll(Pageable pageable) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	@Override
-	public Iterable<Donation> findAll(Sort sort) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public void delete(int theId) {
@@ -68,7 +58,67 @@ public class DonationDAOImpl implements DonationDAO {
 		theQuery.executeUpdate();
 		
 	}
+
+	@Override
+	public List<Donation> findByPhoneNumber(String searchString) {
+		Session session = sessionFactory.getCurrentSession();
+		Query<Donation> theQuery = session.createQuery("from Donation d where d.phoneNumber like concat(:searchString, '%')", Donation.class);
+		theQuery.setParameter("searchString", searchString);
+		return theQuery.getResultList();
+	}
+
+	@Override
+	public List<Donation> findByOrganization(String searchString) {
+		Session session = sessionFactory.getCurrentSession();
+		Query<Donation> theQuery = session.createQuery("from Donation d where d.organization like concat(:searchString, '%')", Donation.class);
+		theQuery.setParameter("searchString", searchString);
+		return theQuery.getResultList();
+	}
+
+	@Override
+	public List<Donation> findByCode(String searchString) {
+		Session session = sessionFactory.getCurrentSession();
+		Query<Donation> theQuery = session.createQuery("from Donation d where d.code like concat(:searchString, '%')", Donation.class);
+		theQuery.setParameter("searchString", searchString);
+		return theQuery.getResultList();
+	}
 	
+	@Override
+	public List<Donation> findByStatus(String searchString) {
+		Session session = sessionFactory.getCurrentSession();
+		Query<Donation> theQuery = session.createQuery("from Donation d where d.status like concat(:searchString, '%')", Donation.class);
+		theQuery.setParameter("searchString", searchString);
+		return theQuery.getResultList();
+	}
+
+	@Override
+	public List<Donation> findByPhoneNumberOrOrganizationOrCode(String searchString) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
+	
+	
+
+	@Override
+	public int countDonations() {
+		Session session = sessionFactory.getCurrentSession();
+		Query<Integer> countQuery = session.createQuery("select count(u) from User u", Integer.class);
+		return countQuery.uniqueResult();
+	}
+
+	@Override
+	public Page<Donation> findAll(Pageable pageable) {
+		Session session = sessionFactory.getCurrentSession();
+		
+		Query<Donation> theQuery = session.createQuery("from Donation", Donation.class);
+		theQuery.setFirstResult((int) pageable.getOffset());
+		theQuery.setMaxResults(pageable.getPageSize());
+
+		return new PageImpl<>(theQuery.getResultList(), pageable, countDonations());
+	}
+        
 	
 
 }

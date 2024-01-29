@@ -19,21 +19,7 @@
 </head>
 <body>
 
-	<div id="wrapper">
-		<div id="header"
-			class="py-5 d-flex justify-content-center bg-success text-white">
-			<h2>URM - User Relationship Manager</h2>
-		</div>
-	</div>
-
 	<div class="container">
-		<h3 class="mt-5 .red">Crud Demo Application</h3>
-
-		<%-- add customer button --%>
-		<input type="button" value="Thêm mới"
-			onclick="window.location.href='showFormForAdd'; return false"
-			class="mt-2 mb-2 btn btn-sm btn-primary" />
-
 
 		<%-- customer list --%>
 		<table
@@ -105,21 +91,12 @@
 							href="${deleteLink}"
 							onclick="if(!confirm('Are you sure you want to delete this donation?')) return false;">Delete</a>
 						<a href="${detailLink}">details</a>
-							<%--
-						<a href="${updateLink}">Update</a> | 
-							<a href="${setStatus}"
-							onclick="if(!confirm('Are you sure you want to lock this user?')) return false;"><c:out
-									value="${tempUser.status == 1 ? 'lock' : 'unlock'}" /></a> <a
-							href="${details}">Details</a>
-							--%>
+			
 						</td>
-
-
 					</tr>
 				</c:forEach>
 			</tbody>
 		</table>
-		<p>sgasiopjofs</p>
 	</div>
 </body>
 </html>

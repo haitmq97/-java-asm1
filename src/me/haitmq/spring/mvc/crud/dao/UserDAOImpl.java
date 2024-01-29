@@ -77,7 +77,16 @@ public class UserDAOImpl implements UserDAO {
 
 		return theQuery.getResultList();
 	}
+	
+	/////////////////////////////////////////////////
+	
 
+	
+	
+/////////////////////////////////////////////////
+	
+	
+	
 	@Override
 	public Page<User> findAll(Pageable pageable) {
 		Session session = sessionFactory.getCurrentSession();

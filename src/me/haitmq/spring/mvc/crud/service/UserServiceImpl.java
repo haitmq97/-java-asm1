@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import me.haitmq.spring.mvc.crud.dao.UserDAO;
 import me.haitmq.spring.mvc.crud.entity.User;
+import me.haitmq.spring.mvc.crud.utils.Time;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -22,6 +23,10 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional
 	public void saveOrUpdate(User user) {
+		if(user.getCreated()==null) {
+			user.setCreated(Time.getCurrentDateTime());
+		}
+		
 		userDAO.saveOrUpdate(user);
 
 	}

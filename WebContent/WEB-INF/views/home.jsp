@@ -28,5 +28,11 @@
 
 <a href="${pageContext.request.contextPath}/donation/datetest">Donation list</a>
 
+<br>
+<a href="${pageContext.request.contextPath}/donation/donation-table">Donation table</a>
+
+<br>
+<a href="${pageContext.request.contextPath}/donation/master">Donation table</a>
+
 </body>
 </html>

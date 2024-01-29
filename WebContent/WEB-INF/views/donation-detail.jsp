@@ -61,26 +61,13 @@
 				<td>description:</td>
 				<td>${donation.description}</td>
 			</tr>
-			<tr>
-				<td>address:</td>
-				<td><c:out
-						value="${not empty user.address ? user.address : 'N/A'}" /></td>
-			</tr>
-			<tr>
-				<td>status:</td>
-				<td><c:out
-						value="${user.status == 1 ? 'active' : 'locked'}" /></td>
-			</tr>
-			<tr>
-				<td>cread Date:</td>
-				<td>${user.created}</td>
-			</tr>
-			<tr>
-				<td>role:</td>
-				<td>${user.role.roleName}</td>
-			</tr>
+			
 		</tbody>
 	</table>
+	
+	<p>Danh sach dot quyen gop</p>
+	
+	
 	
 	<hr>
 	<br>

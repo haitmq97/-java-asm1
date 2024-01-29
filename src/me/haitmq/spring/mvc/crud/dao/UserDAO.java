@@ -2,6 +2,7 @@ package me.haitmq.spring.mvc.crud.dao;
 
 import java.util.List;
 
+import org.hibernate.query.Query;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -22,6 +23,8 @@ public interface UserDAO  extends PagingAndSortingRepository<User, Long>{
 	public Page<User> findAllByEmailOrPhoneNumber(Pageable pageable , String searchingValue);
 	
 	public void deleteUser(int theId);
+	
+	
 	
 	
 }
