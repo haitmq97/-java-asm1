@@ -7,7 +7,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+
 import org.springframework.stereotype.Service;
 
 import me.haitmq.spring.mvc.crud.dao.UserDAO;
@@ -63,10 +63,45 @@ public class UserServiceImpl implements UserService {
 		userDAO.deleteUser(theId);
 		
 	}
+
+	
+	
+	
+	// for login
+	
+	@Override
+	@Transactional
+	public User getUserByUserName(String userName) {
+		return userDAO.getUserByUserName(userName);
+	}
 	
 	
 
+	@Override
+	@Transactional
+	public User getUserByEmail(String email) {
+		return userDAO.getUserByEmail(email);
+	}
 
+	@Override
+	public boolean isUserNameMatched(String userName) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
+	@Override
+	public boolean isEmailMatched(String email) {
+		return false;
+	}
+
+	@Override
+	@Transactional
+	public boolean isPasswordMatched(String userName, String password) {
+		User user = userDAO.getUserByUserName(userName);
+		if(user.getPassword().equals(password)) {
+			return true;
+		}
+		return false;
+	}
 	
 }

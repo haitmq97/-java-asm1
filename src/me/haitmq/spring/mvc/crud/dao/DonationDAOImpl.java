@@ -102,9 +102,9 @@ public class DonationDAOImpl implements DonationDAO {
 	
 
 	@Override
-	public int countDonations() {
+	public long countDonations() {
 		Session session = sessionFactory.getCurrentSession();
-		Query<Integer> countQuery = session.createQuery("select count(u) from User u", Integer.class);
+		Query<Long> countQuery = session.createQuery("select count(u) from User u", Long.class);
 		return countQuery.uniqueResult();
 	}
 

@@ -25,6 +25,11 @@ public interface UserDAO  extends PagingAndSortingRepository<User, Long>{
 	public void deleteUser(int theId);
 	
 	
+	/// for login
 	
+	
+	public User getUserByUserName(String userName);
+	
+	public User getUserByEmail(String email);
 	
 }

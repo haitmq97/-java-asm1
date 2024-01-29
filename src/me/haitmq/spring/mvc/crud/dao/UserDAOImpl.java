@@ -48,6 +48,8 @@ public class UserDAOImpl implements UserDAO {
 		System.out.println("=====>>>>>>BEFORE add role ");
 		System.out.println("=====>>>>>>the User: " + user);
 		System.out.println("=====>>>>>>the User role: " + user.getRole());
+		System.out.println("=====>>>>>>the User status: " + user.getStatus());
+		
 		System.out.println("=====>>>>>>============================");
 		//session.saveOrUpdate(role);
 		session.saveOrUpdate(user);
@@ -149,4 +151,50 @@ public class UserDAOImpl implements UserDAO {
 
 	}
 
+
+	
+	
+	
+	/// for login
+	@Override
+	public User getUserByUserName(String userName) {
+		Session session = sessionFactory.getCurrentSession();
+		User result = null;
+		Query<User> theQuery = session.createQuery("from User where userName=:userName", User.class);
+		result = theQuery.setParameter("userName", userName).uniqueResult();
+		return result;
+		/*
+		try(Session session = sessionFactory.getCurrentSession()) {
+			Query<User> theQuery = session.createQuery("from User where userName=:userName", User.class);
+			return theQuery.setParameter("userName", userName).uniqueResult();
+		} catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		*/
+	}
+	
+	
+	@Override
+	public User getUserByEmail(String email) {
+		Session session = sessionFactory.getCurrentSession();
+		User result = null;
+		Query<User> theQuery = session.createQuery("from User where email=:email", User.class);
+		result =  theQuery.setParameter("email", email).uniqueResult();
+		
+		return result;
+		/*
+		try{
+			Query<User> theQuery = session.createQuery("from User where email=:email", User.class);
+			return theQuery.setParameter("email", email).uniqueResult();
+		} catch(Exception e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+			session.close();
+		}
+		*/
+	}
+
 }
+	

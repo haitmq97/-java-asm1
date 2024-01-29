@@ -31,7 +31,7 @@ public interface DonationDAO {
 
 	public Page<Donation> findAll(Pageable pageable);
 	
-	public int countDonations();
+	public long countDonations();
 	
 
 }

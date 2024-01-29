@@ -23,6 +23,18 @@ public interface UserService  {
 	public Page<User> findAllByEmailOrPhoneNumber(int page, int size, String searchingValue);
 	 
 	public void deleteUser(int theId);
-	 
+	
+	
+	/// for login
+	
+	public User getUserByUserName(String userName);
+	
+	public User getUserByEmail(String email);
+	
+	public boolean isUserNameMatched(String userName);
+	
+	public boolean isEmailMatched(String email);
+	
+	public boolean isPasswordMatched(String userName, String password);
 
 }

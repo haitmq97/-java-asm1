@@ -93,9 +93,19 @@ public class DonationServiceImpl implements DonationService {
 	}
 
 	@Override
+	@Transactional
 	public Page<Donation> getPaginatedData(int page, int size) {
 		PageRequest pageRequest = PageRequest.of(page, size);
         return donationDAO.findAll(pageRequest);
+	}
+	
+	
+	private boolean isAbleToDonate(int theId) {
+		Donation donation = getDonation(theId);
+		if(donation.getStatus() == 1) {
+			return true;
+		}
+		return false;
 	}
 
 	
