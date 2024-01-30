@@ -1,10 +1,13 @@
 package me.haitmq.spring.mvc.crud.controller;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
+
 
 import java.util.List;
 
-import org.hibernate.search.exception.impl.LogErrorHandler;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Controller;
@@ -101,7 +104,11 @@ public class DonationController {
 	}
 
 	@GetMapping("donation-details")
-	public String donationDetails(@RequestParam("id") int theId, Model theModel) {
+	public String donationDetails(HttpServletRequest request, @RequestParam("id") int theId, Model theModel) {
+		HttpSession session = request.getSession();
+		
+		System.out.println("==================>>>>>>> from donation controler in donation-details method - currentUserId: " + session.getAttribute("currentUserId"));;
+		
 		Donation donation = donationService.getDonation(theId);
 
 		theModel.addAttribute("donation", donation);

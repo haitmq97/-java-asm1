@@ -8,10 +8,10 @@ import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import me.haitmq.spring.mvc.crud.entity.UserDonation;
+import me.haitmq.spring.mvc.crud.entity.Donate;
 
 @Repository
-public class UserDonationDAOImpl implements UserDonationDAO {
+public class DonateDAOImpl implements DonateDAO {
 	
 	@Autowired
 	private SessionFactory sessionFactory;
@@ -21,20 +21,26 @@ public class UserDonationDAOImpl implements UserDonationDAO {
 	}
 
 	@Override
-	public void saveOrUpdate(UserDonation userDonation) {
+	public void save(Donate donate) {
 		Session session = sessionFactory.getCurrentSession();
-		session.saveOrUpdate(userDonation);
-
+		session.save(donate);
 	}
 
 	@Override
-	public UserDonation getUserDonation(int theId) {
+	public void update(Donate donate) {
 		Session session = sessionFactory.getCurrentSession();
-		return session.get(UserDonation.class, theId);
+		session.update(donate);
+		
 	}
 
 	@Override
-	public List<UserDonation> getUserDonations() {
+	public Donate getDonate(int theId) {
+		Session session = sessionFactory.getCurrentSession();
+		return session.get(Donate.class, theId);
+	}
+
+	@Override
+	public List<Donate> getDonates() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -42,7 +48,7 @@ public class UserDonationDAOImpl implements UserDonationDAO {
 	@Override
 	public void delete(int theId) {
 		Session session = sessionFactory.getCurrentSession();
-		Query theQuery = session.createQuery("delete from UserDonation where id=:theId");
+		Query theQuery = session.createQuery("delete from Donate where id=:theId");
 
 		theQuery.setParameter("theId", theId);
 
@@ -51,17 +57,17 @@ public class UserDonationDAOImpl implements UserDonationDAO {
 	}
 
 	@Override
-	public List<UserDonation> getUserByDonationId(int theId) {
+	public List<Donate> getDonateByDonationId(int theId) {
 		Session session = sessionFactory.getCurrentSession();
-		Query<UserDonation> theQuery = session.createQuery("from UserDonation ud where ud.donation=:theId", UserDonation.class);
+		Query<Donate> theQuery = session.createQuery("from Donate ud where ud.donation=:theId", Donate.class);
 		theQuery.setParameter("theId", theId);
 		return theQuery.getResultList();
 	}
 
 	@Override
-	public List<UserDonation> getDonationByUserId(int theId) {
+	public List<Donate> getDonateByUserId(int theId) {
 		Session session = sessionFactory.getCurrentSession();
-		Query<UserDonation> theQuery = session.createQuery("from UserDonation ud where ud.user=:theId", UserDonation.class);
+		Query<Donate> theQuery = session.createQuery("from Donate ud where ud.user=:theId", Donate.class);
 		theQuery.setParameter("theId", theId);
 		return theQuery.getResultList();
 	}

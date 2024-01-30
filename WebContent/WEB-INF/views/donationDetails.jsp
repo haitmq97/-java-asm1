@@ -14,7 +14,7 @@
 		<tbody>
 			<tr>
 				<td>Id:</td>
-				<td>${donation.id}</td>
+				<td><p name="donationId" value="${donation.id}">${donation.id}</p></td>
 			</tr>
 			<tr>
 				<td>Code:</td>
@@ -58,25 +58,24 @@
 
 		</tbody>
 	</table>
-	
+
 
 	<p>Danh sach dot quyen gop</p>
 
 
-
+	<div>
+		<c:url var="donateLink" value="/donate/donate-form">
+			<c:param name="donationId" value="${donation.id}" />
+		</c:url>
+		<p><a href="${donateLink}">Donate</a></p>
+	</div>
 	<hr>
 	<br>
 	<p class="mt-5">
-		<a href="${pageContext.request.contextPath}/v1/login">Back to
-			List</a>
+		<a href="${pageContext.request.contextPath}/v1/home3">Back to List</a>
 	</p>
 
-	<div class="donate-fom">
-		<form:form action="" method="POST">
-		
-		
-		</form:form>
-	</div>
+
 
 </body>
 </html>

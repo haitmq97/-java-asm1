@@ -12,8 +12,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "user_donation")
-public class UserDonation {
+@Table(name = "donate")
+public class Donate {
 
 	//fields
 	@Id
@@ -33,8 +33,8 @@ public class UserDonation {
 	@Column(name = "status")
 	private int status;
 	
-	@Column(name = "text")
-	private String text;
+	@Column(name = "note")
+	private String note;
 	
 	@OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
 	@JoinColumn(name = "user_id")
@@ -46,21 +46,32 @@ public class UserDonation {
 	
 	// constructor
 	
-	public UserDonation() {
+	public Donate() {
 		
 	}
 
-	public UserDonation(String name, String created, int money, int status, String text) {
+	public Donate(String name, String created, int money, int status, String note) {
 		this.name = name;
 		this.created = created;
 		this.money = money;
 		this.status = status;
-		this.text = text;
+		this.note = note;
 	}
+	
+	public Donate(String name, int money, String note, User user, Donation donation) {
+		this.name = name;
+		this.money = money;
+		this.note = note;
+		this.user = user;
+		this.donation = donation;
+	}
+	
 
 	
 	// getter and setter
 	
+
+
 	public int getId() {
 		return id;
 	}
@@ -101,12 +112,12 @@ public class UserDonation {
 		this.status = status;
 	}
 
-	public String getText() {
-		return text;
+	public String getNote() {
+		return note;
 	}
 
-	public void setText(String text) {
-		this.text = text;
+	public void setNote(String note) {
+		this.note = note;
 	}
 
 	public User getUser() {
@@ -132,6 +143,6 @@ public class UserDonation {
 	@Override
 	public String toString() {
 		return "UserDonation [id=" + id + ", name=" + name + ", created=" + created + ", money=" + money + ", status="
-				+ status + ", text=" + text + "]";
+				+ status + ", note=" + note + "]";
 	}
 }
