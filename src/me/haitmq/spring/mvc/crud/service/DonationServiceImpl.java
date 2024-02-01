@@ -62,6 +62,10 @@ public class DonationServiceImpl implements DonationService {
 		return false;
 	}
 
+	
+	
+	/*
+
 	@Override
 	@Transactional
 	public List<Donation> findByPhoneNumber(String phoneNumber) {
@@ -88,8 +92,8 @@ public class DonationServiceImpl implements DonationService {
 
 	@Override
 	@Transactional
-	public List<Donation> findByPhoneNumberOrOrganizationOrCode(String searchString) {
-		return donationDAO.findByPhoneNumberOrOrganizationOrCode(searchString);
+	public List<Donation> findByPhoneNumberOrOrganizationOrCodeOrStatus(String searchString) {
+		return donationDAO.findByPhoneNumberOrOrganizationOrCodeOrStatus(searchString);
 	}
 
 	@Override
@@ -107,6 +111,50 @@ public class DonationServiceImpl implements DonationService {
 		}
 		return false;
 	}
+	*/
+	
+	////////////////////////////
+	
+	@Override
+	@Transactional
+	public Page<Donation> findByPhoneNumber(String phoneNumber, int page, int size) {
+		PageRequest pageRequest = PageRequest.of(page, size);
+		return donationDAO.findByPhoneNumber(phoneNumber, pageRequest);
+	}
 
+	@Override
+	@Transactional
+	public Page<Donation> findByOrganization(String organization, int page, int size) {
+		PageRequest pageRequest = PageRequest.of(page, size);
+		return donationDAO.findByOrganization(organization, pageRequest);
+	}
+
+	@Override
+	@Transactional
+	public Page<Donation> findByCode(String code, int page, int size) {
+		PageRequest pageRequest = PageRequest.of(page, size);
+		return donationDAO.findByCode(code, pageRequest);
+	}
+
+	@Override
+	@Transactional
+	public Page<Donation> findByStatus(String status, int page, int size) {
+		PageRequest pageRequest = PageRequest.of(page, size);
+		return donationDAO.findByStatus(status, pageRequest);
+	}
+
+	@Override
+	@Transactional
+	public Page<Donation> findByPhoneNumberOrOrganizationOrCodeOrStatus(String searchingValue, int page, int size) {
+		PageRequest pageRequest = PageRequest.of(page, size);
+		return donationDAO.findByPhoneNumberOrOrganizationOrCodeOrStatus(searchingValue, pageRequest);
+	}
+
+	@Override
+	@Transactional
+	public Page<Donation> findAll(int page, int size) {
+		PageRequest pageRequest = PageRequest.of(page, size);
+		return donationDAO.findAll( pageRequest);
+	}
 	
 }

@@ -31,8 +31,6 @@ public class DonationDAOImpl implements DonationDAO {
 		getSession().saveOrUpdate(donation);
 
 	}
-	
-	
 
 	@Override
 	public Donation getDontaion(int theId) {
@@ -46,8 +44,6 @@ public class DonationDAOImpl implements DonationDAO {
 		return theQuery.getResultList();
 	}
 
-
-
 	@Override
 	public void delete(int theId) {
 		Session session = sessionFactory.getCurrentSession();
@@ -56,69 +52,155 @@ public class DonationDAOImpl implements DonationDAO {
 		theQuery.setParameter("theId", theId);
 
 		theQuery.executeUpdate();
-		
+
 	}
 
+	/*
 	@Override
-	public List<Donation> findByPhoneNumber(String searchString) {
+	public Page<Donation> findByPhoneNumber(String searchString, Pageable pageable) {
 		Session session = sessionFactory.getCurrentSession();
-		Query<Donation> theQuery = session.createQuery("from Donation d where d.phoneNumber like concat(:searchString, '%')", Donation.class);
+		Query<Donation> theQuery = session
+				.createQuery("from Donation d where d.phoneNumber like concat(:searchString, '%')", Donation.class);
 		theQuery.setParameter("searchString", searchString);
 		return theQuery.getResultList();
 	}
 
 	@Override
-	public List<Donation> findByOrganization(String searchString) {
+	public Page<Donation> findByOrganization(String searchString, Pageable pageable) {
 		Session session = sessionFactory.getCurrentSession();
-		Query<Donation> theQuery = session.createQuery("from Donation d where d.organization like concat(:searchString, '%')", Donation.class);
+		Query<Donation> theQuery = session
+				.createQuery("from Donation d where d.organization like concat(:searchString, '%')", Donation.class);
 		theQuery.setParameter("searchString", searchString);
 		return theQuery.getResultList();
 	}
 
 	@Override
-	public List<Donation> findByCode(String searchString) {
+	public Page<Donation> findByCode(String searchString, Pageable pageable) {
 		Session session = sessionFactory.getCurrentSession();
-		Query<Donation> theQuery = session.createQuery("from Donation d where d.code like concat(:searchString, '%')", Donation.class);
-		theQuery.setParameter("searchString", searchString);
-		return theQuery.getResultList();
-	}
-	
-	@Override
-	public List<Donation> findByStatus(String searchString) {
-		Session session = sessionFactory.getCurrentSession();
-		Query<Donation> theQuery = session.createQuery("from Donation d where d.status like concat(:searchString, '%')", Donation.class);
+		Query<Donation> theQuery = session.createQuery("from Donation d where d.code like concat(:searchString, '%')",
+				Donation.class);
 		theQuery.setParameter("searchString", searchString);
 		return theQuery.getResultList();
 	}
 
 	@Override
-	public List<Donation> findByPhoneNumberOrOrganizationOrCode(String searchString) {
-		// TODO Auto-generated method stub
-		return null;
+	public Page<Donation> findByStatus(String searchString, Pageable pageable) {
+		Session session = sessionFactory.getCurrentSession();
+		Query<Donation> theQuery = session.createQuery("from Donation d where d.status like concat(:searchString, '%')",
+				Donation.class);
+		theQuery.setParameter("searchString", searchString);
+		theQuery.setFirstResult((int) pageable.getOffset());
+		theQuery.setMaxResults(pageable.getPageSize());
+
+		return new PageImpl<>(theQuery.getResultList(), pageable, countDonations());
 	}
-	
-	
-	
-	
+
+	@Override
+	public Page<Donation> findByPhoneNumberOrOrganizationOrCodeOrStatus(String searchString, Pageable pageable) {
+		Session session = sessionFactory.getCurrentSession();
+		Query<Donation> theQuery = session.createQuery("from Donation d where "
+				+ "d.status like concat(:searchString, '%') or" + " d.phoneNumber like concat(:searchString, '%') or"
+				+ " d.organization like concat(:searchString, '%') or" + " d.code like concat(:searchString, '%')",
+				Donation.class);
+		theQuery.setParameter("searchString", searchString);
+		theQuery.setFirstResult((int) pageable.getOffset());
+		theQuery.setMaxResults(pageable.getPageSize());
+
+		return new PageImpl<>(theQuery.getResultList(), pageable, countDonations());
+	}
 
 	@Override
 	public long countDonations() {
 		Session session = sessionFactory.getCurrentSession();
-		Query<Long> countQuery = session.createQuery("select count(u) from User u", Long.class);
+		Query<Long> countQuery = session.createQuery("select count(d) from Donation d", Long.class);
 		return countQuery.uniqueResult();
 	}
 
 	@Override
 	public Page<Donation> findAll(Pageable pageable) {
 		Session session = sessionFactory.getCurrentSession();
-		
+
 		Query<Donation> theQuery = session.createQuery("from Donation", Donation.class);
 		theQuery.setFirstResult((int) pageable.getOffset());
 		theQuery.setMaxResults(pageable.getPageSize());
 
 		return new PageImpl<>(theQuery.getResultList(), pageable, countDonations());
 	}
-        
+	
+	*/
+
+	////////////////////////////////////////////
+
+	@Override
+	public long countDonationsByQuery(String theQueryString) {
+		Session session = sessionFactory.getCurrentSession();
+		Query<Long> countQuery = session.createQuery("select count(d) " + theQueryString, Long.class);
+		return countQuery.uniqueResult();
+	}
+
+	@Override
+	public Page<Donation> findByQuery(String theQueryString, Pageable pageable) {
+		Session session = sessionFactory.getCurrentSession();
+		Query<Donation> theQuery = session.createQuery(theQueryString, Donation.class);
+		theQuery.setFirstResult((int) pageable.getOffset());
+		theQuery.setMaxResults(pageable.getPageSize());
+		return new PageImpl<>(theQuery.getResultList(), pageable, countDonationsByQuery(theQueryString));
+	}
+	
+	
+	@Override
+	public Page<Donation> findByQuery(String theQueryString, String searchingValue, Pageable pageable) {
+		Session session = sessionFactory.getCurrentSession();
+		Query<Donation> theQuery = session.createQuery(theQueryString, Donation.class);
+		theQuery.setParameter("searchingValue", searchingValue);
+		theQuery.setFirstResult((int) pageable.getOffset());
+		theQuery.setMaxResults(pageable.getPageSize());
+		return new PageImpl<>(theQuery.getResultList(), pageable, countDonationsByQuery(theQueryString));
+	}
+
+	@Override
+	public Page<Donation> findByPhoneNumber(String phoneNumber, Pageable pageable) {
+		String theQueryString ="from Donation d where d.phoneNumber like concat(:searchingValue, '%')";
+		return findByQuery(theQueryString, phoneNumber, pageable);
+	}
+
+	@Override
+	public Page<Donation> findByOrganization(String organization, Pageable pageable) {
+		String theQueryString ="from Donation d where d.organization like concat(:searchingValue, '%')";
+		return findByQuery(theQueryString, organization, pageable);
+	}
+
+	@Override
+	public Page<Donation> findByCode(String code, Pageable pageable) {
+		String theQueryString ="from Donation d where d.code like concat(:searchingValue, '%')";
+		return findByQuery(theQueryString, code, pageable);
+	}
+
+	@Override
+	public Page<Donation> findByStatus(String status, Pageable pageable) {
+		String theQueryString ="from Donation d where d.status like concat(:searchingValue, '%')";
+		return findByQuery(theQueryString, status, pageable);
+	}
+
+	@Override
+	public Page<Donation> findByPhoneNumberOrOrganizationOrCodeOrStatus(String searchingValue, Pageable pageable) {
+		String theQueryString =
+				"from Donation d where "
+				+ " d.status like concat(:searchingValue, '%') or" 
+				+ " d.phoneNumber like concat(:searchingValue, '%') or"
+				+ " d.organization like concat(:searchingValue, '%') or" 
+				+ " d.code like concat(:searchingValue, '%')";
+		return findByQuery(theQueryString, searchingValue, pageable);
+	}
+	
+	
+
+	@Override
+	public Page<Donation> findAll(Pageable pageable) {
+		String theQueryString ="from Donation d";
+		return findByQuery(theQueryString, pageable);
+	}
+	
 	
 
 }

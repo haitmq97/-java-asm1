@@ -1,9 +1,5 @@
 package me.haitmq.spring.mvc.crud.controller;
 
-
-
-
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -33,7 +29,7 @@ public class HomeController {
 	@Autowired
 	private DonationService donationService;
 	
-
+	/*
 	@RequestMapping("/home")
 	public String homePage() {
 		return "home";
@@ -165,5 +161,13 @@ public class HomeController {
 		redirectAttributes.addFlashAttribute("currentUser", dbUser);
 		
 		return "redirect:/v1/home3";
+	}
+	
+	*/
+	
+	@GetMapping("/home")
+	public String homePage() {
+		
+		return "donation/home-page";
 	}
 }

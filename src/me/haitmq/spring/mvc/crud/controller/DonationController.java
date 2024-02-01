@@ -9,7 +9,7 @@ import javax.servlet.http.HttpSession;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +28,8 @@ public class DonationController {
 	@Autowired
 	private DonationService donationService;
 
+	
+	/*
 	@GetMapping("/list")
 	public String donationlist(Model theModel) {
 		List<Donation> donations = donationService.getDonationList();
@@ -115,6 +117,57 @@ public class DonationController {
 
 		return "donationDetails";
 	}
-	
+	*/
 
+	
+	////////////////////////////////////////////////////
+	@GetMapping("/list")
+	public String donationlist(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size,
+			@RequestParam(name = "searchingValue", defaultValue = "", required = false) String searchingValue,
+			Model theModel) {
+		Page<Donation> donations = donationService.findAll(page, size);
+		
+		
+		if(!searchingValue.equals("")) {
+			donations = donationService.findByPhoneNumberOrOrganizationOrCodeOrStatus(searchingValue, page, size);
+		}
+
+	
+		theModel.addAttribute("donations", donations);
+		
+		
+		theModel.addAttribute("currentPage", page);
+
+		theModel.addAttribute("currentSize", size);
+
+		int nextPage = page + 1;
+		int prevPage = page - 1;
+
+		if (page <= 0) {
+			prevPage = 0;
+		}
+
+		theModel.addAttribute("prevPage", prevPage);
+
+		if (page >= (donations.getTotalPages() - 1)) {
+			nextPage = donations.getTotalPages() - 1;
+		}
+
+		theModel.addAttribute("nextPage", nextPage);
+
+		return "donation/donationList";
+	}
+	
+	@GetMapping("donation-details")
+	public String donationDetails(HttpServletRequest request, @RequestParam("id") int theId, Model theModel) {
+		HttpSession session = request.getSession();
+		
+		Donation donation = donationService.getDonation(theId);
+
+		theModel.addAttribute("donation", donation);
+
+		return "donation/donationDetails";
+	}
+	
+	
 }

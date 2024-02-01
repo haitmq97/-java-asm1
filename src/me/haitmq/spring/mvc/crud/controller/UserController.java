@@ -28,7 +28,9 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
-
+	
+	
+	/*
 	@GetMapping("/list")
 	public String list(Model theModel) {
 		// get customer list from DAO
@@ -71,14 +73,13 @@ public class UserController {
 
 		if (theBindingResult.hasErrors()) {
 
-			/*
-			 * System.out.println("Email fields: |" + theUser.getEmail() + "|");
-			 * System.out.println("phone number fields: |" + theUser.getPhoneNumber() +
-			 * "|"); System.out.println("||"); System.out.println("length: " + "".length());
-			 * for (ObjectError error : theBindingResult.getAllErrors()) {
-			 * System.out.println(error.getDefaultMessage()); }
-			 * 
-			 */
+			
+			 System.out.println("Email fields: |" + theUser.getEmail() + "|");
+			 System.out.println("phone number fields: |" + theUser.getPhoneNumber() +
+			 "|"); System.out.println("||"); System.out.println("length: " + "".length());
+			 for (ObjectError error : theBindingResult.getAllErrors()) {
+			 System.out.println(error.getDefaultMessage()); }
+			
 			return "add-user-form";
 		} else {
 			System.out.println("=====>>>>>>============================");
@@ -183,20 +184,6 @@ public class UserController {
 
 		Page<User> paginatedData = userService.getPaginatedData(page, size);
 
-		System.out.println("=======>>> pagination data: " + paginatedData);
-		System.out.println("=======>>> pagination data (number of elements): " + paginatedData.getNumberOfElements());
-		System.out.println("=======>>> pagination data (number): " + paginatedData.getNumber());
-		System.out.println("=======>>> pagination data (size): " + paginatedData.getSize());
-		System.out.println("=======>>> pagination data (total number): " + paginatedData.getTotalElements());
-		System.out.println("=======>>> pagination data (total page): " + paginatedData.getTotalPages());
-		System.out.println("=======>>> pagination data (user list): " + paginatedData.getContent());
-		for (User user : paginatedData.getContent()) {
-			System.out.println("=======>>> pagination data (user item): " + user);
-			System.out.println("=======>>>>>>pagination data: instance of User class: " + (user instanceof User));
-
-		}
-
-//	        List<User> users = (List<User>) userService.getPaginatedData(page, size).getContent();
 
 		theModel.addAttribute("searchingValue", searchingValue);
 
@@ -288,6 +275,6 @@ public class UserController {
 		return "user-details";
 	}
 	
-	
+	*/
 	
 }
