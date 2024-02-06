@@ -28,7 +28,8 @@ public class DonationDAOImpl implements DonationDAO {
 
 	@Override
 	public void saveOrUpdate(Donation donation) {
-		getSession().saveOrUpdate(donation);
+		Session session = sessionFactory.getCurrentSession();
+		session.saveOrUpdate(donation);
 
 	}
 
@@ -131,12 +132,7 @@ public class DonationDAOImpl implements DonationDAO {
 
 	////////////////////////////////////////////
 
-	@Override
-	public long countDonationsByQuery(String theQueryString) {
-		Session session = sessionFactory.getCurrentSession();
-		Query<Long> countQuery = session.createQuery("select count(d) " + theQueryString, Long.class);
-		return countQuery.uniqueResult();
-	}
+
 
 	@Override
 	public Page<Donation> findByQuery(String theQueryString, Pageable pageable) {
@@ -144,7 +140,9 @@ public class DonationDAOImpl implements DonationDAO {
 		Query<Donation> theQuery = session.createQuery(theQueryString, Donation.class);
 		theQuery.setFirstResult((int) pageable.getOffset());
 		theQuery.setMaxResults(pageable.getPageSize());
-		return new PageImpl<>(theQuery.getResultList(), pageable, countDonationsByQuery(theQueryString));
+		
+		Query<Long> countQuery = session.createQuery("select count(d) " + theQueryString, Long.class);
+		return new PageImpl<>(theQuery.getResultList(), pageable, countQuery.uniqueResult());
 	}
 	
 	
@@ -155,7 +153,10 @@ public class DonationDAOImpl implements DonationDAO {
 		theQuery.setParameter("searchingValue", searchingValue);
 		theQuery.setFirstResult((int) pageable.getOffset());
 		theQuery.setMaxResults(pageable.getPageSize());
-		return new PageImpl<>(theQuery.getResultList(), pageable, countDonationsByQuery(theQueryString));
+		
+		Query<Long> countQuery = session.createQuery("select count(d) " + theQueryString, Long.class);
+		countQuery.setParameter("searchingValue", searchingValue);
+		return new PageImpl<>(theQuery.getResultList(), pageable, countQuery.uniqueResult());
 	}
 
 	@Override
@@ -194,6 +195,30 @@ public class DonationDAOImpl implements DonationDAO {
 	}
 	
 	
+	//////////////////////////
+	@Override
+	public Page<Donation> findByPhoneNumberOrOrganizationOrCodeOrStatus2(String searchingValue, Pageable pageable) {
+		String queryString = "from Donation d where "
+				+ " d.status like concat(:searchingValue, '%') or" 
+				+ " d.phoneNumber like concat(:searchingValue, '%') or"
+				+ " d.organization like concat(:searchingValue, '%') or" 
+				+ " d.code like concat(:searchingValue, '%')";
+		Session session = sessionFactory.getCurrentSession();
+		Query<Donation> theQuery = session.createQuery(queryString,Donation.class);
+
+		theQuery.setParameter("searchingValue", searchingValue);
+
+		theQuery.setFirstResult((int) pageable.getOffset());
+		theQuery.setMaxResults(pageable.getPageSize());
+		Query<Long> countForSearchQuery = session.createQuery("select count(d) " + queryString,Long.class);
+		countForSearchQuery.setParameter("searchingValue", searchingValue);
+
+		return new PageImpl<>(theQuery.getResultList(), pageable, countForSearchQuery.uniqueResult());
+		
+	}
+	
+
+	///////////////////////////
 
 	@Override
 	public Page<Donation> findAll(Pageable pageable) {

@@ -7,7 +7,6 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-
 import org.springframework.stereotype.Service;
 
 import me.haitmq.spring.mvc.crud.dao.UserDAO;
@@ -23,8 +22,10 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional
 	public void saveOrUpdate(User user) {
-		if(user.getCreated()==null) {
+	
+		if(user.getCreated().isEmpty()) {
 			user.setCreated(Time.getCurrentDateTime());
+			user.setStatus(1);
 		}
 		
 		userDAO.saveOrUpdate(user);
@@ -77,6 +78,29 @@ public class UserServiceImpl implements UserService {
 	
 	
 
+	
+
+
+	
+	///////////////////////////////////
+	
+	@Override
+	@Transactional
+	public Page<User> findByEmailOrPhoneNumberOrStatus(String searchString, int page, int size) {
+		PageRequest pageRequest = PageRequest.of(page, size);
+		return userDAO.findByEmailOrPhoneNumberOrStatus(searchString, pageRequest);
+	}
+
+	@Override
+	@Transactional
+	public Page<User> findAll(int page, int size) {
+		PageRequest pageRequest = PageRequest.of(page, size);
+		return userDAO.findAll( pageRequest);
+	}
+		
+	
+	//// for login
+	
 	@Override
 	@Transactional
 	public User getUserByEmail(String email) {
@@ -103,5 +127,41 @@ public class UserServiceImpl implements UserService {
 		}
 		return false;
 	}
+
+	@Override
+	@Transactional
+	public User getUserByUserNameOrEmail(String userName) {
+		User user = userDAO.getUserByUserName(userName);
+		if(user == null) {
+			user = userDAO.getUserByEmail(userName);
+		}
+		
+		return user;
+	}
+
+	
+	// user trong method nay chi co 2 thuoc tinh co gia tri la userName va password
+	@Override
+	@Transactional
+	public boolean isUserExisted(User loginUser) {
+		User dbUser = getUserByUserNameOrEmail(loginUser.getUserName());
+		if((dbUser!=null)&&(dbUser.getPassword().equals(loginUser.getPassword()))) {
+			return true;
+		}
+		return false;
+	}
+	
+	@Override
+	@Transactional
+	public int getIdIfUserExisted(User loginUser) {
+		User dbUser = getUserByUserNameOrEmail(loginUser.getUserName());
+		if((dbUser!=null)&&(dbUser.getPassword().equals(loginUser.getPassword()))) {
+			return dbUser.getId();
+		}
+		return -1;
+	}
+	
+	
+	
 	
 }

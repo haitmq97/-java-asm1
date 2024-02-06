@@ -58,4 +58,7 @@ public class DonateController {
 		donateService.save(donate);
 		return "redirect:/v1/home3";
 	}
+	
+	
+	
 }

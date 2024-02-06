@@ -44,6 +44,13 @@
 				oninput="search(this.value)" />
 
 		</div>
+		
+		
+		<div>
+			<input type="button" value="Add Donation"
+			onclick="window.location.href='addDonation'; return false"
+			class="mt-2 mb-2 btn btn-sm btn-primary" />
+		</div>
 
 		<div id="donation-list" class="list">
 			<table
@@ -55,12 +62,16 @@
 
 					<c:forEach var="tempDonation" items="${donations.content}">
 
-						<c:url var="donateLink" value="/donation/donate">
-							<c:param name="id" value="${tempDonation.id}" />
-						</c:url>
-
 						<c:url var="detailLink" value="/donation/donation-details">
-							<c:param name="id" value="${tempDonation.id}" />
+							<c:param name="donationId" value="${tempDonation.id}" />
+						</c:url>
+						
+						<c:url var="updateLink" value="/donation/updateDonation">
+							<c:param name="donationId" value="${tempDonation.id}" />
+						</c:url>
+						
+						<c:url var="deleteLink" value="/donation/delete">
+							<c:param name="donationId" value="${tempDonation.id}" />
 						</c:url>
 
 
@@ -72,8 +83,11 @@
 							<td>${tempDonation.startDate}</td>
 							<td>${tempDonation.phoneNumber}</td>
 							<td>${tempDonation.status}</td>
-							<td><a href="${donateLink}">Donate</a> <a
-								href="${detailLink}">Details</a></td>
+							<td>
+								<a href="${updateLink}">Update</a> | 
+								<a href="${deleteLink}">Delete</a> | 
+								<a href="${detailLink}">Details</a>
+							</td>
 						</tr>
 					</c:forEach>
 				</tbody>

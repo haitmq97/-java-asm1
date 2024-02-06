@@ -107,7 +107,7 @@
 
 		</form:form>
 		<p class="mt-5">
-			<a href="${pageContext.request.contextPath}/v1/home">Back to
+			<a href="${pageContext.request.contextPath}/user/list">Back to
 				List</a>
 		</p>
 	</div>

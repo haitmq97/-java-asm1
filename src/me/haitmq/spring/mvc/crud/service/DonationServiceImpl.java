@@ -157,4 +157,14 @@ public class DonationServiceImpl implements DonationService {
 		return donationDAO.findAll( pageRequest);
 	}
 	
+	///////////
+	@Override
+	@Transactional
+	public Page<Donation> findByPhoneNumberOrOrganizationOrCodeOrStatus2(String searchingValue, int page, int size) {
+		PageRequest pageRequest = PageRequest.of(page, size);
+		return donationDAO.findByPhoneNumberOrOrganizationOrCodeOrStatus2(searchingValue, pageRequest);
+	}
+	
+	
+	
 }

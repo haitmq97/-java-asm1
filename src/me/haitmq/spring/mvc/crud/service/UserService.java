@@ -36,5 +36,17 @@ public interface UserService  {
 	public boolean isEmailMatched(String email);
 	
 	public boolean isPasswordMatched(String userName, String password);
+	
+	public User getUserByUserNameOrEmail(String userName);
+	
+	public boolean isUserExisted(User user);
+	public int getIdIfUserExisted(User user);
+	
+	/////////////////////
+	
+	
+	public Page<User> findByEmailOrPhoneNumberOrStatus(String searchString, int page, int size);
+
+	public Page<User> findAll(int page, int size);
 
 }

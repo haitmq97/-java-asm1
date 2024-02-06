@@ -25,12 +25,16 @@ public class DonateServiceImpl implements DonateService {
 		if(donate.getCreated()==null) {
 			donate.setCreated(Time.getCurrentDateTime());
 		}
+		
+		if(donate.getStatus() != 4) {
+			donateDAO.save(donate);
+		}
 		/*
 		if(donate.getStatus()==null) {
 			donate.setStatus(0);;
 		}
 		*/
-		donateDAO.save(donate);
+		
 	}
 	
 	@Override

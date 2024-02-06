@@ -22,23 +22,12 @@
 	<div class="header">
 		<h2>This is a header</h2>
 		
-				<%-- 
-		<div>
-
-
-			<form:form action="" modelAttribute="currentUser" method="post">
-				<form:input name="currentUserId" path="id" />
-				<form:input name="currentUserRole" path="role" />
-				<form:input name="currentUserRole" path="status" />
-			</form:form>
-		</div>
---%>
 		<div class="nav">
 			<h3>This is for navbar</h3>
 			<button onclick="">Login</button>
 			<button>Register</button>
-			<button>Manager</button>
-			<button>Logout</button>
+			<button onclick="window.location.href='${pageContext.request.contextPath}/admin/manager'">Manager</button>
+			<button onclick="window.location.href='${pageContext.request.contextPath}/user/processLogout'">Logout</button>
 		</div>
 	</div>
 	<div class="main">
@@ -53,10 +42,18 @@
 		<div class="footer">
 			<p>This is a footer</p>
 		</div>
+		<div class="login">
+			<c:import url="/user/login" />
+		</div>
 
 		<div class="form-in">
 			
 			<div class="register-form"></div>
 		</div>
+		
+		
+		
+		
+		
 </body>
 </html>

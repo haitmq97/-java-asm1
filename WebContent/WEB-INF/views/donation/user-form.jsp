@@ -29,7 +29,7 @@
 		<h3 class="my-4">Save User</h3>
 
 		<%-- add customer form --%>
-		<form:form class=" col-8 mx-auto" action="saveUser2"
+		<form:form class=" col-8 mx-auto" action="${process}"
 			modelAttribute="user" method="POST">
 			<form:hidden path="id" />
 			<table class="col-8 mx-auto">
@@ -54,13 +54,24 @@
 						<td><label class="fw-bold" for="fullName">Full name:</label></td>
 						<td><form:input class="mt-2 col-12" id="fullName"
 								path="fullName" /></td>
-						<td><form:errors path="fullName" /></td>
+					
 					</tr>
+					
+					
+					
+					<tr ${not empty user.created ? '' : 'hidden'}>
+						<td><label class="fw-bold" for="dateCreated">Date created</label></td>
+						
+						<td ><input type="text" class=" mt-2 col-12" value="${user.created}" readonly/></td>
+					
+
+					</tr>
+					
 					<tr>
 						<td><label class="fw-bold" for="email">Email</label></td>
-						<td ${not empty user.email ? 'hidden' : ''}><form:input class=" mt-2 col-12" id="email" path="email" /></td>
-						<td ${not empty user.email ? '' : 'hidden'}><input type="text" class=" mt-2 col-12" value="${user.email}" readonly/></td>
-						<td><form:errors path="email"/></td>
+						<td><form:input class=" mt-2 col-12" id="email" path="email" readonly="${not empty user.email}" /></td>
+
+
 
 					</tr>
 					<tr>
@@ -68,7 +79,7 @@
 								number</label></td>
 						<td><form:input class="mt-2 col-12" id="phoneNumber"
 								path="phoneNumber" /></td>
-						<td><form:errors path="phoneNumber" /></td>
+			
 					</tr>
 
 					<tr>
@@ -79,15 +90,15 @@
 
 					<tr>
 						<td><label class="fw-bold" for="userName">User Name</label></td>
-						<td ${not empty user.userName ? 'hidden' : ''}> <form:input class="mt-2 col-12" id="userName" path="userName"/></td>
-						<td ${not empty user.userName ? '' : 'hidden'}><input type="text" class=" mt-2 col-12" value="${user.userName}" readonly/></td>
-						<td><form:errors path="userName" /></td>
+						<td><form:input class="mt-2 col-12" id="userName" path="userName" readonly="${not empty user.userName}"/></td>
+						
+		
 					</tr>
 					<tr>
 						<td><label class="fw-bold" for="password">Password</label></td>
 						<td><form:input class="mt-2 col-12" id="password"
 								path="password" /></td>
-						<td><form:errors path="password" /></td>
+		
 					</tr>
 
 				</tbody>

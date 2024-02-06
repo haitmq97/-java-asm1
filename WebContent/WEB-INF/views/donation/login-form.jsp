@@ -11,8 +11,10 @@
 </head>
 <body>
 <div class="login-form">
+
+				
 				<form:form class=" col-8 mx-auto" modelAttribute="user"
-					action="login" method="POST">
+					action="${pageContext.request.contextPath}/user/processLogin" method="POST">
 
 					<label class="fw-bold" for="userName">Username: </label>
 					<br>
@@ -26,7 +28,7 @@
 					<br>
 					<p>
 						don't have a account yet, <a
-							href="${pageContext.request.contextPath}/user/showFormForAdd">register
+							href="${pageContext.request.contextPath}/user/registerForm">register
 							now</a>
 					</p>
 					<input type="submit" value="Login"

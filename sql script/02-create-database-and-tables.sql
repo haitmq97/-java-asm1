@@ -8,7 +8,7 @@ CREATE TABLE `role` (
   `id` int NOT NULL AUTO_INCREMENT,
   `role_name` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
 
 
 CREATE TABLE `user` (
@@ -29,7 +29,7 @@ CREATE TABLE `user` (
   KEY `FK_ROLE_idx` (`role_id`),
   CONSTRAINT `FK_ROLE` FOREIGN KEY (`role_id`) 
   REFERENCES `role` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
 
 CREATE TABLE `donation` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -44,15 +44,15 @@ CREATE TABLE `donation` (
   `start_date` varchar(255) DEFAULT NULL,
   `end_date` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
 
-CREATE TABLE `user_donation` (
+CREATE TABLE `donate` (
   `id` int NOT NULL AUTO_INCREMENT,
   `created` varchar(255) DEFAULT NULL,
   `money` int DEFAULT 0,
   `name` varchar(255) DEFAULT NULL,
   `status` int DEFAULT NULL,
-  `text` varchar(255) DEFAULT NULL,
+  `note` varchar(255) DEFAULT NULL,
   `user_id` int DEFAULT NULL,
   `donation_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -65,7 +65,7 @@ CREATE TABLE `user_donation` (
   FOREIGN KEY (`donation_id`) 
   REFERENCES `donation` (`id`)
   ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
 
 
 

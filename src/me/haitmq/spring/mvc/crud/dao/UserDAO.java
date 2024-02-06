@@ -8,9 +8,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
+import me.haitmq.spring.mvc.crud.entity.Donation;
 import me.haitmq.spring.mvc.crud.entity.User;
 
-public interface UserDAO  extends PagingAndSortingRepository<User, Long>{
+public interface UserDAO{
 
 	// add user
 	
@@ -32,4 +33,14 @@ public interface UserDAO  extends PagingAndSortingRepository<User, Long>{
 	
 	public User getUserByEmail(String email);
 	
+	public User getUserByUserNameOrEmail(String userName);
+	////
+	
+	
+	
+	
+	//// find all, findByEmailorPhoneNumberOrStatus
+	public Page<User> findByEmailOrPhoneNumberOrStatus(String searchingValue, Pageable pageable);
+
+	public Page<User> findAll(Pageable pageable);
 }

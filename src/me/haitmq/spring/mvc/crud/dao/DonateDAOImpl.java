@@ -32,6 +32,13 @@ public class DonateDAOImpl implements DonateDAO {
 		session.update(donate);
 		
 	}
+	
+	@Override
+	public void saveOrUpdate(Donate donate) {
+		Session session = sessionFactory.getCurrentSession();
+		session.saveOrUpdate(donate);
+		
+	}
 
 	@Override
 	public Donate getDonate(int theId) {

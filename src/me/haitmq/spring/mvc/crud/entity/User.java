@@ -30,24 +30,24 @@ public class User {
 	
 	
 	@Column(name = "full_name")
-	@NotBlank(message = "is required")
+	//@NotBlank(message = "is required")
 	private String fullName;
 	
 	@Column(name="user_name")
-	@NotBlank(message = "is required")
+	//@NotBlank(message = "is required")
 	private String userName;
 	
 	@Column(name = "password")
-	@NotBlank(message = "is required")
+	//@NotBlank(message = "is required")
 	private String password;
 	
 	@Column(name = "email")
-	@NotBlank
-	@EmailFormat
+	//@NotBlank
+	//@EmailFormat
 	private String email;
 	
 	@Column(name = "phone_number")
-	@PhoneNumberFormat
+	//@PhoneNumberFormat
 	private String phoneNumber;
 	
 	@Column(name = "address")

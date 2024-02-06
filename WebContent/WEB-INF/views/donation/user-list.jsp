@@ -20,9 +20,8 @@
 </head>
 <body>
 	<div class="donation" id="donations">
-		<h2>Donation list</h2>
-		<button onclick="refresh()">refresh</button>
-
+		<h2>User list</h2>
+	
 		<div class="page">
 			<input id="currentPage" type="hidden" name="currentPage"
 				value="${currentPage}" /> <label for="pageSize">Rows per
@@ -40,12 +39,18 @@
 		<div class="searching-field" id="searching-field">
 			<label for="searching-input">Search:</label> <input type="text"
 				name="searching-input" id="searching-input" class="searching-input"
-				placeholder="by Code or by status ..." value="${searchingValue}"
+				placeholder="by Email or Phone number" value="${searchingValue}"
 				oninput="search(this.value)" />
 
 		</div>
+		
+		<div>
+			<input type="button" value="Add User"
+			onclick="window.location.href='addUser'; return false"
+			class="mt-2 mb-2 btn btn-sm btn-primary" />
+		</div>
 
-		<div id="donation-list" class="list">
+		<div id="user-list" class="list">
 			<table
 				class="table table-bordered table-striped border-black table-success">
 
@@ -53,27 +58,39 @@
 					<!-- loop over and print customer in list -->
 
 
-					<c:forEach var="tempDonation" items="${donations.content}">
+					<c:forEach var="tempUser" items="${users.content}">
 
-						<c:url var="donateLink" value="/donation/donate">
-							<c:param name="id" value="${tempDonation.id}" />
+
+						<c:url var="detailLink" value="/user/details">
+							<c:param name="userId" value="${tempUser.id}" />
 						</c:url>
-
-						<c:url var="detailLink" value="/donation/donation-details">
-							<c:param name="id" value="${tempDonation.id}" />
+						
+						<c:url var="deleteLink" value="/user/delete">
+							<c:param name="userId" value="${tempUser.id}" />
+						</c:url>
+						
+						<c:url var="updateLink" value="/user/updateUser">
+							<c:param name="userId" value="${tempUser.id}" />
+						</c:url>
+						
+						<c:url var="changeStatusLink" value="/user/changeStatus">
+							<c:param name="userId" value="${tempUser.id}" />
 						</c:url>
 
 
 						<tr>
-							<td>${tempDonation.id}</td>
-							<td>${tempDonation.code}</td>
-							<td>${tempDonation.name}</td>
-							<td>${tempDonation.startDate}</td>
-							<td>${tempDonation.startDate}</td>
-							<td>${tempDonation.phoneNumber}</td>
-							<td>${tempDonation.status}</td>
-							<td><a href="${donateLink}">Donate</a> <a
-								href="${detailLink}">Details</a></td>
+							<td>${tempUser.id}</td>
+							<td>${tempUser.fullName}</td>
+							<td>${tempUser.email}</td>
+							<td>${tempUser.phoneNumber}</td>
+							<td>${tempUser.userName}</td>
+							<td>${tempUser.status}</td>
+							<td> 
+							<a href="${detailLink}">Details</a> | 
+							<a href="${deleteLink}" onclick="if(!confirm('Are you sure you want to delete this user?')) return false;">Delete</a> | 
+							<a href="${updateLink}" >Update</a> | 
+							<a href="${changeStatusLink}" >${tempUser.status == 1 ? 'Lock': 'Unlock' }</a> | 
+							</td>
 						</tr>
 					</c:forEach>
 				</tbody>
@@ -116,13 +133,13 @@
 
 			$.ajax({
 				type : "GET",
-				url : "<c:url value='/donation/list'> </c:url>",
+				url : "<c:url value='/user/list'> </c:url>",
 				data : {
 					size : size,
 					page : page
 				},
 				success : function(data) {
-					$("#donation-list").html($(data).find("#donation-list").html());
+					$("#user-list").html($(data).find("#user-list").html());
 				}
 			});
 		}
@@ -134,12 +151,12 @@
 
 			$.ajax({
 				type : "GET",
-				url : "<c:url value='/donation/list'> </c:url>",
+				url : "<c:url value='/user/list'> </c:url>",
 				data : {
 					searchingValue : searchingValue
 				},
 				success : function(data) {
-					$("#donation-list").html($(data).find("#donation-list").html());
+					$("#user-list").html($(data).find("#user-list").html());
 				}
 			});
 		}

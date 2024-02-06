@@ -43,4 +43,8 @@ public interface DonationService {
 	public Page<Donation> findByPhoneNumberOrOrganizationOrCodeOrStatus(String searchingValue, int page, int size);
 
 	public Page<Donation> findAll(int page, int size);
+	
+	//////////////////////////////////
+	public Page<Donation> findByPhoneNumberOrOrganizationOrCodeOrStatus2(String searchingValue, int page, int size);
+	
 }

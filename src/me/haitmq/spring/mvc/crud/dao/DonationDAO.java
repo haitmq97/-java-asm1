@@ -37,7 +37,6 @@ public interface DonationDAO {
 	 * public long countDonations();
 	 */
 
-	public long countDonationsByQuery(String theQueryString);
 
 	public Page<Donation> findByQuery(String theQueryString, Pageable pageable);
 	
@@ -54,5 +53,11 @@ public interface DonationDAO {
 	public Page<Donation> findByPhoneNumberOrOrganizationOrCodeOrStatus(String searchString, Pageable pageable);
 
 	public Page<Donation> findAll(Pageable pageable);
+	
+	
+	///////////////////////////////
+	
+	public Page<Donation> findByPhoneNumberOrOrganizationOrCodeOrStatus2(String searchingValue, Pageable pageable);
+
 
 }

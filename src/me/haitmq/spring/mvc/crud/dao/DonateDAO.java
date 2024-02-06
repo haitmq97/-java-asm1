@@ -12,6 +12,8 @@ public interface DonateDAO {
 	
 	public void update(Donate donate);
 	
+	public void saveOrUpdate(Donate donate);
+	
 	public Donate getDonate(int theId);
 	
 	public List<Donate> getDonates();
