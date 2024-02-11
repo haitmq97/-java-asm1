@@ -20,32 +20,25 @@
 </head>
 <body>
 	<div class="donation" id="donations">
-		<h2>Donation list</h2>
-		<button onclick="refresh()">refresh</button>
-
+		<h2>Donate list</h2>
+	
 		<div class="page">
 			<input id="currentPage" type="hidden" name="currentPage"
 				value="${currentPage}" /> <label for="pageSize">Rows per
 				page:</label> <select id="pageSize" name="size" onchange="refresh()">
-				<option value="3" ${donations.size == 3 ? 'selected' : ''}>3</option>
-				<option value="4" ${donations.size == 4 ? 'selected' : ''}>4</option>
-				<option value="5" ${donations.size == 5 ? 'selected' : ''}>5</option>
-				<option value="10" ${donations.size == 10 ? 'selected' : ''}>10</option>
-				<option value="15" ${donations.size == 15 ? 'selected' : ''}>15</option>
-				<option value="20" ${donations.size == 20 ? 'selected' : ''}>20</option>
-				<!-- Add more options as needed -->
+				<option value="3" ${datas.size == 3 ? 'selected' : ''}>3</option>
+				<option value="4" ${datas.size == 4 ? 'selected' : ''}>4</option>
+				<option value="5" ${datas.size == 5 ? 'selected' : ''}>5</option>
+				<option value="10" ${datas.size == 10 ? 'selected' : ''}>10</option>
+				<option value="15" ${datas.size == 15 ? 'selected' : ''}>15</option>
+				<option value="20" ${datas.size == 20 ? 'selected' : ''}>20</option>
+
 			</select>
 
 		</div>
-		<div class="searching-field" id="searching-field">
-			<label for="searching-input">Search:</label> <input type="text"
-				name="searching-input" id="searching-input" class="searching-input"
-				placeholder="by Code or by status ..." value="${searchingValue}"
-				oninput="search(this.value)" />
 
-		</div>
 
-		<div id="donation-list" class="list">
+		<div id="donate-list" class="list">
 			<table
 				class="table table-bordered table-striped border-black table-success">
 
@@ -53,27 +46,47 @@
 					<!-- loop over and print customer in list -->
 
 
-					<c:forEach var="tempDonation" items="${donations.content}">
+					<c:forEach var="tempData" items="${datas.content}">
 
-						<c:url var="donateLink" value="/donate/donateForm">
-							<c:param name="id" value="${tempDonation.id}" />
+	<%-- 
+						<c:url var="detailLink" value="/user/details">
+							<c:param name="userId" value="${tempUser.id}" />
+						</c:url>
+						
+						<c:url var="deleteLink" value="/user/delete">
+							<c:param name="userId" value="${tempUser.id}" />
+						</c:url>
+						
+						<c:url var="updateLink" value="/user/updateUser">
+							<c:param name="userId" value="${tempUser.id}" />
+						</c:url>
+						
+						<c:url var="changeStatusLink" value="/user/changeStatus">
+							<c:param name="userId" value="${tempUser.id}" />
 						</c:url>
 
-						<c:url var="detailLink" value="/donation/donation-details">
-							<c:param name="id" value="${tempDonation.id}" />
+--%>
+
+						<c:url var="comfirmLink" value="/donate/statusComfirm">
+							<c:param name="id" value="${tempData.id}"></c:param>
+						
 						</c:url>
-
-
+						<c:url var="cancelLink" value="/donate/statusComfirm">
+							<c:param name="id" value="tempData.id"></c:param>
+						
+						</c:url>
+						
+						
 						<tr>
-							<td>${tempDonation.id}</td>
-							<td>${tempDonation.code}</td>
-							<td>${tempDonation.name}</td>
-							<td>${tempDonation.startDate}</td>
-							<td>${tempDonation.startDate}</td>
-							<td>${tempDonation.phoneNumber}</td>
-							<td>${tempDonation.status}</td>
-							<td><a href="${donateLink}">Donate</a> <a
-								href="${detailLink}">Details</a></td>
+							<td>${tempData.id}</td>
+							<td>${tempData.name}</td>
+							<td>${tempData.money}</td>
+							<td>${tempData.createdDate}</td>
+							<td>${tempData.status}</td>
+							<td>${tempData.user.id}</td>
+							<td>${tempData.donation.id}</td>
+							<td>${tempData.note}</td>
+							<td> <a href="${comfirmLink}">comfirm</a> | <a href="${cancelLink}">cancel</a></td>
 						</tr>
 					</c:forEach>
 				</tbody>
@@ -116,33 +129,17 @@
 
 			$.ajax({
 				type : "GET",
-				url : "<c:url value='/donation/list'> </c:url>",
+				url : "<c:url value='/donate/list'> </c:url>",
 				data : {
 					size : size,
 					page : page
 				},
 				success : function(data) {
-					$("#donation-list").html($(data).find("#donation-list").html());
+					$("#donate-list").html($(data).find("#donate-list").html());
 				}
 			});
 		}
-		function search(searchingValue) {
-
-	
-			console.log(" searching value: |" + searchingValue+ "|");
 		
-
-			$.ajax({
-				type : "GET",
-				url : "<c:url value='/donation/list'> </c:url>",
-				data : {
-					searchingValue : searchingValue
-				},
-				success : function(data) {
-					$("#donation-list").html($(data).find("#donation-list").html());
-				}
-			});
-		}
 	</script>
 </body>
 </html>

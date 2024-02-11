@@ -1,5 +1,7 @@
 package me.haitmq.spring.mvc.crud.entity;
 
+
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,7 +10,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -24,11 +25,11 @@ public class Donate {
 	@Column(name = "name")
 	private String name;
 	
-	@Column(name = "created")
-	private String created;
+	@Column(name = "created_date")
+	private String createdDate;
 	
 	@Column(name = "money")
-	private int money;
+	private long money;
 	
 	@Column(name = "status")
 	private int status;
@@ -36,11 +37,11 @@ public class Donate {
 	@Column(name = "note")
 	private String note;
 	
-	@OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
 	@JoinColumn(name = "user_id")
 	private User user;
 	
-	@OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
 	@JoinColumn(name = "donation_id")
 	private Donation donation;
 	
@@ -49,28 +50,6 @@ public class Donate {
 	public Donate() {
 		
 	}
-
-	public Donate(String name, String created, int money, int status, String note) {
-		this.name = name;
-		this.created = created;
-		this.money = money;
-		this.status = status;
-		this.note = note;
-	}
-	
-	public Donate(String name, int money, String note, User user, Donation donation) {
-		this.name = name;
-		this.money = money;
-		this.note = note;
-		this.user = user;
-		this.donation = donation;
-	}
-	
-
-	
-	// getter and setter
-	
-
 
 	public int getId() {
 		return id;
@@ -88,19 +67,19 @@ public class Donate {
 		this.name = name;
 	}
 
-	public String getCreated() {
-		return created;
+	public String getCreatedDate() {
+		return createdDate;
 	}
 
-	public void setCreated(String created) {
-		this.created = created;
+	public void setCreatedDate(String createdDate) {
+		this.createdDate = createdDate;
 	}
 
-	public int getMoney() {
+	public long getMoney() {
 		return money;
 	}
 
-	public void setMoney(int money) {
+	public void setMoney(long money) {
 		this.money = money;
 	}
 
@@ -134,15 +113,19 @@ public class Donate {
 
 	public void setDonation(Donation donation) {
 		this.donation = donation;
-	
-	
-	// toString method
-	
-}
+	}
 
 	@Override
 	public String toString() {
-		return "UserDonation [id=" + id + ", name=" + name + ", created=" + created + ", money=" + money + ", status="
-				+ status + ", note=" + note + "]";
+		return "Donate [id=" + id + ", name=" + name + ", createdDate=" + createdDate + ", money=" + money + ", status="
+				+ status + ", note=" + note + ", user=" + user + ", donation=" + donation + "]";
 	}
+
+	
+	
+	
+
+	
+	
+	
 }

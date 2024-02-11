@@ -1,6 +1,6 @@
 <%@ page import="javax.servlet.http.HttpServletRequest" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8" language="java" %>
+	pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <!DOCTYPE html>
@@ -21,6 +21,9 @@
 <body>
 	<div class="header">
 		<h2>This is a header</h2>
+		<c:url var="DetailLink"  value="/user/details">
+			<c:param name="userId" value="${userId}"></c:param>
+		</c:url>
 		
 		<div class="nav">
 			<h3>This is for navbar</h3>
@@ -28,6 +31,7 @@
 			<button>Register</button>
 			<button onclick="window.location.href='${pageContext.request.contextPath}/admin/manager'">Manager</button>
 			<button onclick="window.location.href='${pageContext.request.contextPath}/user/processLogout'">Logout</button>
+			<button onclick="window.location.href='${DetailLink}'">User</button>
 		</div>
 	</div>
 	<div class="main">

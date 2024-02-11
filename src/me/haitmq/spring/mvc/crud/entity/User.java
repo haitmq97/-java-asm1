@@ -1,5 +1,7 @@
 package me.haitmq.spring.mvc.crud.entity;
 
+import java.util.Date;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -56,11 +58,8 @@ public class User {
 	@Column(name = "status")
 	private int status;
 	
-	@Column(name = "created")
-	private String created;
-	
-	@Column(name = "note")
-	private String note;
+	@Column(name = "created_date")
+	private String createdDate;
 	
 
 	//@OneToOne(cascade = CascadeType.ALL, optional = false)
@@ -74,25 +73,6 @@ public class User {
 		
 	}
 
-	
-	public User(String fullName, String userName, String password, String email, String phoneNumber, String address,
-			int status, String created, String note) {
-		this.fullName = fullName;
-		this.userName = userName;
-		this.password = password;
-		this.email = email;
-		this.phoneNumber = phoneNumber;
-		this.address = address;
-		this.status = status;
-		this.created = created;
-		this.note = note;
-	}
-
-
-
-
-
-	// setter and getter
 	public int getId() {
 		return id;
 	}
@@ -157,47 +137,34 @@ public class User {
 		this.status = status;
 	}
 
-	public String getCreated() {
-		return created;
+	public String getCreatedDate() {
+		return createdDate;
 	}
 
-	public void setCreated(String created) {
-		this.created = created;
+	public void setCreatedDate(String createdDate) {
+		this.createdDate = createdDate;
 	}
-
-	public String getNote() {
-		return note;
-	}
-
-	public void setNote(String note) {
-		this.note = note;
-	}
-
 
 	public Role getRole() {
 		return role;
 	}
 
-
 	public void setRole(Role role) {
 		this.role = role;
 	}
-
 
 	@Override
 	public String toString() {
 		return "User [id=" + id + ", fullName=" + fullName + ", userName=" + userName + ", password=" + password
 				+ ", email=" + email + ", phoneNumber=" + phoneNumber + ", address=" + address + ", status=" + status
-				+ ", created=" + created + ", note=" + note + ", role=" + role + "]";
+				+ ", createdDate=" + createdDate + ", role=" + role + "]";
 	}
+	
+	
 
 	
 
-
-	// toString method
 	
 
-	
-	
 	
 }

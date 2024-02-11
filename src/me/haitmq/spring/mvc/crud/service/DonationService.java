@@ -47,4 +47,6 @@ public interface DonationService {
 	//////////////////////////////////
 	public Page<Donation> findByPhoneNumberOrOrganizationOrCodeOrStatus2(String searchingValue, int page, int size);
 	
+	public void addMoneyFromDonateToDonation(Long moneyAmount, int donationId);
+	
 }

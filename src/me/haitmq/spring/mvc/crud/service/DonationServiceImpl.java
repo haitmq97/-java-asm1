@@ -1,5 +1,7 @@
 package me.haitmq.spring.mvc.crud.service;
 
+
+
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -9,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import me.haitmq.spring.mvc.crud.dao.DonateDAO;
 import me.haitmq.spring.mvc.crud.dao.DonationDAO;
 import me.haitmq.spring.mvc.crud.entity.Donation;
 
@@ -21,12 +24,15 @@ public class DonationServiceImpl implements DonationService {
 	@Autowired
 	private DonationDAO donationDAO;
 	
+	@Autowired
+	private DonateDAO donateDAO;
+	
 	@Override
 	@Transactional
 	public void saveOrUpdate(Donation donation) {
 		
-		if(donation.getCreated()==null) {
-			donation.setCreated(Time.getCurrentDateTime());
+		if(donation.getCreatedDate()==null) {
+			donation.setCreatedDate(Time.getCurrentDateTime());
 		}
 
 		donationDAO.saveOrUpdate(donation);
@@ -163,6 +169,15 @@ public class DonationServiceImpl implements DonationService {
 	public Page<Donation> findByPhoneNumberOrOrganizationOrCodeOrStatus2(String searchingValue, int page, int size) {
 		PageRequest pageRequest = PageRequest.of(page, size);
 		return donationDAO.findByPhoneNumberOrOrganizationOrCodeOrStatus2(searchingValue, pageRequest);
+	}
+
+	@Override
+	@Transactional
+	public void addMoneyFromDonateToDonation(Long moneyAmount, int donationId) {
+		Donation donation = donationDAO.getDontaion(donationId);
+		donation.setMoney(donation.getMoney()+moneyAmount);
+		donationDAO.saveOrUpdate(donation);
+		
 	}
 	
 	

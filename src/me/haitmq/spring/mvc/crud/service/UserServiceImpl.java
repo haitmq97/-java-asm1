@@ -23,9 +23,9 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public void saveOrUpdate(User user) {
 	
-		if(user.getCreated().isEmpty()) {
-			user.setCreated(Time.getCurrentDateTime());
-			user.setStatus(1);
+		if(user.getCreatedDate().isEmpty()) {
+			user.setCreatedDate(Time.getCurrentDateTime());
+			//user.setStatus("NEW");
 		}
 		
 		userDAO.saveOrUpdate(user);

@@ -2,7 +2,7 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
-    pageEncoding="UTF-8"%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -12,14 +12,11 @@
 <body>
 <div class="donate-fom">
 	<h3>Donate</h3>
-	
-	
+
+		<form:form action="${process}" modelAttribute="donate" method="POST">
 		
 		<input type="hidden" name="donationId" value="${donationId}"/>
-		<c:url var="process" value="/donate/donating">
-					<c:param name="donationId" value="${donationId}" />
-		</c:url>
-		<form:form action="${process}" modelAttribute="donate" method="POST">
+		
 		<label for="name">Name:</label>
 		<form:input type="text" id="name" path="name"/>
 		<br>
@@ -29,7 +26,6 @@
 		<label for="note">Note:</label>
 		<form:input type="text" id="note" path="note"/>
 		<br>
-		
 		<input type="submit" value="Donate"/>
 		</form:form>
 	</div>

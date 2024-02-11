@@ -63,7 +63,7 @@
 					<c:forEach var="tempDonation" items="${donations.content}">
 
 						<c:url var="detailLink" value="/donation/donation-details">
-							<c:param name="donationId" value="${tempDonation.id}" />
+							<c:param name="id" value="${tempDonation.id}" />
 						</c:url>
 						
 						<c:url var="updateLink" value="/donation/updateDonation">
@@ -79,6 +79,7 @@
 							<td>${tempDonation.id}</td>
 							<td>${tempDonation.code}</td>
 							<td>${tempDonation.name}</td>
+							<td>${tempDonation.money}</td>
 							<td>${tempDonation.startDate}</td>
 							<td>${tempDonation.startDate}</td>
 							<td>${tempDonation.phoneNumber}</td>

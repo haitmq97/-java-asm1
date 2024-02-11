@@ -1,7 +1,7 @@
 
 USE `asm1_donation_project`;
 
-    insert into `role` (`id`,`role_name`) values
+insert into `role` (`id`,`role_name`) values
 		(1,'admin'),
         (2,'user'),
         (3,'user'),
@@ -23,10 +23,10 @@ USE `asm1_donation_project`;
         (19,'user'),
         (20,'user'),
         (21,'user'),
-        (22,'user');
+        (22,'user');    
 
-INSERT INTO `user` (`full_name`, `user_name`, `password`, `email`, `phone_number`, `status`, `created` ,`role_id`) VALUES 
-	('hai tran', 'haitran123', 'haitran123', 'haitran123@gmail.com', '0123456789', 1, '01/01/2024' ,1),
+INSERT INTO `user` (`full_name`, `user_name`, `password`, `email`, `phone_number`, `status`, `created_date` ,`role_id`) VALUES 
+	('hai tran', 'haitran123', 'haitran123', 'haitran123@gmail.com', '0123456789', 1, '01-01-2024' ,1),
 	('juan liroberto', 'juan147', 'juan147', 'juanliro@example.com', '0123478945', 1, '01/01/2024', 2),
     ('nam le', 'namle123', 'namele123', 'namledinh@sofe.de', '0324455667', 0, '01/01/2024', 3),
 	('jake graham', 'jakethedog', 'jakethedog', 'jakey333@treehouse.dev' , '0011235567', 1, '01/01/2024', 4),
@@ -51,7 +51,7 @@ INSERT INTO `user` (`full_name`, `user_name`, `password`, `email`, `phone_number
     
 
 
-INSERT INTO `donation` (`code`, `name`, `phone_number`, `organization`, `created`, `status` ,`start_date`,`end_date`) VALUES 
+INSERT INTO `donation` (`code`, `name`, `phone_number`, `organization`, `created_date`, `status` ,`start_date`,`end_date`) VALUES 
 	('QG001', 'donation 1', '0123456789', 'organization 1' , '01/01/2024', 0, '2024-01-01', '2024-01-10'),
     ('QG002', 'donation 2', '0123456799', 'organization 2' , '02/01/2024', 1, '02/01/2024', '15/01/2024'),
     ('QG003', 'donation 3', '0123456799', 'organization 4' , '01/01/2024', 2, '06/01/2024', '15/01/2024'),
@@ -61,3 +61,13 @@ INSERT INTO `donation` (`code`, `name`, `phone_number`, `organization`, `created
     ('QG007', 'donation 1', '0123456799', 'organization 8' , '01/01/2024', 2, '06/01/2024', '15/01/2024'),
     ('QA008', 'donation 6', '0123456799', 'organization 4' , '01/01/2024', 2, '06/01/2024', '15/01/2024'),
     ('QG009', 'donation 4', '0123456666', 'organization 3' , '01/01/2024', 4, '06/01/2024', '15/01/2024');
+    
+    
+    
+insert into donate(`created_date`, `money`, `name`, `status`, `user_id`, `donation_id`)
+	value ('12/01/2024', 100000, 'jake graham', 0, 4, 1),
+    ('24/01/2024', 50000, 'hansome jack', 0, 5, 1),
+    ('20/01/2024', 2000000, 'frank senetra', 0, 15, 1),
+    ('12/01/2024', 250000, 'jake graham', 0, 4, 2),
+    ('04/02/2024', 150000, 'lana croft', 1, 13, 2),
+    ('23/01/2024', 5000000, 'harry porter', 0, 21, 3);

@@ -12,7 +12,7 @@
 		<ul>
 			<li><a href="${pageContext.request.contextPath}/user/list">User</a></li>
 			<li><a href="${pageContext.request.contextPath}/donation/listForAdmin">Donation</a></li>
-			<li><a>donate</a></li>
+			<li><a href="${pageContext.request.contextPath}/donate/list">donate</a></li>
 
 		</ul>
 	</div>

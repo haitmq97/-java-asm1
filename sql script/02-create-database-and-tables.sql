@@ -17,11 +17,10 @@ CREATE TABLE `user` (
   `user_name` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
-  `phone_number` varchar(255) DEFAULT NULL,
+  `phone_number` varchar(20) DEFAULT NULL,
   `address` varchar(255) DEFAULT NULL,
   `status` int default 1,
-  `created` varchar(255) DEFAULT NULL,
-  `note` varchar(255) DEFAULT NULL,
+  `created_date` varchar(100) DEFAULT null,
   `role_id` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `EMAIL_UNIQUE` (`email`),
@@ -37,18 +36,21 @@ CREATE TABLE `donation` (
   `name` varchar(255) DEFAULT NULL,
   `phone_number` varchar(255) default NULL,
   `organization` varchar(255) DEFAULT NULL,
-  `created` varchar(255) DEFAULT NULL,
+  `created_date` varchar(100) DEFAULT null,
   `money` int DEFAULT 0,
   `description` varchar(255) DEFAULT NULL,
-  `status` int DEFAULT NULL,
-  `start_date` varchar(255) DEFAULT NULL,
-  `end_date` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `status` int DEFAULT 0,
+  `start_date` varchar(100) DEFAULT NULL,
+  `end_date` varchar(100) DEFAULT NULL,
+  `donation_number` int DEFAULT 0,
+  `showing` boolean DEFAULT true,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `CODE_UNIQUE` (`code`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
 
 CREATE TABLE `donate` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `created` varchar(255) DEFAULT NULL,
+  `created_date` varchar(100) DEFAULT null,
   `money` int DEFAULT 0,
   `name` varchar(255) DEFAULT NULL,
   `status` int DEFAULT NULL,
@@ -65,7 +67,7 @@ CREATE TABLE `donate` (
   FOREIGN KEY (`donation_id`) 
   REFERENCES `donation` (`id`)
   ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
 
 
 

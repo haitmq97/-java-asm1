@@ -50,7 +50,7 @@
 			</tr>
 			<tr>
 				<td>cread Date:</td>
-				<td>${user.created}</td>
+				<td>${user.createdDate}</td>
 			</tr>
 			<tr>
 				<td>role:</td>
