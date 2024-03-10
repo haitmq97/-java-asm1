@@ -6,7 +6,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 </head>
 <body>
 	<section class="site-section content">
@@ -109,11 +109,20 @@
 						<div>
 							<div>
 								<input id="currentPage" type="hidden" value="${currentPage}" />
-								<input id="totalPage" type="hidden" value="${totalPage}" /> <input
-									id="size" type="hidden" value="${size}" />
+								<c:out value ="current Pg:  ${currentPage}  "/>
+								<br>
+								<input id="totalPages" type="hidden" value="${totalPage}" />
+								<c:out value ="total Pg:  ${totalPage}  "/>
+								<br> 
+								<input id="size" type="hidden" value="${currentSize}" />
+								<c:out value ="size:  ${currentSize}  "/>
+									
 							</div>
 							<div id="pagination-container"></div>
-
+							
+							
+							
+							
 							<script
 								src="<c:url value='/static/common/assets/js/pagination.js' />"></script>
 

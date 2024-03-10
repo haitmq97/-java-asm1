@@ -92,7 +92,7 @@
 
 
 	<!-- HOME -->
-	<c:import url="/donation/list" />
+	<c:import url="/v1/donations" />
 
 	<%@ include file="../common/footer-layout.jsp"%>
 	

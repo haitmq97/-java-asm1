@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -55,6 +55,50 @@ public class HomeController {
 			return "common/error-page";
 		}
 		
+	}
+	
+	
+	@GetMapping("/donations")
+	public String donationlist(@RequestParam(defaultValue = "1") int page, @RequestParam(name="size", defaultValue = "5") int size,
+			@RequestParam(name = "searchingValue", defaultValue = "", required = false) String searchingValue,
+			Model theModel) {
+		
+		System.out.println("size: " + size);
+		Page<Donation> donations = donationService.findAll(page, size);
+		
+		
+		if(!searchingValue.equals("")) {
+			donations = donationService.findByPhoneNumberOrOrganizationOrCodeOrStatus(searchingValue, page, size);
+			theModel.addAttribute("searchingValue", searchingValue);
+		}
+		
+		
+		
+		theModel.addAttribute("donations", donations);
+		
+		theModel.addAttribute("currentPage", page);
+		theModel.addAttribute("totalPage", donations.getTotalPages());
+
+		theModel.addAttribute("currentSize", size);
+
+		int nextPage = page + 1;
+		int prevPage = page - 1;
+
+		if (page <= 1) {
+			prevPage = 1;
+		}
+
+		theModel.addAttribute("prevPage", prevPage);
+		System.out.println("current page" + page);
+		System.out.println("total page: " + donations.getTotalPages());
+		if (page >= (donations.getTotalPages())) {
+			nextPage = donations.getTotalPages();
+		}
+
+		theModel.addAttribute("nextPage", nextPage);
+
+//		return "user/donationList";
+		return "public/donation-table";
 	}
 
 	
