@@ -264,7 +264,7 @@ public class UserController {
 
 	////////////////////////
 	@GetMapping("/list")
-	public String userList(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size,
+	public String userList(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "5") int size,
 			@RequestParam(name = "searchingValue", defaultValue = "", required = false) String searchingValue,
 			Model theModel) {
 
@@ -280,14 +280,14 @@ public class UserController {
 		int nextPage = page + 1;
 		int prevPage = page - 1;
 
-		if (page <= 0) {
-			prevPage = 0;
+		if (page <= 1) {
+			prevPage = 1;
 		}
 
 		theModel.addAttribute("prevPage", prevPage);
 
-		if (page >= (users.getTotalPages() - 1)) {
-			nextPage = users.getTotalPages() - 1;
+		if (page >= (users.getTotalPages())) {
+			nextPage = users.getTotalPages();
 		}
 
 		theModel.addAttribute("nextPage", nextPage);
@@ -295,7 +295,7 @@ public class UserController {
 		System.out.println("=======================>>>>> test time");
 		System.out.println("=======================>>>>> current time: " + Time.getCurrentDateTime());
 
-		return "donation/user-list";
+		return "admin/user-list";
 	}
 
 	@GetMapping("/registerForm")
@@ -304,15 +304,16 @@ public class UserController {
 		User theUser = new User();
 		theModel.addAttribute("user", theUser);
 
-		return "donation/register-form";
+		return "common/register-form";
 	}
 
 	@GetMapping("login")
 	public String showLoginForm(Model theModel) {
 		User theLoginUser = new User();
 		theModel.addAttribute("user", theLoginUser);
+		theModel.addAttribute("process", "processLogin");
 
-		return "donation/login-form";
+		return "common/login-form";
 	}
 
 	@PostMapping("processLogin")
@@ -354,7 +355,7 @@ public class UserController {
  		
 		theModel.addAttribute("user", user);
 
-		return "donation/user-detail";
+		return "admin/user-detail";
 	}
 	
 	@GetMapping("/addUser")
@@ -365,7 +366,7 @@ public class UserController {
 		
 		theModel.addAttribute("user", user);
 
-		return "donation/user-form";
+		return "admin/user-form";
 	}
 	
 	@PostMapping("/processAdd")
@@ -386,7 +387,7 @@ public class UserController {
 		
 		theModel.addAttribute("user", theUser);
 		
-		return "donation/user-form";
+		return "admin/user-form";
 	}
 	
 	@PostMapping("/processUpdate")
@@ -410,4 +411,22 @@ public class UserController {
 		return "redirect:/user/list";
 	}
 	
+	
+	
+	@GetMapping("/register")
+	public String showRegisterForm(Model theModel) {
+		User newUser = new User();
+		theModel.addAttribute("user", newUser);
+		theModel.addAttribute("process", "processRegister");
+		
+		return "common/register-from";
+	}
+	
+	
+	@PostMapping("/processRegister")
+	public String processRegister(@ModelAttribute("user")User theUser) {
+		
+		
+		return "redirect:/v1/home";
+	}
 }	

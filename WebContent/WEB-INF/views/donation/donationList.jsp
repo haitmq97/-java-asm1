@@ -21,7 +21,7 @@
 <body>
 	<div class="donation" id="donations">
 		<h2>Donation list</h2>
-		<button onclick="refresh()">refresh</button>
+
 
 		<div class="page">
 			<input id="currentPage" type="hidden" name="currentPage"
@@ -86,7 +86,7 @@
 
 			<div>
 				<p>
-					<a href="?page=0&size=${currentSize}">first</a>
+					<a href="?page=1&size=${currentSize}">first</a>
 				</p>
 				<p>
 					<a href="?page=${prevPage}&size=${currentSize}">previous</a>

@@ -58,8 +58,8 @@ public class DonateServiceImpl implements DonateService {
 			donate.setDonation(donationService.getDonation(donationId));
 			donateDAO.save(donate);
 		} catch (Exception e) {
-			log.error("DonateService ERROR - save(Donate donate, int userId, int donationId): ", e);
-			e.printStackTrace();
+			//log.error("DonateService ERROR - save(Donate donate, int userId, int donationId): ", e);
+			//e.printStackTrace();
 		}
 		
 	}
@@ -90,7 +90,7 @@ public class DonateServiceImpl implements DonateService {
 	@Override
 	@Transactional
 	public List<Donate> getDonates() {
-		return donateDAO.getDonates();
+		return donateDAO.getAllDonates();
 	}
 
 	@Override
@@ -173,6 +173,19 @@ public class DonateServiceImpl implements DonateService {
 		donationService.addMoneyFromDonateToDonation(donate.getMoney(), donate.getDonation().getId());
 		donateDAO.update(donate);
 	}
+	
+	
+	
+
+	@Override
+	public Long getTotalMoneyByDonationId(int donationId) {
+		try {
+			return donateDAO.getTotalMoneyByDonationId(donationId);
+		} catch (Exception e) {
+			//log.error("DonateService ERROR - getTotalMoneyByDonationId(): ", e);
+			return null;
+		}
+	}
 
 	@Override
 	@Transactional
@@ -180,12 +193,10 @@ public class DonateServiceImpl implements DonateService {
 		try {
 			List<Donation> donations = donationService.getDonationList();
 			for (Donation donation: donations) {
-				System.out.println("===================> donation: " + donation.getId());
-				System.out.println("===================> donation money: " + donateDAO.getTotalMoneyByDonationId(donation.getId()));
-				donation.setMoney(donateDAO.getTotalMoneyByDonationId(donation.getId()));
+				donation.setMoney(getTotalMoneyByDonationId(donation.getId()));
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 
@@ -202,7 +213,7 @@ public class DonateServiceImpl implements DonateService {
 		try {
 			return donateDAO.getDonteListByDonationId(theId);
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 			return null;
 		}
 		

@@ -1,0 +1,41 @@
+@charset "ISO-8859-1";
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  ul,
+  ol,
+  li {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+
+    
+  a {
+    text-decoration: none;
+  }
+  
+  input {
+    outline: none;
+  }
+  
+  input[type="number"] {
+    -webkit-appearance: textfield; /* Safari */
+    -moz-appearance: textfield; /* Firefox */
+    appearance: textfield; /* Standard browsers */
+  }
+  
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+  

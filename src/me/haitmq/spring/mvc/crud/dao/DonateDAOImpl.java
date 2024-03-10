@@ -25,10 +25,10 @@ public class DonateDAOImpl implements DonateDAO {
 	
 	@Autowired
 	private SessionFactory sessionFactory;
-
-	public Session getSession() {
-		return this.sessionFactory.getCurrentSession();
-	}
+	
+	
+	
+	
 
 	@Override
 	public void save(Donate donate) {
@@ -36,54 +36,99 @@ public class DonateDAOImpl implements DonateDAO {
 			Session session = sessionFactory.getCurrentSession();
 			session.save(donate);
 		} catch (Exception e) {
-			log.error("DonateDAO ERROR - save(): ", e);
-			e.printStackTrace();
+			//log.error("DonateDAO ERROR - save(): ", e);
+			//e.printStackTrace();
 		}
 	}
 
 	@Override
 	public void update(Donate donate) {
-		Session session = sessionFactory.getCurrentSession();
-		session.update(donate);
+		try {
+			Session session = sessionFactory.getCurrentSession();
+			session.update(donate);
+		} catch (Exception e) {
+			//log.error("DonateDAO ERROR - update(): ", e);
+			//e.printStackTrace();
+		}
 		
 	}
 	
 	@Override
 	public void saveOrUpdate(Donate donate) {
-		Session session = sessionFactory.getCurrentSession();
-		session.saveOrUpdate(donate);
+		
+		try {
+			Session session = sessionFactory.getCurrentSession();
+			session.saveOrUpdate(donate);
+		} catch (Exception e) {
+			//log.error("DonateDAO ERROR - saveOrUpdate(): ", e);
+			//e.printStackTrace();
+		}
 		
 	}
 
 	@Override
 	public Donate getDonate(int theId) {
-		Session session = sessionFactory.getCurrentSession();
-		return session.get(Donate.class, theId);
+		
+		try {
+			Session session = sessionFactory.getCurrentSession();
+			return session.get(Donate.class, theId);
+			
+		} catch (Exception e) {
+			//log.error("DonateDAO ERROR - getDonate(): ", e);
+			//e.printStackTrace();
+			return null;
+		}
 	}
 
 	@Override
-	public List<Donate> getDonates() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Donate> getAllDonates() {
+		try {
+			Session session = sessionFactory.getCurrentSession();
+			Query<Donate> theQuery = session.createQuery("from Donate", Donate.class);
+			return theQuery.getResultList();
+			
+		} catch (Exception e) {
+			//log.error("DonateDAO ERROR - getAllDonates(): ", e);
+			//e.printStackTrace();
+			return null;
+		}
+		
 	}
 
 	@Override
 	public void delete(int theId) {
-		Session session = sessionFactory.getCurrentSession();
-		Query theQuery = session.createQuery("delete from Donate where id=:theId");
+		
+		try {
+			Session session = sessionFactory.getCurrentSession();
+			Query theQuery = session.createQuery("delete from Donate where id=:theId");
 
-		theQuery.setParameter("theId", theId);
+			theQuery.setParameter("theId", theId);
 
-		theQuery.executeUpdate();
+			theQuery.executeUpdate();
+			
+		} catch (Exception e) {
+			//log.error("DonateDAO ERROR - delete(): ", e);
+			//e.printStackTrace();
+			
+		}
 
 	}
 
 	@Override
 	public List<Donate> getDonateByDonationId(int theId) {
-		Session session = sessionFactory.getCurrentSession();
-		Query<Donate> theQuery = session.createQuery("from Donate ud where ud.donation=:theId", Donate.class);
-		theQuery.setParameter("theId", theId);
-		return theQuery.getResultList();
+		
+		try {
+			Session session = sessionFactory.getCurrentSession();
+			Query<Donate> theQuery = session.createQuery("from Donate ud where ud.donation=:theId", Donate.class);
+			theQuery.setParameter("theId", theId);
+			return theQuery.getResultList();
+			
+		} catch (Exception e) {
+			//log.error("DonateDAO ERROR - getDonateByDonationId(): ", e);
+			//e.printStackTrace();
+			return null;
+			
+		}
 	}
 
 	@Override

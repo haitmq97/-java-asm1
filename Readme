@@ -1,0 +1,5 @@
+- về phía request
+- về user:
+	ta sẽ lấy 3 thông tin là id, role và status
+	role ==> kiểm tra chức năng tương ứng role: admin và user
+	status (user) kiểm tra xem có thể sử dụng các chức năng như donate hay không

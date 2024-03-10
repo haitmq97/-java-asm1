@@ -7,15 +7,56 @@ import org.springframework.data.domain.Page;
 import me.haitmq.spring.mvc.crud.entity.Donation;
 
 public interface DonationService {
+	
+	/*
+	 * Cần định nghĩa các phương thức
+	 * 
+	 * - save donation obj (admin)
+	 * 	+ status ban đầu (mặc định là 0: mới tạo), showing mặc định là true
+	 * 	+ ngày tạo
+	 * 
+	 * - update (admin):
+	 * 	+ thay đổi thông tin
+	 * 	+ thay đổi status
+	 * 	+ showing (true/false)
+	 * 	+ update money từ các donate có status = 1
+	 * 
+	 * - delete (admin):
+	 * 	+ chỉ có thể xóa các donation có status mới tạo
+	 * 
+	 * - get single donation (details) (admin, user)
+	 * 
+	 * - get donation list (admin, user):
+	 * 	+ không phân trang
+	 * 	+ phân trang tìm kiếm, sắp xếp theo trạng thái, thời gian tạo
+	 * 
+	 */
 
+	
+	// save donation obj (upadate)
 	public void saveOrUpdate(Donation donation);
-
+	
+	// update donation obj
+	public void changeDonationStatus(int status, int donationId);
+	
+	public void changeDonationShowingStatus(int donationid);
+	
+	public void addMoneyFromDonateToDonation(Long moneyAmount, int donationId);
+	
+	public void updateAllMoneyDonatetoDonation(int donationId);
+	
+	
+	// delete donation obj
+	public void delete(int theId);
+	
+	
+	// get single donation obj
 	public Donation getDonation(int theId);
 
+	
+	// get donation list
 	public List<Donation> getDonationList();
-
-	public void delete(int theId);
-
+	
 	/*
 	public List<Donation> findByPhoneNumber(String phoneNumber);
 
@@ -30,7 +71,11 @@ public interface DonationService {
 	// public Page<Donation> getPaginatedData(int page, int size);
 
 	 */
-	///////////////////////////////////
+
+	
+	
+	// get donation list (pageable)
+
 
 	public Page<Donation> findByPhoneNumber(String phoneNumber, int page, int size);
 
@@ -44,9 +89,10 @@ public interface DonationService {
 
 	public Page<Donation> findAll(int page, int size);
 	
-	//////////////////////////////////
 	public Page<Donation> findByPhoneNumberOrOrganizationOrCodeOrStatus2(String searchingValue, int page, int size);
+
+
+
 	
-	public void addMoneyFromDonateToDonation(Long moneyAmount, int donationId);
 	
 }

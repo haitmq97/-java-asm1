@@ -61,6 +61,9 @@ public class User {
 	@Column(name = "created_date")
 	private String createdDate;
 	
+	@Column(name = "showing")
+	private boolean showing;
+	
 
 	//@OneToOne(cascade = CascadeType.ALL, optional = false)
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -144,6 +147,16 @@ public class User {
 	public void setCreatedDate(String createdDate) {
 		this.createdDate = createdDate;
 	}
+	
+	
+
+	public boolean getShowing() {
+		return showing;
+	}
+
+	public void setShowing(boolean showing) {
+		this.showing = showing;
+	}
 
 	public Role getRole() {
 		return role;
@@ -157,9 +170,10 @@ public class User {
 	public String toString() {
 		return "User [id=" + id + ", fullName=" + fullName + ", userName=" + userName + ", password=" + password
 				+ ", email=" + email + ", phoneNumber=" + phoneNumber + ", address=" + address + ", status=" + status
-				+ ", createdDate=" + createdDate + ", role=" + role + "]";
+				+ ", createdDate=" + createdDate + ", showing=" + showing + ", role=" + role + "]";
 	}
-	
+
+
 	
 
 	

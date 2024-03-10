@@ -1,0 +1,51 @@
+@import url('--global-style.css');
+
+.footer {
+    background-color: var(--pry-color-2-dark-background);
+    color: #d0d3d3;
+    padding: 50px 70px 70px;
+
+}
+
+.content-footer {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    gap: 1px;
+    justify-content: space-around;
+}
+
+.content-footer>.footer-item:last-child {
+    grid-row: 2;
+    grid-column: 1/5;
+}
+
+.footer-item {
+
+    padding: 20px;
+}
+
+.footer-item>h4 {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.footer-item:last-child>p {
+    text-align: center;
+}
+
+
+
+.conecction-icon-list {
+    color: var(--pry-leaf) !important;
+    font-size: 25px;
+
+}
+
+.conecction-icon-list>li {
+    display: inline-block;
+}
+
+.conecction-icon-list>li>a>i {
+    color: var(--pry-leaf) !important;
+}
+

@@ -156,7 +156,7 @@ public class Donation {
 		this.donationNumber = donationNumber;
 	}
 
-	public boolean isShowing() {
+	public boolean getShowing() {
 		return showing;
 	}
 

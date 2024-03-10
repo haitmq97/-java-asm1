@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,36 +23,118 @@ import me.haitmq.spring.mvc.crud.utils.*;
 @Service
 public class DonationServiceImpl implements DonationService {
 
+	private static final Logger log = LoggerFactory.getLogger(DonationService.class);
+	
 	@Autowired
 	private DonationDAO donationDAO;
 	
 	@Autowired
-	private DonateDAO donateDAO;
+	private DonateService donateService;
+	
+	
+	// save donation obj
 	
 	@Override
 	@Transactional
 	public void saveOrUpdate(Donation donation) {
 		
-		if(donation.getCreatedDate()==null) {
-			donation.setCreatedDate(Time.getCurrentDateTime());
+		try {
+			if(donation.getCreatedDate().isEmpty()) {
+				donation.setCreatedDate(Time.getCurrentDateTime());
+				donation.setStatus(0);
+			}
+
+			donationDAO.saveOrUpdate(donation);
+		} catch (Exception e) {
+			//log.error("DonationService ERROR - saveOrUpdate(): ", e);
 		}
 
+	}
+	
+	// update donaton obj
+	
+	@Override
+	@Transactional
+	public void addMoneyFromDonateToDonation(Long moneyAmount, int donationId) {
+		Donation donation = donationDAO.getDontaion(donationId);
+		donation.setMoney(donation.getMoney()+moneyAmount);
 		donationDAO.saveOrUpdate(donation);
-
+		
+	}
+	
+	@Override
+	public void changeDonationStatus(int status, int donationId) {
+		 
+		/*
+		try {
+			
+			switch (status) {
+			case 0: 
+				donation.setStatus(status);
+				break;
+			case 1:
+				donation.setStatus(status);
+				break;
+			case 2:
+				donation.setStatus(status);
+				break;
+			case 3:
+				donation.setStatus(status);
+				break;	
+			}	
+		
+		} catch (IllegalArgumentException e) {
+			log.error("DonationService ERROR - changeDonationStatus(): ", e);
+		}
+		
+		*/
+		try {
+			Donation donation = donationDAO.getDontaion(donationId);
+			donation.setStatus(status);
+			donationDAO.saveOrUpdate(donation);
+		} catch (Exception e) {
+			//log.error("DonationService ERROR - changeDonationStatus(): ", e);
+		}
+		
 	}
 
 	@Override
-	@Transactional
-	public Donation getDonation(int theId) {
-		return donationDAO.getDontaion(theId);
+	public void changeDonationShowingStatus(int donationId) {
+		try {
+			Donation donation = donationDAO.getDontaion(donationId);
+			donation.setShowing(donation.getShowing() ==  true? false: true);
+		} catch (Exception e) {
+			//log.error("DonationService ERROR - changeDonationShowingStatus(): ", e);
+		}
+		
 	}
 
 	@Override
-	@Transactional
-	public List<Donation> getDonationList() {
-		return donationDAO.getDonationList();
+	public void updateAllMoneyDonatetoDonation(int donationId) {
+		try {
+			Donation donation = donationDAO.getDontaion(donationId);
+			donation.setMoney(donateService.getTotalMoneyByDonationId(donationId));
+		} catch (Exception e) {
+			//log.error("DonationService ERROR - updateAllMoneyDonatetoDonation(): ", e);
+		}
+		
 	}
+	
+	
+	// delete donation obj
+	
+	// kiem tra status truoc khi xoa
+	
 
+
+	private boolean isAbleToDelete(int theId) {
+		Donation donation = getDonation(theId);
+		if(donation.getStatus() == 0) {
+			return true;
+		}
+		return false;
+	}
+	
 	@Override
 	@Transactional
 	public void delete(int theId) {
@@ -60,18 +144,24 @@ public class DonationServiceImpl implements DonationService {
 		
 	}
 	
-	private boolean isAbleToDelete(int theId) {
-		Donation donation = getDonation(theId);
-		if(donation.getStatus() == 0) {
-			return true;
-		}
-		return false;
-	}
-
 	
+	// get single donation obj
+	
+	@Override
+	@Transactional
+	public Donation getDonation(int theId) {
+		return donationDAO.getDontaion(theId);
+	}
+	
+	// get donation list
+	
+	@Override
+	@Transactional
+	public List<Donation> getDonationList() {
+		return donationDAO.getDonationList();
+	}
 	
 	/*
-
 	@Override
 	@Transactional
 	public List<Donation> findByPhoneNumber(String phoneNumber) {
@@ -101,25 +191,11 @@ public class DonationServiceImpl implements DonationService {
 	public List<Donation> findByPhoneNumberOrOrganizationOrCodeOrStatus(String searchString) {
 		return donationDAO.findByPhoneNumberOrOrganizationOrCodeOrStatus(searchString);
 	}
-
-	@Override
-	@Transactional
-	public Page<Donation> getPaginatedData(int page, int size) {
-		PageRequest pageRequest = PageRequest.of(page, size);
-        return donationDAO.findAll(pageRequest);
-	}
 	
-	
-	private boolean isAbleToDonate(int theId) {
-		Donation donation = getDonation(theId);
-		if(donation.getStatus() == 1) {
-			return true;
-		}
-		return false;
-	}
 	*/
 	
-	////////////////////////////
+	// get donation list (pageable)
+	
 	
 	@Override
 	@Transactional
@@ -152,18 +228,18 @@ public class DonationServiceImpl implements DonationService {
 	@Override
 	@Transactional
 	public Page<Donation> findByPhoneNumberOrOrganizationOrCodeOrStatus(String searchingValue, int page, int size) {
-		PageRequest pageRequest = PageRequest.of(page, size);
+		PageRequest pageRequest = PageRequest.of(page-1, size);
 		return donationDAO.findByPhoneNumberOrOrganizationOrCodeOrStatus(searchingValue, pageRequest);
 	}
 
 	@Override
 	@Transactional
 	public Page<Donation> findAll(int page, int size) {
-		PageRequest pageRequest = PageRequest.of(page, size);
+		PageRequest pageRequest = PageRequest.of(page-1, size);
 		return donationDAO.findAll( pageRequest);
 	}
 	
-	///////////
+
 	@Override
 	@Transactional
 	public Page<Donation> findByPhoneNumberOrOrganizationOrCodeOrStatus2(String searchingValue, int page, int size) {
@@ -171,14 +247,42 @@ public class DonationServiceImpl implements DonationService {
 		return donationDAO.findByPhoneNumberOrOrganizationOrCodeOrStatus2(searchingValue, pageRequest);
 	}
 
+	
+
+
+
+
+	
+
+
+	
+	
+	/*
+
+
+
 	@Override
 	@Transactional
-	public void addMoneyFromDonateToDonation(Long moneyAmount, int donationId) {
-		Donation donation = donationDAO.getDontaion(donationId);
-		donation.setMoney(donation.getMoney()+moneyAmount);
-		donationDAO.saveOrUpdate(donation);
-		
+	public Page<Donation> getPaginatedData(int page, int size) {
+		PageRequest pageRequest = PageRequest.of(page, size);
+        return donationDAO.findAll(pageRequest);
 	}
+	
+	
+	private boolean isAbleToDonate(int theId) {
+		Donation donation = getDonation(theId);
+		if(donation.getStatus() == 1) {
+			return true;
+		}
+		return false;
+	}
+	*/
+	
+	////////////////////////////
+	
+	
+
+
 	
 	
 	

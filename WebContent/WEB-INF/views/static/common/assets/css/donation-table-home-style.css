@@ -1,0 +1,164 @@
+@charset "ISO-8859-1";
+@import url("--global-style.css");
+
+.content {
+}
+
+.add-bar {
+  background-color: #f2f2f2;
+  width: 100%;
+  padding: 10px;
+}
+
+.add-btn {
+  background-color: #198754;
+  color: #eeeec6;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.entries-select {
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  background-clip: padding-box;
+  appearance: none;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.entries-select:focus {
+  border-color: #86b7fe;
+  outline: 0;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.sp-tool {
+}
+.h-content {
+}
+.page-selector {
+}
+.search-box {
+}
+
+.m-content {
+  margin-top: 20px;
+}
+
+.tb-head-title {
+  background-color: var(--pry-color-1-dark-background);
+  color: var(--pry-white);
+}
+
+.table-content {
+}
+
+.th-custom {
+  vertical-align: middle !important;
+}
+.d-name {
+    font-size: 1.1rem;
+  }
+
+@media (max-width: 768px) {
+    th p, td p {
+        font-size: 0.9rem;
+    }
+    .d-name {
+        font-size: 1rem;
+    }
+  }
+
+.th-custom p {
+  margin-bottom: 0;
+}
+
+.table-content td {
+  vertical-align: middle;
+}
+
+.table-content th:not(:first-child),
+td:not(:last-child) {
+  text-align: center;
+}
+
+
+
+.d-status {
+  font-size: 0.8rem;
+  padding-left: 5px;
+  font-weight: 300;
+}
+
+.action-c {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.action-c > button {
+  flex: 1;
+  white-space: nowrap;
+  margin: 5px;
+}
+
+.content-btn-text {
+    display: inline-block;
+}
+.content-btn-icon {
+    display: none;
+}
+
+@media (max-width: 768px) {
+  .content-btn-text {
+    display: none;
+  }
+  .content-btn-icon {
+    display: inline-block;
+  }
+}
+
+.m-content {
+}
+.d-name {
+}
+.d-status {
+}
+.f-content {
+  margin-top: 50px;
+}
+.page-number {
+}
+.page-btn-list {
+  list-style-type: none;
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+}
+
+.page-btn-item>i {
+    margin: auto 0;
+}
+
+
+
+.page-btn-item {
+}
+
+.page-btn {
+  padding: 10px;
+  margin: 5px;
+}
+
+.tdot-i {
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 767px) {
+  .page-btn-list {
+    display: flex;
+    justify-content: center;
+  }
+  
+}

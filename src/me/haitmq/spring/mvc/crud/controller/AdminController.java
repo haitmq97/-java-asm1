@@ -10,10 +10,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AdminController {
 	
 	
+	
+	
+	
 	@GetMapping("/manager")
 	public String managerPage() {
 		
 		
-		return "donation/manager-admin";
+		return "admin/home";
 	}
+	
+	
+	
 }

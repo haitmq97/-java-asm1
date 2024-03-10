@@ -10,6 +10,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import me.haitmq.spring.mvc.crud.dao.UserDAO;
+import me.haitmq.spring.mvc.crud.entity.Role;
 import me.haitmq.spring.mvc.crud.entity.User;
 import me.haitmq.spring.mvc.crud.utils.Time;
 
@@ -19,56 +20,78 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserDAO userDAO;
 	
+
+	// save user (update)
+	
 	@Override
 	@Transactional
 	public void saveOrUpdate(User user) {
-	
+		
+		//  them ngay tao va status ban dau
 		if(user.getCreatedDate().isEmpty()) {
 			user.setCreatedDate(Time.getCurrentDateTime());
-			//user.setStatus("NEW");
+			user.setStatus(1);
 		}
 		
 		userDAO.saveOrUpdate(user);
+	}
+	
+	
+	//register
+	@Override
+	@Transactional
+	public void register(User user) {
+		
+		//  them ngay tao va status ban dau
+		if(user.getCreatedDate()==null) {
+			user.setCreatedDate(Time.getCurrentDateTime());
+			user.setStatus(1);
+			user.setRole(new Role("user"));
+			user.setShowing(true);
+		}
+		
+		userDAO.saveOrUpdate(user);
+	}
+	
+	// update user
+	
 
+	@Override
+	@Transactional
+	public void changeUserStatus(int userId) {
+		// get user by id
+		User user = userDAO.getUser(userId);
+		// set user status
+		user.setStatus(user.getStatus()== 1 ? 0: 1);
+		userDAO.saveOrUpdate(user);
 	}
 
 	@Override
 	@Transactional
-	public User getUser(int theId) {
-		return userDAO.getUser(theId);
+	public void changeUserShowingStatus(int userId) {
+		User user = userDAO.getUser(userId);
+		// set user showing status
+		user.setShowing(user.getShowing()== true ? false:  true);
+		userDAO.saveOrUpdate(user);
+		
 	}
-
-	@Override
-	@Transactional
-	public List<User> getUserList() {
-		return userDAO.getUserList();
-	}
-
-	@Override
-	@Transactional
-	public Page<User> getPaginatedData(int page, int size) {
-        PageRequest pageRequest = PageRequest.of(page, size);
-        return userDAO.findAll(pageRequest);
-    }
-
-	@Override
-	@Transactional
-	public Page<User> findAllByEmailOrPhoneNumber(int page, int size, String searchingValue) {
-		PageRequest pageRequest = PageRequest.of(page, size);
-		return userDAO.findAllByEmailOrPhoneNumber(pageRequest, searchingValue);
-	}
-
+	
+	// delete user
+	
 	@Override
 	@Transactional
 	public void deleteUser(int theId) {
 		userDAO.deleteUser(theId);
 		
 	}
-
 	
+	// get singe user obj
 	
-	
-	// for login
+	@Override
+	@Transactional
+	public User getUser(int theId) {
+		return userDAO.getUser(theId);
+	}
 	
 	@Override
 	@Transactional
@@ -76,47 +99,66 @@ public class UserServiceImpl implements UserService {
 		return userDAO.getUserByUserName(userName);
 	}
 	
-	
-
-	
-
-
-	
-	///////////////////////////////////
+	@Override
+	@Transactional
+	public User getUserByEmail(String email) {
+		return userDAO.getUserByEmail(email);
+	}
 	
 	@Override
 	@Transactional
+	public User getUserByUserNameOrEmail(String userName) {
+		User user = userDAO.getUserByUserName(userName);
+		if(user == null) {
+			user = userDAO.getUserByEmail(userName);
+		}
+		
+		return user;
+	}
+	
+	// get user list
+	@Override
+	@Transactional
+	public List<User> getUserList() {
+		return userDAO.getUserList();
+	}
+
+	
+	// get user list (pageable)
+
+
+	@Override
+	@Transactional
+	public Page<User> getPaginatedData(int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page -1, size);
+        return userDAO.findAll(pageRequest);
+    }
+
+	@Override
+	@Transactional
+	public Page<User> findAllByEmailOrPhoneNumber(int page, int size, String searchingValue) {
+		PageRequest pageRequest = PageRequest.of(page -1, size);
+		return userDAO.findAllByEmailOrPhoneNumber(pageRequest, searchingValue);
+	}
+
+	@Override
+	@Transactional
 	public Page<User> findByEmailOrPhoneNumberOrStatus(String searchString, int page, int size) {
-		PageRequest pageRequest = PageRequest.of(page, size);
+		PageRequest pageRequest = PageRequest.of(page-1, size);
 		return userDAO.findByEmailOrPhoneNumberOrStatus(searchString, pageRequest);
 	}
 
 	@Override
 	@Transactional
 	public Page<User> findAll(int page, int size) {
-		PageRequest pageRequest = PageRequest.of(page, size);
+		PageRequest pageRequest = PageRequest.of(page -1, size);
 		return userDAO.findAll( pageRequest);
 	}
+
+	
 		
 	
 	//// for login
-	
-	@Override
-	@Transactional
-	public User getUserByEmail(String email) {
-		return userDAO.getUserByEmail(email);
-	}
-
-	@Override
-	public boolean isUserNameMatched(String userName) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-	
-	@Override
-	public boolean isEmailMatched(String email) {
-		return false;
-	}
 
 	@Override
 	@Transactional
@@ -128,16 +170,7 @@ public class UserServiceImpl implements UserService {
 		return false;
 	}
 
-	@Override
-	@Transactional
-	public User getUserByUserNameOrEmail(String userName) {
-		User user = userDAO.getUserByUserName(userName);
-		if(user == null) {
-			user = userDAO.getUserByEmail(userName);
-		}
-		
-		return user;
-	}
+
 
 	
 	// user trong method nay chi co 2 thuoc tinh co gia tri la userName va password
@@ -159,6 +192,14 @@ public class UserServiceImpl implements UserService {
 			return dbUser.getId();
 		}
 		return -1;
+	}
+
+	@Override
+	public boolean isAdmin(User user) {
+		if(user.getRole().getRoleName().toLowerCase().equals("admin")) {
+			return true;
+		}
+		return false;
 	}
 	
 	

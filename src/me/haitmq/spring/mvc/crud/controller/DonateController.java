@@ -42,6 +42,7 @@ public class DonateController {
 
 	@Autowired
 	private UserService userService;
+	/*
 
 	@GetMapping("donate-form2")
 	public String donateForm2(HttpServletRequest request, @RequestParam("donationId") int donationId, Model theModel) {
@@ -66,7 +67,7 @@ public class DonateController {
 		donateService.save(donate);
 		return "redirect:/v1/home3";
 	}
-	
+	*/
 	
 	/////////////////////////////////////////////
 	
@@ -90,10 +91,10 @@ public class DonateController {
 			theModel.addAttribute("donationId", donationId);
 			
 			// return view
-			return "donation/donate-form";
+			return "user/donate-form";
 		} catch (Exception e) {
-			log.error("DonateController ERROR - donateForm(): ", e);
-			return "donation/error-page";
+			//log.error("DonateController ERROR - donateForm(): ", e);
+			return "common/error-page";
 		}
 	}
 	
@@ -111,8 +112,8 @@ public class DonateController {
 			donateService.save(donate);
 			return "redirect:/v1/home";
 		} catch (Exception e) {
-			log.error("DonateController ERROR - processDonating(): ", e);
-			return "donation/error-page";
+			//log.error("DonateController ERROR - processDonating(): ", e);
+			return "common/error-page";
 		}
 	}
 	
@@ -148,10 +149,10 @@ public class DonateController {
 			System.out.println("=======================>>>>> test time");
 			System.out.println("=======================>>>>> current time: " + Time.getCurrentDateTime());
 
-			return "donation/donate-list";
+			return "admin/donate-list";
 		} catch (Exception e) {
-			log.error("DonateController ERROR - list(): ", e);
-			return "donation/error-page";
+			//log.error("DonateController ERROR - list(): ", e);
+			return "common/error-page";
 		}
 	}
 	

@@ -37,6 +37,9 @@ public class Donate {
 	@Column(name = "note")
 	private String note;
 	
+	@Column(name = "showing")
+	private boolean showing;
+	
 	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
 	@JoinColumn(name = "user_id")
 	private User user;
@@ -98,6 +101,16 @@ public class Donate {
 	public void setNote(String note) {
 		this.note = note;
 	}
+	
+	
+
+	public boolean getShowing() {
+		return showing;
+	}
+
+	public void setShowing(boolean showing) {
+		this.showing = showing;
+	}
 
 	public User getUser() {
 		return user;
@@ -118,8 +131,13 @@ public class Donate {
 	@Override
 	public String toString() {
 		return "Donate [id=" + id + ", name=" + name + ", createdDate=" + createdDate + ", money=" + money + ", status="
-				+ status + ", note=" + note + ", user=" + user + ", donation=" + donation + "]";
+				+ status + ", note=" + note + ", showing=" + showing + ", user=" + user + ", donation=" + donation
+				+ "]";
 	}
+
+	
+	
+	
 
 	
 	
