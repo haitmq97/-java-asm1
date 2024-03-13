@@ -103,7 +103,7 @@ function onPageButtonClick(pageNumber, size, searchingValue) {
 
 
 
-
+/*
 
 $(document).ready(function() {
 	$('#pageSize').change(function() {
@@ -117,7 +117,66 @@ $(document).ready(function() {
 
 
 });
+var currentPage = parseInt(document.getElementById("currentPage1").value, 10);
+							var totalPages = parseInt(document.getElementById("totalPages1").value, 10);
 
+
+
+							generatePaginationButtons(currentPage, totalPages, $('#pageSize').val(), $('#searchingValue').val());
+*/
+/*
+
+$(document).ready(function() {
+    $('#pageSize').change(function() {
+        updateShowingTable($('#pageSize').val(), $('#searchingValue').val());
+    });
+
+    $('#searchingValue').on('input', function() {
+        updateShowingTable($('#pageSize').val(), $('#searchingValue').val())
+    });
+
+    // Gọi AJAX để lấy dữ liệu trang đầu tiên và sau đó tạo nút phân trang
+    $.ajax({
+        type: "GET",
+        url: window.location.href,
+        data: {
+            size: $('#pageSize').val(),
+            page: 1,
+            searchingValue: $('#searchingValue').val()
+        },
+        success: function(data) {
+            $("#donation-list").html($(data).find("#donation-list").html());
+
+            // Lấy số trang hiện tại và tổng số trang từ các phần tử ẩn
+            var currentPage = parseInt($("#currentPage1").val(), 10);
+            var totalPages = parseInt($("#totalPages1").val(), 10);
+
+            // Tạo nút phân trang sau khi dữ liệu đã được tải và xử lý
+            generatePaginationButtons(currentPage, totalPages, $('#pageSize').val(), $('#searchingValue').val());
+        }
+    });
+});
+
+*/
+
+/*
+document.addEventListener("DOMContentLoaded", function() {
+    $('#pageSize').change(function() {
+        updateShowingTable($('#pageSize').val(), $('#searchingValue').val());
+    });
+
+    $('#searchingValue').on('input', function() {
+        updateShowingTable($('#pageSize').val(), $('#searchingValue').val())
+    });
+
+    var currentPage = parseInt(document.getElementById("currentPage1").value, 10);
+    var totalPages = parseInt(document.getElementById("totalPages1").value, 10);
+
+    generatePaginationButtons(currentPage, totalPages, $('#pageSize').val(), $('#searchingValue').val());
+});
+
+
+*/
 function redirectToDonateLink(donateLink) {
 
 	var donateL = document.selectElementById("donatePopup");
@@ -125,3 +184,6 @@ function redirectToDonateLink(donateLink) {
 	openPopup('donate');
 
 }
+
+
+

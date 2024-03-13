@@ -8,7 +8,7 @@
 <head>
 
 	<script src="<c:url value='https://code.jquery.com/jquery-3.6.4.min.js' />"></script>
-
+<script src="<c:url value='/static/common/assets/js/script.js' />"></script>
 	
 </head>
 <body>
@@ -28,7 +28,7 @@
 							<div class="page-selector">
 
 								<input id="currentPage" type="hidden" name="currentPage"
-									value="${currentPage}" /> <label for="pageSize">Rows
+									value="${currentPage}" /> <label for="size">Rows
 									per page:</label> 
 								<select id="pageSize" name="size"
 									
@@ -136,17 +136,32 @@
  								
 							</div>
 							<div id="pagination-container"></div>
-							
+						
 							<script>
 							
-							var currentPage = parseInt(document.getElementById("currentPage1").value, 10);
-							var totalPages = parseInt(document.getElementById("totalPages1").value, 10);
+							$(document).ready(function() {
+								$('#pageSize').change(function() {
+									updateShowingTable($('#pageSize').val(), $('#searchingValue').val());
+								});
+
+								$('#searchingValue').on('input', function() {
+									updateShowingTable($('#pageSize').val(), $('#searchingValue').val())
+								});
+								
+								
+								var currentPage = parseInt(document.getElementById("currentPage1").value, 10);
+								var totalPages = parseInt(document.getElementById("totalPages1").value, 10);
 
 
 
-							generatePaginationButtons(currentPage, totalPages, $('#pageSize').val(), $('#searchingValue').val());
+								generatePaginationButtons(currentPage, totalPages, $('#pageSize').val(), $('#searchingValue').val());
+
+
+							});
+							
+							
 							</script>
-	
+
 						</div>
 
 					</div>
@@ -163,12 +178,16 @@
 		<c:import url="/v1/donateForm?id=1" />
 
 	</div>
+	
+<%-- 	
 <script src="<c:url value='/static/common/assets/js/script.js' />"></script>
 
+ --%>
+<%-- 
 <script src="<c:url value='/static/common/assets/js/header.js' />"></script> 
 
-<script src="<c:url value='/static/common/assets/js/form.js' />"></script>	
-
+<script src="<c:url value='/static/common/assets/js/form.js' />"></script>
+ --%>
 <%-- <script src="<c:url value='/static/common/assets/js/pagination.js' />"></script> --%>
 
 
