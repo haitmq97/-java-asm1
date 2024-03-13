@@ -6,10 +6,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-
-	<script src="<c:url value='https://code.jquery.com/jquery-3.6.4.min.js' />"></script>
-
-	
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 </head>
 <body>
 	<section class="site-section content">
@@ -29,9 +26,8 @@
 
 								<input id="currentPage" type="hidden" name="currentPage"
 									value="${currentPage}" /> <label for="pageSize">Rows
-									per page:</label> 
-								<select id="pageSize" name="size"
-									
+									per page:</label> <select id="pageSize" name="size"
+									onchange="entriesChange()"
 									class="entries-select rounded form-control">
 									<option value="3" ${donations.size == 3 ? 'selected' : ''}>3</option>
 									<option value="4" ${donations.size == 4 ? 'selected' : ''}>4</option>
@@ -41,18 +37,16 @@
 									<option value="20" ${donations.size == 20 ? 'selected' : ''}>20</option>
 									<!-- Add more options as needed -->
 								</select>
-							
-			
+
 
 							</div>
 							<div class="search-box">
 								<label for="searching-input">Search:</label> <input type="text"
-									name="searching-input" id="searchingValue"
+									name="searching-input" id="searching-input"
 									class="searching-input rounded p-2 form-control"
 									placeholder="by Code or by status ..."
-									value="${searchingValue}"  />
+									value="${searchingValue}" oninput="search(this.value)" />
 							</div>
-						
 						</div>
 					</div>
 					<div class="m-content list" id="donation-list">
@@ -75,7 +69,7 @@
 										<c:param name="id" value="${tempDonation.id}" />
 									</c:url>
 
-									<c:url var="detailLink" value="/v1/donation-detail">
+									<c:url var="detailLink" value="/donation/donation-details">
 										<c:param name="id" value="${tempDonation.id}" />
 									</c:url>
 
@@ -97,14 +91,14 @@
 												<span class="content-btn-text">Chi tiết</span><span
 													class="content-btn-icon"><i class="fa-solid fa-info"></i></span>
 											</button>
-											<button class="btn btn-success donation-btn"
-												title="Quyên góp" onclick="donateForm('${donateLink}')">
+											<button class="btn btn-success donation-btn" title="Quyên góp"
+												onclick="donateForm('${donateLink}')">
 												<span class="content-btn-text">Quyên góp</span><span
 													class="content-btn-icon"><i
 													class="fa-solid fa-circle-dollar-to-slot"></i></span>
-											</button>
-
-
+											</button> 
+											
+											
 										</td>
 									</tr>
 								</c:forEach>
@@ -114,63 +108,112 @@
 						</table>
 						<div>
 							<div>
-								<input id="currentPage1" type="hidden" value="${currentPage}" />
-								<c:out value="current Pg:  ${currentPage}  " />
+								<input id="currentPage" type="hidden" value="${currentPage}" />
+								<c:out value ="current Pg:  ${currentPage}  "/>
+								<br>
+								<input id="totalPages" type="hidden" value="${totalPage}" />
+								<c:out value ="total Pg:  ${totalPage}  "/>
 								<br> 
-								<input id="totalPages1" type="hidden" value="${totalPage}" />
-								<c:out value="total Pg:  ${totalPage}  " />
-								
-	
-								<br> <input id="size1" type="hidden" value="${currentSize}" />
-								<c:out value="size:  ${currentSize}  " />
-								<br> <input id="searchingValue1" type="hidden"
-									value="${searchingValue}" />
-								<c:out value="searchingValue:  ${searchingValue}  " />
-								<br> <input id="importUrl1" type="hidden"
-									value="${searchingValue}" />
-								<c:out value="searchingValue:  ${searchingValue}  " />
-								
-								<c:set var="testValue1" value="<c:url value='/v1/donations'/>" />
-
- 
- 								
+								<input id="size" type="hidden" value="${currentSize}" />
+								<c:out value ="size:  ${currentSize}  "/>
+									
 							</div>
 							<div id="pagination-container"></div>
 							
-							<script>
 							
-							var currentPage = parseInt(document.getElementById("currentPage1").value, 10);
-							var totalPages = parseInt(document.getElementById("totalPages1").value, 10);
+							
+							
+							<script
+								src="<c:url value='/static/common/assets/js/pagination.js' />"></script>
 
 
-
-							generatePaginationButtons(currentPage, totalPages, $('#pageSize').val(), $('#searchingValue').val());
-							</script>
-	
 						</div>
 
 					</div>
-					
-					
 				</div>
 
 			</div>
 		</div>
 	</section>
-
-
+	
+	
 	<div id="#donate-popup">
 		<c:import url="/v1/donateForm?id=1" />
-
+	
 	</div>
-<script src="<c:url value='/static/common/assets/js/script.js' />"></script>
+	
+	<script src="<c:url value='/static/common/assets/js/form.js' />"></script>
 
-<script src="<c:url value='/static/common/assets/js/header.js' />"></script> 
+	<script>
+		function donateForm(donateLink) {
+			console.log(donateLink);
+			
+			$.ajax({
+				type : "GET",
+				url : donateLink,
+				
+				success : function(data) {
+					$("#donate").html(
+							$(data).find("#donate").html());
+				}
+			});
+			openPopup('donate');
+		}
+		
+		function redirectToDetailLink(link) {
+			window.location.href = link;
+		}
+	</script>
 
-<script src="<c:url value='/static/common/assets/js/form.js' />"></script>	
-
-<%-- <script src="<c:url value='/static/common/assets/js/pagination.js' />"></script> --%>
 
 
+
+
+	<script>
+		function entriesChange() {
+
+			var size = $("#pageSize").val();
+			console.log(" page size: |" + size + "|");
+			var page = 1;
+			console.log(" current page: |" + page + "|");
+
+			var searchingValue = document.getElementById("searching-input").value;
+			console.log(" searching value: |" + searchingValue + "|");
+
+			$.ajax({
+				type : "GET",
+				url : "<c:url value='/donation/list'> </c:url>",
+				data : {
+					size : size,
+					page : page,
+					searchingValue : searchingValue
+				},
+				success : function(data) {
+					$("#donation-list").html(
+							$(data).find("#donation-list").html());
+				}
+			});
+		}
+		function search(searchingValue) {
+
+			console.log(" searching value: |" + searchingValue + "|");
+			var size = $("#pageSize").val();
+			$.ajax({
+				type : "GET",
+				url : "<c:url value='/donation/list'> </c:url>",
+				data : {
+					searchingValue : searchingValue,
+					size : size
+				},
+				success : function(data) {
+					$("#donation-list").html(
+							$(data).find("#donation-list").html());
+				}
+			});
+		}
+	</script>
+
+	<script src="<c:url value='/static/common/assets/js/form.js' />"></script>
+	
 </body>
 </html>

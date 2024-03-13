@@ -42,7 +42,13 @@
               
           </div>
 
-        <script src="<c:url value='/static/common/assets/js/header.js' />"></script>
+<%--         <script src="<c:url value='/static/common/assets/js/header.js' />"></script> --%>
+
+<script>
+function redirectToUserProfile() {
+	window.location.href = '/v1/home';
+}
+</script>
       </header>
 </body>
 </html>

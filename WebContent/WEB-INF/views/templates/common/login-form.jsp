@@ -7,8 +7,8 @@
 <head>
 
 
-	<link rel="stylesheet"
-	href="<c:url value='/static/common/assets/css/login-style.css' />">
+<%-- 	<link rel="stylesheet"
+	href="<c:url value='/static/common/assets/css/login-style.css' />"> --%>
 </head>
 <body>
 

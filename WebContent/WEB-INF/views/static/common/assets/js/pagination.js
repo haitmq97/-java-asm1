@@ -1,5 +1,5 @@
 
-function generatePaginationButtons(currentPage, totalPages) {
+function generatePaginationButtons(currentPage, totalPages, size, searchingValue, urlImport) {
 	const paginationContainer = document.getElementById('pagination-container');
 	paginationContainer.innerHTML = '';
 
@@ -8,7 +8,7 @@ function generatePaginationButtons(currentPage, totalPages) {
 
 	// Button for the first page
 	if (totalPages != 1) {
-		addButton(1, currentPage, paginationList);
+		addButton(1, currentPage, size, searchingValue, urlImport, paginationList);
 	}
 
 	if (currentPage - 3 > 1) {
@@ -18,7 +18,7 @@ function generatePaginationButtons(currentPage, totalPages) {
 
 	// Buttons for the pages in the range [currentPage - 2, currentPage + 2]
 	for (let i = Math.max(2, currentPage - 2); i <= Math.min(currentPage + 2, totalPages - 1); i++) {
-		addButton(i, currentPage, paginationList);
+		addButton(i, currentPage, size, searchingValue, urlImport, paginationList);
 	}
 
 	if (currentPage + 3 < totalPages) {
@@ -27,21 +27,22 @@ function generatePaginationButtons(currentPage, totalPages) {
 	}
 
 	// Button for the last page
-	addButton(totalPages, currentPage, paginationList);
+	addButton(totalPages, currentPage, size, searchingValue,  urlImport, paginationList);
 
 	paginationContainer.appendChild(paginationList);
 }
 
-function addButton(pageNumber, currentPage, parentElement) {
+function addButton(pageNumber, currentPage,  size, searchingValue, urlImport ,parentElement) {
 	const listItem = document.createElement('li');
 	const button = document.createElement('button');
 
 	button.textContent = pageNumber;
-	button.addEventListener('click', () => onPageButtonClick(pageNumber));
+	button.addEventListener('click', () => onPageButtonClick(pageNumber, size, searchingValue, urlImport));
 
+	/*
 	if (pageNumber === currentPage) {
 		button.disabled = true;
-	}
+	}*/
 
 	listItem.appendChild(button);
 	parentElement.appendChild(listItem);
@@ -56,16 +57,36 @@ function addGap(parentElement) {
 	parentElement.appendChild(gapItem);
 }
 
-function onPageButtonClick(pageNumber) {
-	// TODO: Handle the logic to navigate to the selected page
-	console.log('Navigating to page', pageNumber);
+function onPageButtonClick(pageNumber, size, searchingValue, urlImport) {
+
+// cần thay đổi link và div container
+
+	console.log('Navigating to page ', pageNumber);
+	console.log('Navigating to link ', urlImport);
+
+	$.ajax({
+		type: "GET",
+		url: "/PRJ321x_Project1_haitmqfx22585/v1/donations",
+		data: {
+			size: size,
+			page: pageNumber,
+			searchingValue: searchingValue
+		},
+		success: function(data) {
+			$("#donation-list").html(
+				$(data).find("#donation-list").html());
+		}
+	});
+
 }
 
 // Example usage:
+
 var currentPage = parseInt(document.getElementById("currentPage").value, 10);
-
-var cp = document.getElementById("currentPage").value;
- console.log("type" + typeof cp);
 var totalPages = parseInt(document.getElementById("totalPages").value, 10);
+var size = parseInt(document.getElementById("size").value, 10);
+var searchingValue = document.getElementById("searchingValue").value;
 
-generatePaginationButtons(currentPage, totalPages);
+
+generatePaginationButtons(currentPage, totalPages, size, searchingValue, "/v1/donations");
+

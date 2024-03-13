@@ -1,145 +1,127 @@
-function entriesChange() {
 
-			var size = $("#pageSize").val();
-			console.log(" page size: |" + size + "|");
-			var page = 1;
-			console.log(" current page: |" + page + "|");
+// cập nhật lại bảng khi user thay đổi size(entries) và searchingValue
+function updateShowingTable(size, searchingValue) {
 
-			var searchingValue = document.getElementById("searching-input").value;
-			console.log(" searching value: |" + searchingValue + "|");
-
-			$.ajax({
-				type : "GET",
-				url : "<c:url value='/donation/list'> </c:url>",
-				data : {
-					size : size,
-					page : page,
-					searchingValue : searchingValue
-				},
-				success : function(data) {
-					$("#donation-list").html(
-							$(data).find("#donation-list").html());
-				}
-			});
+	$.ajax({
+		type: "GET",
+		url: window.location.href,
+		data: {
+			size: size,
+			page: 1,
+			searchingValue: searchingValue
+		},
+		success: function(data) {
+			$("#donation-list").html(
+				$(data).find("#donation-list").html());
 		}
-		function search(searchingValue) {
+	});
+}
 
-			console.log(" searching value: |" + searchingValue + "|");
-			var size = $("#pageSize").val();
-			$.ajax({
-				type : "GET",
-				url : "<c:url value='/donation/list'> </c:url>",
-				data : {
-					searchingValue : searchingValue,
-					size : size
-				},
-				success : function(data) {
-					$("#donation-list").html(
-							$(data).find("#donation-list").html());
-				}
-			});
+
+function generatePaginationButtons(currentPage, totalPages, size, searchingValue) {
+
+	const paginationContainer = document.getElementById('pagination-container');
+	paginationContainer.innerHTML = '';
+
+	// tạo list chứa các button trang
+	const paginationList = document.createElement('ul');
+	paginationList.className = 'pagination-list';
+
+	// thêm button cho trang đầu tiên
+	if (totalPages != 1) {
+		addButton(1, currentPage, size, searchingValue, paginationList);
+	}
+	// thêm gap
+	if (currentPage - 3 > 1) {
+		addGap(paginationList);
+	}
+
+	// thêm button các trang trước và sau trang hiện tại
+	for (let i = Math.max(2, currentPage - 2); i <= Math.min(currentPage + 2, totalPages - 1); i++) {
+		addButton(i, currentPage, size, searchingValue, paginationList);
+	}
+	// thêm gap
+	if (currentPage + 3 < totalPages) {
+		addGap(paginationList);
+	}
+
+	// thêm button cho trang cuối
+	addButton(totalPages, currentPage, size, searchingValue, paginationList);
+
+	// thêm list vào div
+	paginationContainer.appendChild(paginationList);
+}
+
+function addButton(pageNumber, currentPage, size, searchingValue, parentElement) {
+	const listItem = document.createElement('li');
+	const button = document.createElement('button');
+	button.className = 'page-btn';
+
+	button.textContent = pageNumber;
+	button.addEventListener('click', () => onPageButtonClick(pageNumber, size, searchingValue));
+
+	/*
+	if (pageNumber === currentPage) {
+		button.disabled = true;
+	}*/
+
+	listItem.appendChild(button);
+	parentElement.appendChild(listItem);
+}
+
+function addGap(parentElement) {
+	const gapItem = document.createElement('li');
+	const gapSpan = document.createElement('span');
+	gapSpan.textContent = '...';
+	gapSpan.className = 'gap';
+	gapItem.appendChild(gapSpan);
+	parentElement.appendChild(gapItem);
+}
+
+function onPageButtonClick(pageNumber, size, searchingValue) {
+
+	// cần thay đổi link và div container
+
+	console.log('Navigating to page ', pageNumber);
+	console.log('Navigating to link ', window.location.href);
+
+	$.ajax({
+		type: "GET",
+		url: window.location.href,
+		data: {
+			size: size,
+			page: pageNumber,
+			searchingValue: searchingValue
+		},
+		success: function(data) {
+			$("#donation-list").html(
+				$(data).find("#donation-list").html());
 		}
+	});
 
-		function changePage() {
-			/* console.log(" searching value: |" + searchingValue + "|"); */
-			var pageButtons = document.querySelectorAll(".page-btn");
-			console.log(" number button: |" + pageButtons + "|");
+}
 
-			var searchingValue = document.getElementById("searching-input").value;
 
-			console.log("searching value: " + searchingValue);
-			/* pageButtons.forEach(function(button, index) {
-			    console.log("Button " + (index + 1) + ":", button);
-			}); */
-			pageButtons.forEach(function(button) {
-				button.addEventListener("click", function(event) {
-					// Lấy thông tin về button được click và hiển thị trong console
-					console.log("Button clicked:", button);
-				});
-			});
 
-			/* pageButtons.forEach(function(button) {
-			    button.addEventListener('click', function() {
-			      // Lấy nội dung của button được click và hiển thị nó
-			      var content = button.innerHTML;
-			      console.log(content);
-			    });
-			  }); */
 
-			/*  // Tạo một mảng để lưu trữ các promise từ các cuộc gọi AJAX
-			 var ajaxPromises = [];
 
-			 pageButtons.forEach(function(button) {
-			     var page = button.textContent || button.innerText;
-			     console.log("value: " +page);
+$(document).ready(function() {
+	$('#pageSize').change(function() {
+		updateShowingTable($('#pageSize').val(), $('#searchingValue').val());
+	});
 
-			     // Tạo promise từ cuộc gọi AJAX và đẩy vào mảng
-			     var ajaxPromise = $.ajax({
-			         type: "GET",
-			         url: "<c:url value='/donation/list'></c:url>",
-			         data: {
-			        searchingValue: searchingValue, 
-			             page: page,
-			             searchingValue: searchingValue
-			         },
-			         success: function(data) {
-			             $("#donation-list").html($(data).find("#donation-list").html());
-			         },
-			         error: function(xhr, status, error) {
-			             console.error("AJAX error:", error);
-			         }
-			     });
+	$('#searchingValue').on('input', function() {
+		updateShowingTable($('#pageSize').val(), $('#searchingValue').val())
+	});
 
-			     ajaxPromises.push(ajaxPromise);
-			 });
 
-			 // Sử dụng Promise.all để đợi tất cả các cuộc gọi AJAX hoàn thành
-			 Promise.all(ajaxPromises)
-			     .then(function() {
-			         console.log("All AJAX requests completed successfully.");
-			         // Thực hiện các hành động khác nếu cần
-			     })
-			     .catch(function(error) {
-			         console.error("One or more AJAX requests failed:", error);
-			     }); */
-		}
 
-		document.addEventListener("DOMContentLoaded", function() {
-			var pageButtons = document.querySelectorAll(".page-btn");
+});
 
-			pageButtons.forEach(function(button) {
-				button.addEventListener("click", function(event) {
-					var size = $("#pageSize").val();
-					console.log(" page size: |" + size + "|");
-					var page = button.value;
-					console.log(" change to page: |" + page + "|");
+function redirectToDonateLink(donateLink) {
 
-					var searchingValue = document
-							.getElementById("searching-input").value;
-					console.log(" searching value: |" + searchingValue + "|");
+	var donateL = document.selectElementById("donatePopup");
+	donateL.url = donateLink;
+	openPopup('donate');
 
-					$.ajax({
-						type : "GET",
-						url : "<c:url value='/donation/list'> </c:url>",
-						data : {
-							size : size,
-							page : page,
-							searchingValue : searchingValue
-						},
-						success : function(data) {
-							$("#donation-list").html(
-									$(data).find("#donation-list").html());
-						}
-					});
-				});
-			});
-		});
-		
-		
-		function redirectToDonateLink(donateLink) {
-
-			var donateL = document.selectElementById("donatePopup");
-			donateL.url=donateLink;
-			openPopup('donate');
-			
-		}
+}

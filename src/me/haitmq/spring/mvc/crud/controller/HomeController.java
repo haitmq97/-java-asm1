@@ -43,6 +43,7 @@ public class HomeController {
 		try {
 			HttpSession session = request.getSession();
 			Integer currentUserId = (Integer) session.getAttribute("currentUserId");
+			System.out.println("====================> current user id: " +currentUserId);
 			theModel.addAttribute("userId", currentUserId);
 			
 			// update all money donation from donate for sure
@@ -99,6 +100,50 @@ public class HomeController {
 
 //		return "user/donationList";
 		return "public/donation-table";
+	}
+	
+	
+	@GetMapping("/donations2")
+	public String donationlist2(@RequestParam(defaultValue = "1") int page, @RequestParam(name="size", defaultValue = "5") int size,
+			@RequestParam(name = "searchingValue", defaultValue = "", required = false) String searchingValue,
+			Model theModel) {
+		
+		System.out.println("size: " + size);
+		Page<Donation> donations = donationService.findAll(page, size);
+		
+		
+		if(!searchingValue.equals("")) {
+			donations = donationService.findByPhoneNumberOrOrganizationOrCodeOrStatus(searchingValue, page, size);
+			theModel.addAttribute("searchingValue", searchingValue);
+		}
+		
+		
+		
+		theModel.addAttribute("donations", donations);
+		
+		theModel.addAttribute("currentPage", page);
+		theModel.addAttribute("totalPage", donations.getTotalPages());
+
+		theModel.addAttribute("currentSize", size);
+
+		int nextPage = page + 1;
+		int prevPage = page - 1;
+
+		if (page <= 1) {
+			prevPage = 1;
+		}
+
+		theModel.addAttribute("prevPage", prevPage);
+		System.out.println("current page" + page);
+		System.out.println("total page: " + donations.getTotalPages());
+		if (page >= (donations.getTotalPages())) {
+			nextPage = donations.getTotalPages();
+		}
+
+		theModel.addAttribute("nextPage", nextPage);
+
+//		return "user/donationList";
+		return "public/temp/donation-table";
 	}
 
 	
@@ -200,4 +245,17 @@ public class HomeController {
 			return "common/error-page";
 		}
 	}
+	
+	
+	@GetMapping("donation-detail")
+	public String donationDetails(HttpServletRequest request, @RequestParam("id") int theId, Model theModel) {
+		HttpSession session = request.getSession();
+		
+		Donation donation = donationService.getDonation(theId);
+
+		theModel.addAttribute("donation", donation);
+
+		return "public/donation-detail";
+	}
+	
 }

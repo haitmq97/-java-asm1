@@ -1,5 +1,11 @@
 @import url('--global-style.css');
 @import url('reset.css');
+
+
+
+
+/* Header sylte */
+
 .header {
     
 }
@@ -142,46 +148,10 @@ li.nav-item button:focus {
   }
 
 
-
-
-
-
-
-
-
-
-
-
-
-/* .nav-item > button {
-    border: none;
-    background-color: transparent;
-    padding: 10px;
-    
-} */
-
 .nav-item a {
     color:  var(--pry-color-dark-text);
 }
 
-
-
-/* .nav-item button span {
-    font-size: 1rem;
-} */
-
-/* .nav-item > button:hover {
-    cursor: pointer;
-    background-color: var(--pry-leaf-hover);
-    box-shadow: 0 0 0 2px var(--pry-gray);
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-
-    position: relative;
-    color: var(--pry-leaf);
-
-}
- */
 
 
 .nav-item {
@@ -237,3 +207,64 @@ li.nav-item button:focus {
 
     
 }
+
+
+
+
+/* Footer style */
+
+.footer {
+    background-color: var(--pry-color-2-dark-background);
+    color: #d0d3d3;
+    padding: 50px 70px 70px;
+
+}
+
+.content-footer {
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    gap: 1px;
+    justify-content: space-around;
+}
+
+.content-footer>.footer-item:last-child {
+    grid-row: 2;
+    grid-column: 1/5;
+}
+
+.footer-item {
+
+    padding: 20px;
+}
+
+.footer-item>h4 {
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.footer-item:last-child>p {
+    text-align: center;
+}
+
+
+
+.conecction-icon-list {
+    color: var(--pry-leaf) !important;
+    font-size: 25px;
+
+}
+
+.conecction-icon-list>li {
+    display: inline-block;
+}
+
+.conecction-icon-list>li>a>i {
+    color: var(--pry-leaf) !important;
+}
+
+/* content style */
+
+/* form */
+
+/* register form */
+

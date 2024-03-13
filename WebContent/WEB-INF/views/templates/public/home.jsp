@@ -75,6 +75,9 @@
 	href="<c:url value='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css'/>"
 	integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
 	crossorigin="anonymous" referrerpolicy="no-referrer" />
+	
+<%-- 	
+	
 <link rel="stylesheet"
 	href="<c:url value='/static/common/assets/css/header-style.css'/>" />
 <link rel="stylesheet"
@@ -82,24 +85,59 @@
 <link rel="stylesheet"
 	href="<c:url value='/static/common/assets/css/footer-style.css' />">
 	
+ --%>
+ 
+ <!-- customer style -->
+ 
+ <link rel="stylesheet"
+	href="<c:url value='/static/common/assets/css/style.css'/>" />
+	
+<link rel="stylesheet"
+	href="<c:url value='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css'/>"
+	integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+	crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 
-<script src="<c:url value='/static/common/assets/js/form.js' />"></script>
+
+<!-- customer js -->	
+
+<script src="<c:url value='https://code.jquery.com/jquery-3.6.4.min.js'/>"> </script>
+
+
 </head>
 <body id="top">
-
+	
+	<!-- Header layout -->
+	<%-- 
 	<%@ include file="../common/header-layout.jsp"%>
+	 --%>
+	 
+	 <jsp:include page="../common/header-layout2.jsp">
+        <jsp:param name="includePart" value="headerSection" />
+    </jsp:include>
+	 
+	<!-- content container -->
+	
+	<c:import url="/v1/donations"  />
 
-
-	<!-- HOME -->
-	<c:import url="/v1/donations" />
-
+	<!-- Footer layout -->
+	
 	<%@ include file="../common/footer-layout.jsp"%>
+	
+	<!-- Login form -->
 	
 	<c:import url="/v1/login" />
 	
 	
-	
+<!-- custom js -->
+<script src="<c:url value='/static/common/assets/js/header.js' />"></script> 
+
+<script src="<c:url value='/static/common/assets/js/form.js' />"></script>	
+
+<script src="<c:url value='/static/common/assets/js/pagination.js' />"></script>
+
+<script src="<c:url value='/static/common/assets/js/script.js' />"></script> 
+
 
 </body>
 </html>
