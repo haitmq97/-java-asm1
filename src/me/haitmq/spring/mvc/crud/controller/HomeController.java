@@ -143,7 +143,7 @@ public class HomeController {
 		theModel.addAttribute("nextPage", nextPage);
 
 //		return "user/donationList";
-		return "public/temp/donation-table";
+		return "public/donation-table2";
 	}
 
 	
@@ -256,6 +256,29 @@ public class HomeController {
 		theModel.addAttribute("donation", donation);
 
 		return "public/donation-detail";
+	}
+	
+	
+	
+	//logout
+	@GetMapping( value = {"processLogout", "/logout"})
+	public String processLogout(HttpServletRequest request, @ModelAttribute("user") User loginUser) {
+		int userId = userService.getIdIfUserExisted(loginUser);
+
+		HttpSession session = request.getSession();
+
+		session.removeAttribute("currentUserId");
+		try {
+
+			Integer currentUserId = (Integer) session.getAttribute("currentUserId");
+			
+			System.out.println("=========================>>>>>> user id: " + currentUserId);
+		} catch (Exception e) {
+			System.out.println("==========================================================>>>>>>>>>>>>>>>no user login currently");
+		}
+		System.out.println("============>>>>test");
+		
+		return "redirect:/v1/home";
 	}
 	
 }

@@ -429,4 +429,22 @@ public class UserController {
 		
 		return "redirect:/v1/home";
 	}
+	
+	
+	@GetMapping("/profile")
+	public String userProfile(HttpServletRequest request, Model theModel) {
+		try {
+			HttpSession session = request.getSession();
+			Integer currentUserId = (Integer) session.getAttribute("currentUserId");
+			
+			User user = userService.getUser(currentUserId);
+	 		
+			theModel.addAttribute("user", user);
+
+			return "user/user-profile";
+		} catch (Exception e) {
+			return "common/error-page";
+		}
+	}
+	
 }	

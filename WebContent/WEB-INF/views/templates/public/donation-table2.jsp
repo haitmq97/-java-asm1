@@ -8,7 +8,7 @@
 <head>
 
 	<script src="<c:url value='https://code.jquery.com/jquery-3.6.4.min.js' />"></script>
-<script src="<c:url value='/static/common/assets/js/data-list.js' />"></script>
+
 	
 </head>
 <body>
@@ -93,12 +93,12 @@
 										<td><p>${tempDonation.phoneNumber}</p></td>
 										<td class="action-c">
 											<button class="btn btn-success donation-btn" title="Chi tiết"
-												onclick="window.location.href='${detailLink}'">
+												onclick="redirectToDetailLink('${detailLink}')">
 												<span class="content-btn-text">Chi tiết</span><span
 													class="content-btn-icon"><i class="fa-solid fa-info"></i></span>
 											</button>
 											<button class="btn btn-success donation-btn"
-												title="Quyên góp" onclick="openPopup('donate')">
+												title="Quyên góp" onclick="donateForm('${donateLink}')">
 												<span class="content-btn-text">Quyên góp</span><span
 													class="content-btn-icon"><i
 													class="fa-solid fa-circle-dollar-to-slot"></i></span>
@@ -139,6 +139,115 @@
 						
 							<script>
 							
+							
+
+							// cập nhật lại bảng khi user thay đổi size(entries) và searchingValue
+							function updateShowingTable(size, searchingValue) {
+
+								$.ajax({
+									type: "GET",
+									url: window.location.href,
+									data: {
+										size: size,
+										page: 1,
+										searchingValue: searchingValue
+									},
+									success: function(data) {
+										$('#donation-list').html(
+											$(data).find('#donation-list').html());
+									}
+								});
+							}
+
+
+							function generatePaginationButtons(currentPage, totalPages, size, searchingValue) {
+
+								const paginationContainer = document.getElementById('pagination-container');
+								paginationContainer.innerHTML = '';
+
+								// tạo list chứa các button trang
+								const paginationList = document.createElement('ul');
+								paginationList.className = 'pagination-list';
+
+								// thêm button cho trang đầu tiên
+								if (totalPages != 1) {
+									addButton(1, currentPage, size, searchingValue, paginationList);
+								}
+								// thêm gap
+								if (currentPage - 3 > 1) {
+									addGap(paginationList);
+								}
+
+								// thêm button các trang trước và sau trang hiện tại
+								for (let i = Math.max(2, currentPage - 2); i <= Math.min(currentPage + 2, totalPages - 1); i++) {
+									addButton(i, currentPage, size, searchingValue, paginationList);
+								}
+								// thêm gap
+								if (currentPage + 3 < totalPages) {
+									addGap(paginationList);
+								}
+
+								// thêm button cho trang cuối
+								addButton(totalPages, currentPage, size, searchingValue, paginationList);
+
+								// thêm list vào div
+								paginationContainer.appendChild(paginationList);
+							}
+
+							function addButton(pageNumber, currentPage, size, searchingValue, parentElement) {
+								const listItem = document.createElement('li');
+								const button = document.createElement('button');
+								button.className = 'page-btn';
+
+								button.textContent = pageNumber;
+								button.addEventListener('click', () => onPageButtonClick(pageNumber, size, searchingValue));
+
+								if (pageNumber === currentPage) {
+									/*button.style.backgroundColor = 'red';*/
+									button.disabled = true;
+								} else {
+									/*button.style.backgroundColor = 'green';*/
+								}
+
+								listItem.appendChild(button);
+								parentElement.appendChild(listItem);
+							}
+
+							function addGap(parentElement) {
+								const gapItem = document.createElement('li');
+								const gapSpan = document.createElement('span');
+								gapSpan.textContent = '...';
+								gapSpan.className = 'gap';
+								gapItem.appendChild(gapSpan);
+								parentElement.appendChild(gapItem);
+							}
+
+							function onPageButtonClick(pageNumber, size, searchingValue) {
+
+								// cần thay đổi link và div container
+
+								console.log('Navigating to page ', pageNumber);
+								console.log('Navigating to page (type of) ', typeof pageNumber);
+								console.log('Navigating to link ', window.location.href);
+
+								$.ajax({
+									type: "GET",
+									url: window.location.href,
+									data: {
+										size: size,
+										page: pageNumber,
+										searchingValue: searchingValue
+									},
+									success: function(data) {
+										$('#donation-list').html(
+											$(data).find('#donation-list').html());
+									}
+								});
+
+							}
+
+
+							
 							$(document).ready(function() {
 								$('#pageSize').change(function() {
 									updateShowingTable($('#pageSize').val(), $('#searchingValue').val(), "#donation-list");
@@ -154,7 +263,7 @@
 
 
 
-								generatePaginationButtons(currentPage, totalPages, $('#pageSize').val(), $('#searchingValue').val(), "#donation-list");
+								generatePaginationButtons(currentPage, totalPages, $('#pageSize').val(), $('#searchingValue').val());
 								
 								let btnList = document.getElementsByClassName("page-btn");
 								Array.from(btnList).forEach(btn => {
@@ -185,11 +294,11 @@
 	</section>
 
 
-	<div id="donate-popup">
-		<c:import url="/v1/donateForm?id=2" />
+	<div id="#donate-popup">
+		<c:import url="/v1/donateForm?id=1" />
 
 	</div>
-	<script src="<c:url value='/static/common/assets/js/script.js' />"></script>
+	
 <%-- 	
 <script src="<c:url value='/static/common/assets/js/script.js' />"></script>
 

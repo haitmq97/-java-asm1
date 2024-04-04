@@ -208,7 +208,7 @@
         <div></div>
       </main>
 <script src="<c:url value='/static/common/assets/js/form.js' />"></script>
-	<%@ include file="footer-layout.jsp"%>
+
 
 </body>
 </html>

@@ -13,9 +13,9 @@
 <meta name="description" content="" />
 <meta name="keywords" content="" />
 <meta name="author" content="Free-Template.co" />
-
+<%-- 
 <link rel="stylesheet"
-	href="<c:url value='/static/common/assets/css/reset.css'/>" />
+	href="<c:url value='/static/common/assets/css/reset.css'/>" /> --%>
 
 <link rel="shortcut icon" href="ftco-32x32.png">
 
@@ -102,16 +102,13 @@
 <!-- customer js -->	
 
 <script src="<c:url value='https://code.jquery.com/jquery-3.6.4.min.js'/>"> </script>
-
-
+<script src="<c:url value='/static/common/assets/js/form.js' />"></script>
+<script src="<c:url value='/static/common/assets/js/script.js' />"></script> 
+<script src="<c:url value='/static/common/assets/js/data-list.js' />"></script> 
 </head>
 <body id="top">
 	
 	<!-- Header layout -->
-	<%-- 
-	<%@ include file="../common/header-layout.jsp"%>
-	 --%>
-	 
 	 <jsp:include page="../common/header-layout2.jsp">
         <jsp:param name="includePart" value="headerSection" />
     </jsp:include>
@@ -122,7 +119,11 @@
 
 	<!-- Footer layout -->
 	
-	<%@ include file="../common/footer-layout.jsp"%>
+	<%-- <%@ include file="../common/footer-layout.jsp"%> --%>
+	
+	<jsp:include page="../common/footer-layout2.jsp">
+        <jsp:param name="includePart" value="footerSection" />
+    </jsp:include>
 	
 	<!-- Login form -->
 	
@@ -130,6 +131,11 @@
 	
 	
 <!-- custom js -->
+
+<script src="<c:url value='/static/common/assets/js/script.js' />"></script> 
+
+<%-- 
+<script src="<c:url value='/static/common/assets/js/header.js' />"></script> 
 <script src="<c:url value='/static/common/assets/js/header.js' />"></script> 
 
 <script src="<c:url value='/static/common/assets/js/form.js' />"></script>	
@@ -138,6 +144,6 @@
 
 <script src="<c:url value='/static/common/assets/js/script.js' />"></script> 
 
-
+ --%>
 </body>
 </html>

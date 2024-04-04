@@ -117,7 +117,7 @@ public class DonateServiceImpl implements DonateService {
 	@Override
 	@Transactional
 	public Page<Donate> findAll(int page, int size) {
-		PageRequest pageRequest = PageRequest.of(page, size);
+		PageRequest pageRequest = PageRequest.of(page-1, size);
 		return donateDAO.findAll( pageRequest);
 	}
 
@@ -138,7 +138,7 @@ public class DonateServiceImpl implements DonateService {
 	@Override
 	@Transactional
 	public Page<Donate> findAllSortByStatusByCreatedDate(int page, int size) {
-		PageRequest pageRequest = PageRequest.of(page, size);
+		PageRequest pageRequest = PageRequest.of(page-1, size);
 		return donateDAO.findAllSortByStatusByCreatedDate(pageRequest);
 	}
 

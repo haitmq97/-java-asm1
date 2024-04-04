@@ -12,8 +12,8 @@
 	
 </head>
 <body>
-	<section class="site-section content" id="m-content">
-		<div class="container">
+	<section class="site-section content">
+		<div class="container" id="content-table">
 			<div class="row mb-5 justify-content-center">
 				<div class="col-md-7 text-center">
 					<h2 class="section-title mb-2">Các đợt quyên góp</h2>
@@ -33,12 +33,12 @@
 								<select id="pageSize" name="size"
 									
 									class="entries-select rounded form-control">
-									<option value="3" ${donations.size == 3 ? 'selected' : ''}>3</option>
-									<option value="4" ${donations.size == 4 ? 'selected' : ''}>4</option>
-									<option value="5" ${donations.size == 5 ? 'selected' : ''}>5</option>
-									<option value="10" ${donations.size == 10 ? 'selected' : ''}>10</option>
-									<option value="15" ${donations.size == 15 ? 'selected' : ''}>15</option>
-									<option value="20" ${donations.size == 20 ? 'selected' : ''}>20</option>
+									<option value="3" ${donates.size == 3 ? 'selected' : ''}>3</option>
+									<option value="4" ${donates.size == 4 ? 'selected' : ''}>4</option>
+									<option value="5" ${donates.size == 5 ? 'selected' : ''}>5</option>
+									<option value="10" ${donates.size == 10 ? 'selected' : ''}>10</option>
+									<option value="15" ${donates.size == 15 ? 'selected' : ''}>15</option>
+									<option value="20" ${donates.size == 20 ? 'selected' : ''}>20</option>
 									<!-- Add more options as needed -->
 								</select>
 							
@@ -55,56 +55,55 @@
 						
 						</div>
 					</div>
-					<div class="m-content list" id="donation-list">
+					<div class="m-content list" id="donate-list">
 						<table class="table table-striped table-content">
 							<thead class="tb-head-title">
 								<tr>
 									<th scope="col" class="th-custom"><p>id</p></th>
+									<th scope="col" class="th-custom"><p>Created Date</p></th>
 									<th scope="col" class="th-custom"><p>Name</p></th>
-									<th scope="col" class="th-custom"><p>Code</p></th>
-									<th scope="col" class="th-custom"><p>Start date</p></th>
-									<th scope="col" class="th-custom"><p>End date</p></th>
-									<th scope="col" class="th-custom"><p>Phone number</p></th>
+									
+									<th scope="col" class="th-custom"><p>Money</p></th>
+									<th scope="col" class="th-custom"><p>Note</p></th>
+									<th scope="col" class="th-custom"><p>UserName</p></th>
+									<th scope="col" class="th-custom"><p>Donation Code</p></th>
+									<th scope="col" class="th-custom"><p>Status</p></th>
 									<th scope="col" class="th-custom"><p>Action</p></th>
 								</tr>
 							</thead>
 							<tbody>
-								<c:forEach var="tempDonation" items="${donations.content}">
+								<c:forEach var="tempDonate" items="${donates.content}">
 
 									<c:url var="donateLink" value="/v1/donateForm">
-										<c:param name="id" value="${tempDonation.id}" />
+										<c:param name="id" value="${tempDonate.id}" />
 									</c:url>
 
-									<c:url var="detailLink" value="/v1/donation-detail">
-										<c:param name="id" value="${tempDonation.id}" />
+									<c:url var="detailLink" value="/v1/donate-detail">
+										<c:param name="id" value="${tempDonate.id}" />
 									</c:url>
 
 
 
 									<tr>
-										<td><p>${tempDonation.id}</p></td>
-										<th scope="row">
-											<p class="d-name">${tempDonation.name}</p>
-											<p class="d-status">${tempDonation.status}</p>
-										</th>
-										<td><p>${tempDonation.code}</p></td>
-										<td><p>${tempDonation.startDate}</p></td>
-										<td><p>${tempDonation.endDate}</p></td>
-										<td><p>${tempDonation.phoneNumber}</p></td>
+										<td><p>${tempDonate.id}</p></td>
+										<td><p>${tempDonate.createdDate}</p></td>
+										<td><p>${tempDonate.name}</p></td>
+										<td><p>${tempDonate.money}</p></td>
+										<td><p>${tempDonate.note}</p></td>
+										<td><p>${tempDonate.user.userName}</p></td>
+										<td><p>${tempDonate.donation.code}</p></td>
+										<td><p>${tempDonate.status}</p></td>
 										<td class="action-c">
-											<button class="btn btn-success donation-btn" title="Chi tiết"
-												onclick="window.location.href='${detailLink}'">
-												<span class="content-btn-text">Chi tiết</span><span
-													class="content-btn-icon"><i class="fa-solid fa-info"></i></span>
+											<button class="btn btn-success donate-btn" title="Chi tiết">
+												<span class="content-btn-text">Xác nhận</span><span
+													class="content-btn-icon"></span>
 											</button>
-											<button class="btn btn-success donation-btn"
-												title="Quyên góp" onclick="openPopup('donate')">
-												<span class="content-btn-text">Quyên góp</span><span
-													class="content-btn-icon"><i
-													class="fa-solid fa-circle-dollar-to-slot"></i></span>
+											<button class="btn btn-success donate-btn" title="Chi tiết">
+												<span class="content-btn-text">Xóa</span><span
+													class="content-btn-icon"></span>
 											</button>
-
-
+											
+											
 										</td>
 									</tr>
 								</c:forEach>
@@ -130,7 +129,7 @@
 									value="${searchingValue}" />
 								<c:out value="searchingValue:  ${searchingValue}  " />
 								
-								<c:set var="testValue1" value="<c:url value='/v1/donations'/>" />
+								<c:set var="testValue1" value="<c:url value='/v1/donates'/>" />
 
  
  								
@@ -141,11 +140,11 @@
 							
 							$(document).ready(function() {
 								$('#pageSize').change(function() {
-									updateShowingTable($('#pageSize').val(), $('#searchingValue').val(), "#donation-list");
+									updateShowingTable($('#pageSize').val(), $('#searchingValue').val(), "#donate-list");
 								});
 
 								$('#searchingValue').on('input', function() {
-									updateShowingTable($('#pageSize').val(), $('#searchingValue').val(), "#donation-list")
+									updateShowingTable($('#pageSize').val(), $('#searchingValue').val(), "#donate-list")
 								});
 								
 								
@@ -154,7 +153,7 @@
 
 
 
-								generatePaginationButtons(currentPage, totalPages, $('#pageSize').val(), $('#searchingValue').val(), "#donation-list");
+								generatePaginationButtons(currentPage, totalPages, $('#pageSize').val(), $('#searchingValue').val(), "#donate-list");
 								
 								let btnList = document.getElementsByClassName("page-btn");
 								Array.from(btnList).forEach(btn => {
@@ -173,6 +172,7 @@
 							
 							</script>
 
+
 						</div>
 
 					</div>
@@ -185,11 +185,11 @@
 	</section>
 
 
-	<div id="donate-popup">
-		<c:import url="/v1/donateForm?id=2" />
+	<div id="#donate-popup">
+		<c:import url="/v1/donateForm?id=1" />
 
 	</div>
-	<script src="<c:url value='/static/common/assets/js/script.js' />"></script>
+	
 <%-- 	
 <script src="<c:url value='/static/common/assets/js/script.js' />"></script>
 
