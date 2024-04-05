@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 function redirectToLink(link) {
 
-	var donateL = document.selectElementById("donatePopup");
+	var donateL = document.getElementById("donatePopup");
 	donateL.url = link;
 	openPopup('donate');
 

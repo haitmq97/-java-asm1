@@ -37,17 +37,27 @@ public class DonationServiceImpl implements DonationService {
 	@Override
 	@Transactional
 	public void saveOrUpdate(Donation donation) {
-		
-		try {
-			if(donation.getCreatedDate().isEmpty()) {
-				donation.setCreatedDate(Time.getCurrentDateTime());
-				donation.setStatus(0);
-			}
-
-			donationDAO.saveOrUpdate(donation);
-		} catch (Exception e) {
-			//log.error("DonationService ERROR - saveOrUpdate(): ", e);
+		System.out.println("================>> donation service iml");
+		System.out.println(donation);
+		/*
+		 * try { if(donation.getCreatedDate().isEmpty()) {
+		 * donation.setCreatedDate(Time.getCurrentDateTime()); donation.setStatus(0); }
+		 * System.out.println("================>> donation service iml: test 1");
+		 * 
+		 * donationDAO.saveOrUpdate(donation); } catch (Exception e) {
+		 * //log.error("DonationService ERROR - saveOrUpdate(): ", e);
+		 * 
+		 * System.out.println("================>> donation service iml: have error"); }
+		 */
+		if(donation.getCreatedDate() == null) {
+			donation.setCreatedDate(Time.getCurrentDateTime());
+			donation.setStatus(0);
 		}
+		System.out.println("================>> donation service iml: test 1");
+
+		donationDAO.saveOrUpdate(donation);
+		
+		System.out.println("================>> donation service iml finish");
 
 	}
 	

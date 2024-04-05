@@ -15,6 +15,10 @@
 	<div class="overlay-container">
 		<div id="overlay" onclick="closeAllPopup()"></div>
 		<div class="popup">
+		<%-- 
+			<input type="hidden" name="userId" value="${userId}"/>
+		 --%>	
+			
 			<div class="form-container login-form" id="login">
 				<div class="form-head">
 					<div class="form-title">
@@ -76,6 +80,12 @@
 				</div>
 
 			</div>
+			<div>
+				<div class="form-container" id="login-warning">
+				<p>Ban can dang nhap truoc khi thuc hien quyen gop</p>
+				</div>
+			</div>
+			
 		</div>
 	</div>
 

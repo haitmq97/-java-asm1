@@ -176,6 +176,8 @@ public class HomeController {
 		User theLoginUser = new User();
 		theModel.addAttribute("user", theLoginUser);
 		theModel.addAttribute("process", "processLogin");
+		
+		
 
 		return "common/login-form";
 	}

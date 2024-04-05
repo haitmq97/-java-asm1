@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
 	public void saveOrUpdate(User user) {
 		
 		//  them ngay tao va status ban dau
-		if(user.getCreatedDate().isEmpty()) {
+		if(user.getCreatedDate()==null) {
 			user.setCreatedDate(Time.getCurrentDateTime());
 			user.setStatus(1);
 		}

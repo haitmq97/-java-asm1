@@ -76,17 +76,7 @@
 	integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
 	crossorigin="anonymous" referrerpolicy="no-referrer" />
 	
-<%-- 	
-	
-<link rel="stylesheet"
-	href="<c:url value='/static/common/assets/css/header-style.css'/>" />
-<link rel="stylesheet"
-	href="<c:url value='/static/common/assets/css/donation-table-home-style.css'/>" />
-<link rel="stylesheet"
-	href="<c:url value='/static/common/assets/css/footer-style.css' />">
-	
- --%>
- 
+
  <!-- customer style -->
  
  <link rel="stylesheet"
@@ -119,7 +109,6 @@
 
 	<!-- Footer layout -->
 	
-	<%-- <%@ include file="../common/footer-layout.jsp"%> --%>
 	
 	<jsp:include page="../common/footer-layout2.jsp">
         <jsp:param name="includePart" value="footerSection" />
@@ -134,16 +123,6 @@
 
 <script src="<c:url value='/static/common/assets/js/script.js' />"></script> 
 
-<%-- 
-<script src="<c:url value='/static/common/assets/js/header.js' />"></script> 
-<script src="<c:url value='/static/common/assets/js/header.js' />"></script> 
 
-<script src="<c:url value='/static/common/assets/js/form.js' />"></script>	
-
-<script src="<c:url value='/static/common/assets/js/pagination.js' />"></script>
-
-<script src="<c:url value='/static/common/assets/js/script.js' />"></script> 
-
- --%>
 </body>
 </html>

@@ -29,7 +29,10 @@ public class DonationDAOImpl implements DonationDAO {
 	@Override
 	public void saveOrUpdate(Donation donation) {
 		Session session = sessionFactory.getCurrentSession();
+		System.out.println("================>> donation dao iml");
+		
 		session.saveOrUpdate(donation);
+		System.out.println("================>> donation dao iml: finish");
 
 	}
 

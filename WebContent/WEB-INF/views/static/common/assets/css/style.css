@@ -757,3 +757,10 @@ td:not(:last-child) {
   }
   
 }
+
+
+
+
+.login-warning {
+	background-color: red;
+}

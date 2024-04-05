@@ -6,12 +6,109 @@
 <!DOCTYPE html>
 <html>
 <head>
+<title>Donation website &mdash; Website Donation</title>
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="" />
+<meta name="keywords" content="" />
+<meta name="author" content="Free-Template.co" />
 
-	<script src="<c:url value='https://code.jquery.com/jquery-3.6.4.min.js' />"></script>
-<script src="<c:url value='/static/common/assets/js/data-list.js' />"></script>
+
+
+<link rel="stylesheet"
+	href="<c:url value='/static/common/assets/css/content-style.css' />">
+
+<link rel="stylesheet"
+	href="<c:url value='/static/user/assets/css/custom-bs.css' />">
+<link rel="stylesheet"
+	href="<c:url value='/static/user/assets/css/jquery.fancybox.min.css' />">
+<link rel="stylesheet"
+	href="<c:url value='/static/user/assets/css/bootstrap-select.min.css' />">
+<link rel="stylesheet"
+	href="<c:url value='/static/user/assets/fonts/icomoon/style.css' />">
+<link rel="stylesheet"
+	href="<c:url value='/static/user/assets/fonts/line-icons/style.css' />">
+<link rel="stylesheet"
+	href="<c:url value='/static/user/assets/css/owl.carousel.min.css' />">
+<link rel="stylesheet"
+	href="<c:url value='/static/user/assets/css/animate.min.css' />">
+
+<!-- MAIN CSS -->
+<link rel="stylesheet"
+	href="<c:url value='/static/user/assets/css/style.css' />">
+
+<script src="<c:url value='/static/user/assets/js/jquery.min.js' />"></script>
+<script
+	src="<c:url value='/static/user/assets/js/bootstrap.bundle.min.js' />"></script>
+<script
+	src="<c:url value='/static/user/assets/js/isotope.pkgd.min.js' />"></script>
+<script src="<c:url value='/static/user/assets/js/stickyfill.min.js' />"></script>
+<script
+	src="<c:url value='/static/user/assets/js/jquery.fancybox.min.js' />"></script>
+<script
+	src="<c:url value='/static/user/assets/js/jquery.easing.1.3.js' />"></script>
+
+<script
+	src="<c:url value='/static/user/assets/js/jquery.waypoints.min.js' />"></script>
+<script
+	src="<c:url value='/static/user/assets/js/jquery.animateNumber.min.js' />"></script>
+<script
+	src="<c:url value='/static/user/assets/js/owl.carousel.min.js' />"></script>
+<script
+	src="<c:url value='/static/user/assets/js/bootstrap-select.min.js' />"></script>
+<script src="<c:url value='/static/user/assets/js/custom.js' />"></script>
+
+<script
+	src="<c:url value='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js' />"
+	crossorigin="anonymous"></script>
+<script
+	src="<c:url value='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' />"
+	crossorigin="anonymous"></script>
+<script
+	src="<c:url value='https://unpkg.com/sweetalert/dist/sweetalert.min.js' />"></script>
+
+<link rel="stylesheet"
+	href="<c:url value='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css'/>"
+	integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+	crossorigin="anonymous" referrerpolicy="no-referrer" />
 	
+
+ <!-- customer style -->
+ 
+ <link rel="stylesheet"
+	href="<c:url value='/static/common/assets/css/style.css'/>" />
+	
+<link rel="stylesheet"
+	href="<c:url value='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css'/>"
+	integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+	crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+
+<!-- customer js -->	
+
+<script src="<c:url value='https://code.jquery.com/jquery-3.6.4.min.js'/>"> </script>
+<script src="<c:url value='/static/common/assets/js/form.js' />"></script>
+<script src="<c:url value='/static/common/assets/js/script.js' />"></script> 
+<script src="<c:url value='/static/common/assets/js/data-list.js' />"></script> 
+
+
+
+
 </head>
 <body>
+<div>
+			
+			
+				 <button class="data-table-btn" onclick="window.location.href='${pageContext.request.contextPath}/admin/donations'">Donations</button>
+				<button class="data-table-btn" onclick="window.location.href='${pageContext.request.contextPath}/admin/users'"
+								>Users</button>
+				<button class="data-table-btn" onclick="window.location.href='${pageContext.request.contextPath}/admin/donates'"
+								>Donates</button>
+
+</div>
+
 	<section class="site-section content">
 		<div class="container" id="content-table">
 			<div class="row mb-5 justify-content-center">
@@ -24,6 +121,9 @@
 			<div class="container">
 				<div class="content">
 					<div class="h-content">
+					<div>
+						<a href="addDonation">them moi</a>
+					</div>
 						<div class="sp-tool d-flex flex-row justify-content-between mt-3">
 							<div class="page-selector">
 
@@ -82,6 +182,10 @@
 									<c:url var="detailLink" value="/v1/donation-detail">
 										<c:param name="id" value="${tempDonation.id}" />
 									</c:url>
+									
+									<c:url var="updateLink" value="/admin/updateDonation">
+										<c:param name="id" value="${tempDonation.id}" />
+									</c:url>
 
 
 
@@ -96,7 +200,7 @@
 										<td><p>${tempDonation.money}</p></td>
 										<td><p class="d-status">${tempDonation.status}</p></td>
 										<td class="action-c">
-											<button class="btn btn-success donation-btn" title="Chi tiết">
+											<button class="btn btn-success donation-btn" title="Chi tiết" onclick="updateBtn('${updatelLink}')">
 												<span class="content-btn-text">Cập nhật</span><span
 													class="content-btn-icon"></span>
 											</button>
@@ -124,7 +228,7 @@
 													class="content-btn-icon"></span>
 											</button>
 											
-											
+											<a href="${updateLink}">cap nhat</a>
 										</td>
 									</tr>
 								</c:forEach>
@@ -205,12 +309,17 @@
 		</div>
 	</section>
 
-
-	<div id="#donate-popup">
-		<c:import url="/v1/donateForm?id=1" />
+<%-- 
+	<div id="">
+		<c:import url="/admin/updateDonation?id=1" />
 
 	</div>
 	
+	 --%>
+	 
+	 
+
+	<script src="<c:url value='/static/common/assets/js/script.js' />"></script> 
 <%-- 	
 <script src="<c:url value='/static/common/assets/js/script.js' />"></script>
 
@@ -221,6 +330,25 @@
 <script src="<c:url value='/static/common/assets/js/form.js' />"></script>
  --%>
 <%-- <script src="<c:url value='/static/common/assets/js/pagination.js' />"></script> --%>
+
+<div class="delete-popup">
+<div>
+</div>
+
+</div>
+
+
+	<div class="overlay-container">
+		<div id="overlay" onclick="closeAllPopup()"></div>
+		<div class="popup">
+
+			<div class="form-container " id="update">
+				</div>
+			
+		</div>
+	</div>
+
+
 
 
 </body>

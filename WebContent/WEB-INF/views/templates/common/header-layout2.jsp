@@ -17,6 +17,12 @@
                             <button class="active-b" onclick="window.location.href='${pageContext.request.contextPath}/v1/home'">
                                 <span class="txt-nav-i">Home</span><span class="icon-nav-i"><i class="fa fa-home" aria-hidden="true"></i></span>
                             </button>
+                        </li>
+                        <li class="nav-item">
+                            <button onclick="window.location.href='${pageContext.request.contextPath}/admin/donations2'">
+                                <span class="txt-nav-i">Manager</span><span class="icon-nav-i"><i
+                                    class="fa-solid fa-list-check"></i></span>
+                            </button>
                         </li>    
 
                     </ul>
@@ -40,12 +46,7 @@
                                     class="fa-solid fa-right-from-bracket"></i></span>
                             </button>
                         </li>
-                        <li class="nav-item">
-                            <button onclick="window.location.href='${pageContext.request.contextPath}/admin/manager'">
-                                <span class="txt-nav-i">Manager</span><span class="icon-nav-i"><i
-                                    class="fa-solid fa-list-check"></i></span>
-                            </button>
-                        </li>
+                        
                         <li class="nav-item">
                             <button onclick="window.location.href='${pageContext.request.contextPath}/user/profile'">
                                 <span class="txt-nav-i">User</span><span class="icon-nav-i"><i
