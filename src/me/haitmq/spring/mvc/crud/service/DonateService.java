@@ -52,6 +52,8 @@ public interface DonateService {
 	
 	public void donateComfirm(int donateId);
 	
+	public void changeDonateShowingStatus(int donateid);
+	
 	// delete
 	
 	public void delete(int theId);

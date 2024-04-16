@@ -143,7 +143,7 @@
                   </div>
                   <div class="input-d">
                     <div class="field-input">
-                      <form:input type="text" class="input-p form-control" path="userName" />
+                      <form:input type="text" class="input-p form-control" path="userName" autocomplete="off"/>
                     </div>
                     <div class=""></div>
                   </div>
@@ -157,7 +157,7 @@
                   </div>
                   <div class="input-d">
                     <div class="field-input">
-                      <form:input type="password" id="passwordInput" class="input-p form-control pw-field-custom-fix" path="password" />
+                      <form:input type="password" id="passwordInput" class="input-p form-control pw-field-custom-fix" path="password" autocomplete="off"/>
                       <button type="button" class="button no-b-btn toggle-pass-btn" onclick="togglePassword()" title="Hiện mật khẩu">
                         <i id="eyeIcon" class="fa-regular fa-eye"></i>
                       </button>

@@ -19,9 +19,7 @@ function updateShowingTable(size, searchingValue, tableContent) {
 
 
 function generatePaginationButtons(currentPage, totalPages, size, searchingValue, tableContent) {
-	console.log("hello");
 
-	
 	const paginationContainer = document.getElementById('pagination-container');
 	paginationContainer.innerHTML = '';
 
@@ -53,6 +51,8 @@ function generatePaginationButtons(currentPage, totalPages, size, searchingValue
 	// thêm button cho trang cuối
 	addButton(totalPages, currentPage, size, searchingValue, paginationList, tableContent, totalPages);
 	
+	// thêm button cho trang cuối
+	addButton(totalPages, currentPage, size, searchingValue, paginationList, tableContent, totalPages);
 	
 	// last button
 	addButton(totalPages, currentPage, size, searchingValue, paginationList, tableContent, "Last");
@@ -70,6 +70,7 @@ function addButton(pageNumber, currentPage, size, searchingValue, parentElement,
 	button.addEventListener('click', () => onPageButtonClick(pageNumber, size, searchingValue, tableContent));
 
 	if (pageNumber === currentPage) {
+		button.style.backgroundColor = 'red';
 		button.disabled = true;
 	} else {
 		/*button.style.backgroundColor = 'green';*/

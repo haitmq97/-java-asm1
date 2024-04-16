@@ -80,6 +80,18 @@ public class DonateServiceImpl implements DonateService {
 		
 	}
 	
+	
+	
+	
+
+	@Override
+	@Transactional
+	public void changeDonateShowingStatus(int donateid) {
+		Donate donate = donateDAO.getDonate(donateid);
+		donate.setShowing(false);
+		donateDAO.update(donate);
+		
+	}
 
 	@Override
 	@Transactional

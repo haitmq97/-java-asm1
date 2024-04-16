@@ -195,8 +195,19 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@Transactional
 	public boolean isAdmin(User user) {
 		if(user.getRole().getRoleName().toLowerCase().equals("admin")) {
+			return true;
+		}
+		return false;
+	}
+
+
+	@Override
+	@Transactional
+	public boolean isAdmin(int theId) {
+		if(userDAO.getUser(theId).getRole().getRoleName().equals("admin")) {
 			return true;
 		}
 		return false;

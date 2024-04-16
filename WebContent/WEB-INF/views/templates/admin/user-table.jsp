@@ -173,8 +173,8 @@
 								<c:forEach var="tempUser" items="${users.content}">
 
 
-									<c:url var="detailLink" value="/user/details">
-										<c:param name="userId" value="${tempUser.id}" />
+									<c:url var="detailLink" value="/admin/userDetails">
+										<c:param name="id" value="${tempUser.id}" />
 									</c:url>
 
 									<c:url var="deleteLink" value="/user/delete">

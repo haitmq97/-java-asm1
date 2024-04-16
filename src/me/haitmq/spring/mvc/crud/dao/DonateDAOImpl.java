@@ -113,6 +113,9 @@ public class DonateDAOImpl implements DonateDAO {
 		}
 
 	}
+	
+
+	
 
 	@Override
 	public List<Donate> getDonateByDonationId(int theId) {

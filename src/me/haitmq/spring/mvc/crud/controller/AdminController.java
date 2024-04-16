@@ -148,63 +148,7 @@ public class AdminController {
 	 * 
 	 * // return "user/donationList"; return "admin/donation-table2"; }
 	 */
-	@GetMapping("/donates")
-	public String donateList(HttpServletRequest request, @RequestParam(defaultValue = "1") int page,
-			@RequestParam(name = "size", defaultValue = "5") int size,
-			@RequestParam(name = "searchingValue", defaultValue = "", required = false) String searchingValue,
-			Model theModel) {
-
-		try {
-			
-			HttpSession session = request.getSession();
-			Integer currentUserId = (Integer) session.getAttribute("currentUserId");
-			if (currentUserId == null) {
-				throw new RuntimeException("the error");
-			}
-			
-
-			Page<Donate> donates = donateService.findAll(page, size);
-
-			if (!searchingValue.equals("")) {
-				donates = donateService.findAllSortByStatusByCreatedDate(page, size);
-				theModel.addAttribute("searchingValue", searchingValue);
-			}
-
-			for (Donate donate : donates) {
-				System.out.println(donate);
-			}
-
-			theModel.addAttribute("donates", donates);
-
-			theModel.addAttribute("currentPage", page);
-			theModel.addAttribute("totalPage", donates.getTotalPages());
-
-			theModel.addAttribute("currentSize", size);
-
-			int nextPage = page + 1;
-			int prevPage = page - 1;
-
-			if (page <= 1) {
-				prevPage = 1;
-			}
-
-			theModel.addAttribute("prevPage", prevPage);
-			System.out.println("current page" + page);
-			System.out.println("total page: " + donates.getTotalPages());
-			if (page >= (donates.getTotalPages())) {
-				nextPage = donates.getTotalPages();
-			}
-
-			theModel.addAttribute("nextPage", nextPage);
-
-//			return "user/donationList";
-
-			return "admin/donate-table";
-		} catch (Exception e) {
-			// log.error("DonateController ERROR - list(): ", e);
-			return "common/error-page";
-		}
-	}
+	
 	
 	
 	
@@ -448,5 +392,101 @@ public class AdminController {
 
 		return "redirect:/admin/users";
 	}
+	
+	
+	@GetMapping("/userDetails")
+	public String userDetail(@RequestParam("id") int userId, Model theModel) {
+		User user = userService.getUser(userId);
+ 		
+		theModel.addAttribute("user", user);
 
+		return "admin/user-detail";
+	}
+	
+	
+	
+	////// donate
+	
+	@GetMapping("/donates")
+	public String donateList(HttpServletRequest request, @RequestParam(defaultValue = "1") int page,
+			@RequestParam(name = "size", defaultValue = "5") int size,
+			@RequestParam(name = "searchingValue", defaultValue = "", required = false) String searchingValue,
+			Model theModel) {
+
+		try {
+			
+			HttpSession session = request.getSession();
+			Integer currentUserId = (Integer) session.getAttribute("currentUserId");
+			if (currentUserId == null) {
+				throw new RuntimeException("the error");
+			}
+			
+
+			Page<Donate> donates = donateService.findAll(page, size);
+
+			if (!searchingValue.equals("")) {
+				donates = donateService.findAllSortByStatusByCreatedDate(page, size);
+				theModel.addAttribute("searchingValue", searchingValue);
+			}
+
+			for (Donate donate : donates) {
+				System.out.println(donate);
+			}
+
+			theModel.addAttribute("donates", donates);
+
+			theModel.addAttribute("currentPage", page);
+			theModel.addAttribute("totalPage", donates.getTotalPages());
+
+			theModel.addAttribute("currentSize", size);
+
+			int nextPage = page + 1;
+			int prevPage = page - 1;
+
+			if (page <= 1) {
+				prevPage = 1;
+			}
+
+			theModel.addAttribute("prevPage", prevPage);
+			System.out.println("current page" + page);
+			System.out.println("total page: " + donates.getTotalPages());
+			if (page >= (donates.getTotalPages())) {
+				nextPage = donates.getTotalPages();
+			}
+
+			theModel.addAttribute("nextPage", nextPage);
+
+//			return "user/donationList";
+
+			return "admin/donate-table";
+		} catch (Exception e) {
+			// log.error("DonateController ERROR - list(): ", e);
+			return "common/error-page";
+		}
+	}
+	
+	@GetMapping("donateStatusComfirm")
+	public String statusProcessing(@RequestParam("id")int theId) {
+		donateService.donateComfirm(theId);
+		return "redirect:/admin/donates";
+	}
+	
+
+	@GetMapping("/deleteDonate")
+	public String deleteDonate(@RequestParam("id") int theId) {
+		donateService.delete(theId);
+	
+	
+	
+		return "redirect:/admin/donates";
+	}
+	/*
+	@GetMapping("/deleteDonate")
+	public String deleteDonate(@RequestParam("id") int theId) {
+		donateService.changeDonateShowingStatus(theId);
+	
+		return "redirect:/admin/donates";
+	}
+	 */
+	
 }

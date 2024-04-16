@@ -62,6 +62,9 @@ public interface DonateDAO {
 	
 	public void delete(int theId);
 	
+	
+
+	
 	public List<Donate> getDonateByDonationId(int theId);
 	
 	public List<Donate> getDonateByUserId(int theId);

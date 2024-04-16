@@ -102,6 +102,8 @@ public interface UserService  {
 	
 	/////////////////////
 	
+	public boolean isAdmin(int theId );
+	
 	
 
 
