@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import me.haitmq.spring.mvc.crud.entity.Donate;
+import me.haitmq.spring.mvc.crud.entity.UserDonation;
 import me.haitmq.spring.mvc.crud.entity.Donation;
 import me.haitmq.spring.mvc.crud.entity.User;
-import me.haitmq.spring.mvc.crud.service.DonateService;
+import me.haitmq.spring.mvc.crud.service.UserDonationService;
 import me.haitmq.spring.mvc.crud.service.DonationService;
 import me.haitmq.spring.mvc.crud.service.UserService;
 import me.haitmq.spring.mvc.crud.utils.Time;
@@ -30,7 +30,7 @@ public class TestController {
 	private UserService userService;
 	
 	@Autowired
-	private DonateService donateService;
+	private UserDonationService userDonationService;
 	
 	@GetMapping("/home")
 	public String homepage(@RequestParam()int param1,@RequestParam()int param2) {
@@ -52,7 +52,7 @@ public class TestController {
 		return "/test/page3";
 	}
 	
-	@RequestMapping("/donatebtn")
+	@RequestMapping("/userDonationbtn")
 	public String form() {
 		
 		return "/donation/test123";
@@ -194,15 +194,15 @@ public class TestController {
 	
 	
 	
-	@GetMapping("/donatelistforadmin")
-	public String donateList(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size,
+	@GetMapping("/userDonationlistforadmin")
+	public String userDonationList(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size,
 			
 			Model theModel) {
 
 		try {
-			Page<Donate> donates = donateService.findAllSortByStatusByCreatedDate(page, size);
+			Page<UserDonation> userDonations = userDonationService.findAllSortByStatusByCreatedDate(page, size);
 
-			theModel.addAttribute("datas", donates);
+			theModel.addAttribute("datas", userDonations);
 
 			theModel.addAttribute("currentPage", page);
 
@@ -217,8 +217,8 @@ public class TestController {
 
 			theModel.addAttribute("prevPage", prevPage);
 
-			if (page >= (donates.getTotalPages() - 1)) {
-				nextPage = donates.getTotalPages() - 1;
+			if (page >= (userDonations.getTotalPages() - 1)) {
+				nextPage = userDonations.getTotalPages() - 1;
 			}
 
 			theModel.addAttribute("nextPage", nextPage);
@@ -226,9 +226,9 @@ public class TestController {
 			System.out.println("=======================>>>>> test time");
 			System.out.println("=======================>>>>> current time: " + Time.getCurrentDateTime());
 
-			return "admin/donate-table";
+			return "admin/userDonation-table";
 		} catch (Exception e) {
-			//log.error("DonateController ERROR - list(): ", e);
+			//log.error("UserDonationController ERROR - list(): ", e);
 			return "common/error-page";
 		}
 	}

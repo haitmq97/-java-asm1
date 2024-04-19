@@ -14,14 +14,14 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import me.haitmq.spring.mvc.crud.entity.Donate;
-import me.haitmq.spring.mvc.crud.service.DonateService;
+import me.haitmq.spring.mvc.crud.entity.UserDonation;
+
 
 
 @Repository
-public class DonateDAOImpl implements DonateDAO {
+public class UserDonationDAOImpl implements UserDonationDAO {
 	
-	private static final Logger log = LoggerFactory.getLogger(DonateDAO.class);
+	private static final Logger log = LoggerFactory.getLogger(UserDonationDAO.class);
 	
 	@Autowired
 	private SessionFactory sessionFactory;
@@ -31,64 +31,64 @@ public class DonateDAOImpl implements DonateDAO {
 	
 
 	@Override
-	public void save(Donate donate) {
+	public void save(UserDonation userDonation) {
 		try {
 			Session session = sessionFactory.getCurrentSession();
-			session.save(donate);
+			session.save(userDonation);
 		} catch (Exception e) {
-			//log.error("DonateDAO ERROR - save(): ", e);
+			//log.error("UserDonationDAO ERROR - save(): ", e);
 			//e.printStackTrace();
 		}
 	}
 
 	@Override
-	public void update(Donate donate) {
+	public void update(UserDonation userDonation) {
 		try {
 			Session session = sessionFactory.getCurrentSession();
-			session.update(donate);
+			session.update(userDonation);
 		} catch (Exception e) {
-			//log.error("DonateDAO ERROR - update(): ", e);
+			//log.error("UserDonationDAO ERROR - update(): ", e);
 			//e.printStackTrace();
 		}
 		
 	}
 	
 	@Override
-	public void saveOrUpdate(Donate donate) {
+	public void saveOrUpdate(UserDonation userDonation) {
 		
 		try {
 			Session session = sessionFactory.getCurrentSession();
-			session.saveOrUpdate(donate);
+			session.saveOrUpdate(userDonation);
 		} catch (Exception e) {
-			//log.error("DonateDAO ERROR - saveOrUpdate(): ", e);
+			//log.error("UserDonationDAO ERROR - saveOrUpdate(): ", e);
 			//e.printStackTrace();
 		}
 		
 	}
 
 	@Override
-	public Donate getDonate(int theId) {
+	public UserDonation getUserDonation(int theId) {
 		
 		try {
 			Session session = sessionFactory.getCurrentSession();
-			return session.get(Donate.class, theId);
+			return session.get(UserDonation.class, theId);
 			
 		} catch (Exception e) {
-			//log.error("DonateDAO ERROR - getDonate(): ", e);
+			//log.error("UserDonationDAO ERROR - getUserDonation(): ", e);
 			//e.printStackTrace();
 			return null;
 		}
 	}
 
 	@Override
-	public List<Donate> getAllDonates() {
+	public List<UserDonation> getAllUserDonations() {
 		try {
 			Session session = sessionFactory.getCurrentSession();
-			Query<Donate> theQuery = session.createQuery("from Donate", Donate.class);
+			Query<UserDonation> theQuery = session.createQuery("from UserDonation", UserDonation.class);
 			return theQuery.getResultList();
 			
 		} catch (Exception e) {
-			//log.error("DonateDAO ERROR - getAllDonates(): ", e);
+			//log.error("UserDonationDAO ERROR - getAllUserDonations(): ", e);
 			//e.printStackTrace();
 			return null;
 		}
@@ -100,14 +100,14 @@ public class DonateDAOImpl implements DonateDAO {
 		
 		try {
 			Session session = sessionFactory.getCurrentSession();
-			Query theQuery = session.createQuery("delete from Donate where id=:theId");
+			Query theQuery = session.createQuery("delete from UserDonation where id=:theId");
 
 			theQuery.setParameter("theId", theId);
 
 			theQuery.executeUpdate();
 			
 		} catch (Exception e) {
-			//log.error("DonateDAO ERROR - delete(): ", e);
+			//log.error("UserDonationDAO ERROR - delete(): ", e);
 			//e.printStackTrace();
 			
 		}
@@ -118,16 +118,16 @@ public class DonateDAOImpl implements DonateDAO {
 	
 
 	@Override
-	public List<Donate> getDonateByDonationId(int theId) {
+	public List<UserDonation> getUserDonationByDonationId(int theId) {
 		
 		try {
 			Session session = sessionFactory.getCurrentSession();
-			Query<Donate> theQuery = session.createQuery("from Donate ud where ud.donation=:theId", Donate.class);
+			Query<UserDonation> theQuery = session.createQuery("from UserDonation ud where ud.donation=:theId", UserDonation.class);
 			theQuery.setParameter("theId", theId);
 			return theQuery.getResultList();
 			
 		} catch (Exception e) {
-			//log.error("DonateDAO ERROR - getDonateByDonationId(): ", e);
+			//log.error("UserDonationDAO ERROR - getUserDonationByDonationId(): ", e);
 			//e.printStackTrace();
 			return null;
 			
@@ -135,19 +135,19 @@ public class DonateDAOImpl implements DonateDAO {
 	}
 
 	@Override
-	public List<Donate> getDonateByUserId(int theId) {
+	public List<UserDonation> getUserDonationByUserId(int theId) {
 		Session session = sessionFactory.getCurrentSession();
-		Query<Donate> theQuery = session.createQuery("from Donate ud where ud.user=:theId", Donate.class);
+		Query<UserDonation> theQuery = session.createQuery("from UserDonation ud where ud.user=:theId", UserDonation.class);
 		theQuery.setParameter("theId", theId);
 		return theQuery.getResultList();
 	}
 
 	@Override
-	public Page<Donate> findAll(Pageable pageable) {
-		String theQueryString = "from Donate ud";
+	public Page<UserDonation> findAll(Pageable pageable) {
+		String theQueryString = "from UserDonation ud";
 
 		Session session = sessionFactory.getCurrentSession();
-		Query<Donate> theQuery = session.createQuery(theQueryString, Donate.class);
+		Query<UserDonation> theQuery = session.createQuery(theQueryString, UserDonation.class);
 		theQuery.setFirstResult((int) pageable.getOffset());
 		theQuery.setMaxResults(pageable.getPageSize());
 		
@@ -156,11 +156,11 @@ public class DonateDAOImpl implements DonateDAO {
 	}
 
 	@Override
-	public Page<Donate> findAllSortByStatus(Pageable pageable) {
-		String theQueryString = "from Donate ud order by ud.status";
+	public Page<UserDonation> findAllSortByStatus(Pageable pageable) {
+		String theQueryString = "from UserDonation ud order by ud.status";
 
 		Session session = sessionFactory.getCurrentSession();
-		Query<Donate> theQuery = session.createQuery(theQueryString, Donate.class);
+		Query<UserDonation> theQuery = session.createQuery(theQueryString, UserDonation.class);
 		theQuery.setFirstResult((int) pageable.getOffset());
 		theQuery.setMaxResults(pageable.getPageSize());
 		
@@ -169,11 +169,11 @@ public class DonateDAOImpl implements DonateDAO {
 	}
 
 	@Override
-	public Page<Donate> findAllSortByCreatedDate(Pageable pageable) {
-		String theQueryString = "from Donate ud order by ud.createdDate";
+	public Page<UserDonation> findAllSortByCreatedDate(Pageable pageable) {
+		String theQueryString = "from UserDonation ud order by ud.createdDate";
 
 		Session session = sessionFactory.getCurrentSession();
-		Query<Donate> theQuery = session.createQuery(theQueryString, Donate.class);
+		Query<UserDonation> theQuery = session.createQuery(theQueryString, UserDonation.class);
 		theQuery.setFirstResult((int) pageable.getOffset());
 		theQuery.setMaxResults(pageable.getPageSize());
 		
@@ -182,11 +182,11 @@ public class DonateDAOImpl implements DonateDAO {
 	}
 
 	@Override
-	public Page<Donate> findAllSortByStatusByCreatedDate(Pageable pageable) {
-		String theQueryString ="from Donate ud order by ud.status, ud.createdDate";
+	public Page<UserDonation> findAllSortByStatusByCreatedDate(Pageable pageable) {
+		String theQueryString ="from UserDonation ud order by ud.status, ud.createdDate";
 
 		Session session = sessionFactory.getCurrentSession();
-		Query<Donate> theQuery = session.createQuery(theQueryString, Donate.class);
+		Query<UserDonation> theQuery = session.createQuery(theQueryString, UserDonation.class);
 		theQuery.setFirstResult((int) pageable.getOffset());
 		theQuery.setMaxResults(pageable.getPageSize());
 		
@@ -197,12 +197,12 @@ public class DonateDAOImpl implements DonateDAO {
 	
 	///////////////////////////
 	@Override
-	public Page<Donate> findByUserId(int userId, Pageable pageable) {
+	public Page<UserDonation> findByUserId(int userId, Pageable pageable) {
 		 try {
-		        String queryString = "from Donate ud where ud.user.id = :userId";
+		        String queryString = "from UserDonation ud where ud.user.id = :userId";
 
 		        Session session = sessionFactory.getCurrentSession();
-		        Query<Donate> query = session.createQuery(queryString, Donate.class);
+		        Query<UserDonation> query = session.createQuery(queryString, UserDonation.class);
 		        query.setFirstResult((int) pageable.getOffset());
 		        query.setMaxResults(pageable.getPageSize());
 		        query.setParameter("userId", userId);
@@ -219,12 +219,12 @@ public class DonateDAOImpl implements DonateDAO {
 
 	//////////////////////////////////////////////
 	@Override
-	public Page<Donate> findByDonationId(int donationId, Pageable pageable) {
+	public Page<UserDonation> findByDonationId(int donationId, Pageable pageable) {
 		 try {
-		        String queryString = "from Donate ud where ud.donation.id = :donationId";
+		        String queryString = "from UserDonation ud where ud.donation.id = :donationId";
 
 		        Session session = sessionFactory.getCurrentSession();
-		        Query<Donate> query = session.createQuery(queryString, Donate.class);
+		        Query<UserDonation> query = session.createQuery(queryString, UserDonation.class);
 		        query.setFirstResult((int) pageable.getOffset());
 		        query.setMaxResults(pageable.getPageSize());
 		        query.setParameter("donationId", donationId);
@@ -245,7 +245,7 @@ public class DonateDAOImpl implements DonateDAO {
 	@Override
 	public Long getTotalMoneyByDonationId(int theId) {
 		 try {
-			 	String queryString = "select COALESCE(sum(money), 0) from Donate ud where ud.donation.id = :donationId and ud.status = 1";
+			 	String queryString = "select COALESCE(sum(money), 0) from UserDonation ud where ud.donation.id = :donationId and ud.status = 1";
 		        Session session = sessionFactory.getCurrentSession();
 		        Query<Long> query = session.createQuery(queryString, Long.class);
 		        
@@ -260,12 +260,12 @@ public class DonateDAOImpl implements DonateDAO {
 	}
 	
 	@Override
-	public List<Donate> getDonteListByDonationId(int theId) {
+	public List<UserDonation> getUserDonationListByDonationId(int theId) {
 		 try {
-		        String queryString = "from Donate ud where ud.donation.id = :donationId";
+		        String queryString = "from UserDonation ud where ud.donation.id = :donationId";
 
 		        Session session = sessionFactory.getCurrentSession();
-		        Query<Donate> query = session.createQuery(queryString, Donate.class);
+		        Query<UserDonation> query = session.createQuery(queryString, UserDonation.class);
 		        
 		        query.setParameter("donationId", theId);
 		        

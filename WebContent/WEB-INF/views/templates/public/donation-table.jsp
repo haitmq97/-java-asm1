@@ -163,6 +163,7 @@
 								<tr>
 									<th scope="col" class="th-custom"><p>id</p></th>
 									<th scope="col" class="th-custom"><p>Name</p></th>
+
 									<th scope="col" class="th-custom"><p>Code</p></th>
 									<th scope="col" class="th-custom"><p>Start date</p></th>
 									<th scope="col" class="th-custom"><p>End date</p></th>
@@ -198,14 +199,40 @@
 												onclick="window.location.href='${detailLink}'">
 												<span class="content-btn-text">Chi tiết</span><span
 													class="content-btn-icon"><i class="fa-solid fa-info"></i></span>
-											</button>
-											<button class="btn btn-success donation-btn"
-												title="Quyên góp"
-												onclick="toDonateForm(${tempDonation.id},$('#authorities').val())">
-												<span class="content-btn-text">Quyên góp</span><span
-													class="content-btn-icon"><i
-													class="fa-solid fa-circle-dollar-to-slot"></i></span>
-											</button>
+											</button> 
+											
+						
+												
+															
+												
+											<c:choose>
+												
+									
+
+												<c:when test="${tempDonation.status == 1}">
+													<button class="btn btn-success donation-btn"
+														title="Quyên góp"
+														onclick="toDonateForm(${tempDonation.id},$('#authorities').val())">
+														<span class="content-btn-text">Quyên góp</span><span
+															class="content-btn-icon"><i
+															class="fa-solid fa-circle-dollar-to-slot"></i></span>
+													</button>
+
+												</c:when>
+
+												<c:otherwise>
+													<button class="btn btn-success donation-btn"
+														title="Quyên góp" disabled>
+														<span class="content-btn-text">Quyên góp</span><span
+															class="content-btn-icon"><i
+															class="fa-solid fa-circle-dollar-to-slot"></i></span>
+													</button>
+
+											</c:otherwise>
+											</c:choose>
+
+
+											<p class="active-donate-btn">${tempDonation.status}</p>
 
 
 										</td>
@@ -317,7 +344,7 @@
 					</div>
 				</div>
 				<div class="form-main">
-					<form:form modelAttribute="donate" action="${process}"
+					<form:form modelAttribute="userDonation" action="${process}"
 						method="POST">
 						<input type="hidden" name="donationId" value="${donationId}" />
 						<div class="f-field">

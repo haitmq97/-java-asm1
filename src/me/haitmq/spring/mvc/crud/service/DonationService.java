@@ -19,7 +19,7 @@ public interface DonationService {
 	 * 	+ thay đổi thông tin
 	 * 	+ thay đổi status
 	 * 	+ showing (true/false)
-	 * 	+ update money từ các donate có status = 1
+	 * 	+ update money từ các userDonation có status = 1
 	 * 
 	 * - delete (admin):
 	 * 	+ chỉ có thể xóa các donation có status mới tạo
@@ -41,9 +41,9 @@ public interface DonationService {
 	
 	public void changeDonationShowingStatus(int donationid);
 	
-	public void addMoneyFromDonateToDonation(Long moneyAmount, int donationId);
+	public void addMoneyFromUserDonationToDonation(Long moneyAmount, int donationId);
 	
-	public void updateAllMoneyDonatetoDonation(int donationId);
+	public void updateAllMoneyUserDonationtoDonation(int donationId);
 	
 	
 	// delete donation obj

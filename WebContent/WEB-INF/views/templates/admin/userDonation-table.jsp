@@ -176,7 +176,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								<c:forEach var="tempDonate" items="${donates.content}">
+								<c:forEach var="tempDonate" items="${userDonations.content}">
 
 									<c:url var="donateLink" value="/v1/donateForm">
 										<c:param name="id" value="${tempDonate.id}" />

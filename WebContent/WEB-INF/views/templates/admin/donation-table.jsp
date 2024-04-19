@@ -104,7 +104,7 @@
 				 <button class="data-table-btn" onclick="window.location.href='${pageContext.request.contextPath}/admin/donations'">Donations</button>
 				<button class="data-table-btn" onclick="window.location.href='${pageContext.request.contextPath}/admin/users'"
 								>Users</button>
-				<button class="data-table-btn" onclick="window.location.href='${pageContext.request.contextPath}/admin/donates'"
+				<button class="data-table-btn" onclick="window.location.href='${pageContext.request.contextPath}/admin/userDonations'"
 								>Donates</button>
 
 </div>

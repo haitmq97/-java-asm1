@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import me.haitmq.spring.mvc.crud.entity.Donate;
+import me.haitmq.spring.mvc.crud.entity.UserDonation;
 import me.haitmq.spring.mvc.crud.entity.Donation;
 import me.haitmq.spring.mvc.crud.entity.User;
-import me.haitmq.spring.mvc.crud.service.DonateService;
+import me.haitmq.spring.mvc.crud.service.UserDonationService;
 import me.haitmq.spring.mvc.crud.service.DonationService;
 import me.haitmq.spring.mvc.crud.service.UserService;
 import me.haitmq.spring.mvc.crud.utils.Time;
@@ -35,7 +35,7 @@ public class DonateController {
 
 
 	@Autowired
-	private DonateService donateService;
+	private UserDonationService userDonationService;
 
 	@Autowired
 	private DonationService donationService;
@@ -44,35 +44,35 @@ public class DonateController {
 	private UserService userService;
 	/*
 
-	@GetMapping("donate-form2")
-	public String donateForm2(HttpServletRequest request, @RequestParam("donationId") int donationId, Model theModel) {
-		theModel.addAttribute("donate", new Donate());
+	@GetMapping("userDonation-form2")
+	public String userDonationForm2(HttpServletRequest request, @RequestParam("donationId") int donationId, Model theModel) {
+		theModel.addAttribute("userDonation", new UserDonation());
 		HttpSession session = request.getSession();
 		Integer currentUserId = (Integer) session.getAttribute("currentUserId");
 		System.out.println("==================>>>> currentUserId: " + currentUserId);
 		System.out.println("==================>>>> donationId: " + donationId);
 		theModel.addAttribute("donationId", donationId);
-		return "donate-form";
+		return "userDonation-form";
 	}
 
 	@PostMapping("/donating2")
-	public String donating(HttpServletRequest request, @ModelAttribute("donate")Donate donate, @RequestParam("donationId")int donationId) {
+	public String donating(HttpServletRequest request, @ModelAttribute("userDonation")UserDonation userDonation, @RequestParam("donationId")int donationId) {
 		System.out.println("=============>>>>>> donationId: " + donationId);
 		HttpSession session = request.getSession();
 		Integer currentUserId = (Integer) session.getAttribute("currentUserId");
 		Donation currentDonation = donationService.getDonation(donationId);
 		User user = userService.getUser(currentUserId);
-		donate.setUser(user);
-		donate.setDonation(currentDonation);
-		donateService.save(donate);
+		userDonation.setUser(user);
+		userDonation.setDonation(currentDonation);
+		userDonationService.save(userDonation);
 		return "redirect:/v1/home3";
 	}
 	*/
 	
 	/////////////////////////////////////////////
 	
-	@GetMapping("donateForm")
-	public String donateForm(HttpServletRequest request,@RequestParam("id") int donationId, Model theModel) {
+	@GetMapping("userDonationForm")
+	public String userDonationForm(HttpServletRequest request,@RequestParam("id") int donationId, Model theModel) {
 		try {
 			// get current user id and role
 			HttpSession session = request.getSession();
@@ -81,8 +81,8 @@ public class DonateController {
 			if(currentUserId == null) {
 				return "redirect:/v1/home";
 			}
-			// add new Donate obj to the model
-			theModel.addAttribute("donate", new Donate());
+			// add new UserDonation obj to the model
+			theModel.addAttribute("userDonation", new UserDonation());
 			
 			// add process form link to model
 			theModel.addAttribute("process", "processDonating");
@@ -91,15 +91,15 @@ public class DonateController {
 			theModel.addAttribute("donationId", donationId);
 			
 			// return view
-			return "user/donate-form";
+			return "user/userDonation-form";
 		} catch (Exception e) {
-			//log.error("DonateController ERROR - donateForm(): ", e);
+			//log.error("UserDonationController ERROR - userDonationForm(): ", e);
 			return "common/error-page";
 		}
 	}
 	
 	@PostMapping("/processDonating")
-	public String processDonating(HttpServletRequest request, @ModelAttribute("donate")Donate donate, @RequestParam("donationId") int donationId) {
+	public String processDonating(HttpServletRequest request, @ModelAttribute("userDonation")UserDonation userDonation, @RequestParam("donationId") int donationId) {
 		
 		try {
 			HttpSession session = request.getSession();
@@ -107,25 +107,25 @@ public class DonateController {
 			
 			User user = userService.getUser(currentUserId);
 			Donation donation = donationService.getDonation(donationId);
-			donate.setUser(user);
-			donate.setDonation(donation);
-			donateService.save(donate);
+			userDonation.setUser(user);
+			userDonation.setDonation(donation);
+			userDonationService.save(userDonation);
 			return "redirect:/v1/home";
 		} catch (Exception e) {
-			//log.error("DonateController ERROR - processDonating(): ", e);
+			//log.error("UserDonationController ERROR - processDonating(): ", e);
 			return "common/error-page";
 		}
 	}
 	
 	@GetMapping("/list")
-	public String donateList(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size,
+	public String userDonationList(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size,
 			
 			Model theModel) {
 
 		try {
-			Page<Donate> donates = donateService.findAllSortByStatusByCreatedDate(page, size);
+			Page<UserDonation> userDonations = userDonationService.findAllSortByStatusByCreatedDate(page, size);
 
-			theModel.addAttribute("datas", donates);
+			theModel.addAttribute("datas", userDonations);
 
 			theModel.addAttribute("currentPage", page);
 
@@ -140,8 +140,8 @@ public class DonateController {
 
 			theModel.addAttribute("prevPage", prevPage);
 
-			if (page >= (donates.getTotalPages() - 1)) {
-				nextPage = donates.getTotalPages() - 1;
+			if (page >= (userDonations.getTotalPages() - 1)) {
+				nextPage = userDonations.getTotalPages() - 1;
 			}
 
 			theModel.addAttribute("nextPage", nextPage);
@@ -149,17 +149,17 @@ public class DonateController {
 			System.out.println("=======================>>>>> test time");
 			System.out.println("=======================>>>>> current time: " + Time.getCurrentDateTime());
 
-			return "admin/donate-list";
+			return "admin/userDonation-list";
 		} catch (Exception e) {
-			//log.error("DonateController ERROR - list(): ", e);
+			//log.error("UserDonationController ERROR - list(): ", e);
 			return "common/error-page";
 		}
 	}
 	
 	@GetMapping("statusComfirm")
 	public String statusProcessing(@RequestParam("id")int theId) {
-		donateService.donateComfirm(theId);
-		return "redirect:/donate/list";
+		userDonationService.userDonationComfirm(theId);
+		return "redirect:/userDonation/list";
 	}
 	
 	

@@ -908,3 +908,14 @@ td:not(:last-child) {
   color: var(--pry-leaf);
 }
 
+
+
+.disabled-btn {
+	disable: true;
+}
+
+
+.active-donate-btn {
+	
+}
+

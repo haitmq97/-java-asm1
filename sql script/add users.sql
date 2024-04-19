@@ -64,7 +64,7 @@ INSERT INTO `donation` (`code`, `name`, `phone_number`, `organization`, `created
     
     
     
-insert into donate(`created_date`, `money`, `name`, `status`, `user_id`, `donation_id`)
+insert into `user_donation`(`created_date`, `money`, `name`, `status`, `user_id`, `donation_id`)
 	value ('12/01/2024', 100000, 'jake graham', 0, 4, 1),
     ('24/01/2024', 50000, 'hansome jack', 0, 5, 1),
     ('20/01/2024', 2000000, 'frank senetra', 0, 15, 1),

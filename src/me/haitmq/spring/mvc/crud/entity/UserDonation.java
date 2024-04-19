@@ -12,9 +12,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import me.haitmq.spring.mvc.crud.utils.status.UserDonationStatus;
+
 @Entity
-@Table(name = "donate")
-public class Donate {
+@Table(name = "user_donation")
+public class UserDonation {
 
 	//fields
 	@Id
@@ -32,11 +34,11 @@ public class Donate {
 	private long money;
 	
 	@Column(name = "status")
-	private int status;
+	private UserDonationStatus status;
 	
 	@Column(name = "note")
 	private String note;
-	
+		
 	@Column(name = "showing")
 	private boolean showing;
 	
@@ -48,9 +50,11 @@ public class Donate {
 	@JoinColumn(name = "donation_id")
 	private Donation donation;
 	
+
+	
 	// constructor
 	
-	public Donate() {
+	public UserDonation() {
 		
 	}
 
@@ -86,11 +90,11 @@ public class Donate {
 		this.money = money;
 	}
 
-	public int getStatus() {
+	public UserDonationStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(int status) {
+	public void setStatus(UserDonationStatus status) {
 		this.status = status;
 	}
 
@@ -130,7 +134,7 @@ public class Donate {
 
 	@Override
 	public String toString() {
-		return "Donate [id=" + id + ", name=" + name + ", createdDate=" + createdDate + ", money=" + money + ", status="
+		return "UserDonation [id=" + id + ", name=" + name + ", createdDate=" + createdDate + ", money=" + money + ", status="
 				+ status + ", note=" + note + ", showing=" + showing + ", user=" + user + ", donation=" + donation
 				+ "]";
 	}

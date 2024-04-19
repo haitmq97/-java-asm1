@@ -23,7 +23,7 @@
 					</div>
 				</div>
 				<div class="form-main">
-					<form:form  modelAttribute="donate"
+					<form:form  modelAttribute="userDonation"
 				action="${process}"
 				method="POST">
 				<input type="hidden" name="donationId" value="${donationId}"/>

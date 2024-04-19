@@ -49,7 +49,7 @@ CREATE TABLE `donation` (
   UNIQUE KEY `CODE_UNIQUE` (`code`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;
 
-CREATE TABLE `donate` (
+CREATE TABLE `user_donation` (
   `id` int NOT NULL AUTO_INCREMENT,
   `created_date` varchar(100) DEFAULT null,
   `money` int DEFAULT 0,

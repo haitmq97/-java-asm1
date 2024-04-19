@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import me.haitmq.spring.mvc.crud.entity.Donate;
+import me.haitmq.spring.mvc.crud.entity.UserDonation;
 import me.haitmq.spring.mvc.crud.entity.Donation;
 import me.haitmq.spring.mvc.crud.entity.User;
-import me.haitmq.spring.mvc.crud.service.DonateService;
+import me.haitmq.spring.mvc.crud.service.UserDonationService;
 import me.haitmq.spring.mvc.crud.service.DonationService;
 import me.haitmq.spring.mvc.crud.service.UserService;
 
@@ -31,7 +31,7 @@ public class HomeController {
 	private UserService userService;
 
 	@Autowired
-	private DonateService donateService;
+	private UserDonationService userDonationService;
 
 	@Autowired
 	private DonationService donationService;
@@ -45,8 +45,8 @@ public class HomeController {
 	 * System.out.println("====================> current user id: " +currentUserId);
 	 * theModel.addAttribute("userId", currentUserId);
 	 * 
-	 * // update all money donation from donate for sure
-	 * donateService.updateAllMoney();
+	 * // update all money donation from userDonation for sure
+	 * userDonationService.updateAllMoney();
 	 * 
 	 * return "public/home"; // return "user/donationList"; } catch (Exception e) {
 	 * e.printStackTrace(); return "common/error-page"; }
@@ -281,7 +281,7 @@ public class HomeController {
 		}
 
 		System.out.println("=============>>>> test 4");
-		theModel.addAttribute("donate", new Donate());
+		theModel.addAttribute("userDonation", new UserDonation());
 
 		// add process form link to model
 		theModel.addAttribute("process", "processDonating");
@@ -296,7 +296,7 @@ public class HomeController {
 	}
 
 	@GetMapping("donateForm")
-	public String donateForm(HttpServletRequest request, @RequestParam("id") int donationId, Model theModel) {
+	public String userDonationForm(HttpServletRequest request, @RequestParam("id") int donationId, Model theModel) {
 		try {
 			// get current user id and role
 			HttpSession session = request.getSession();
@@ -305,8 +305,8 @@ public class HomeController {
 			if (currentUserId == null) {
 				return "redirect:/v1/home";
 			}
-			// add new Donate obj to the model
-			theModel.addAttribute("donate", new Donate());
+			// add new UserDonation obj to the model
+			theModel.addAttribute("userDonation", new UserDonation());
 
 			// add process form link to model
 			theModel.addAttribute("process", "processDonating");
@@ -317,27 +317,31 @@ public class HomeController {
 			// return view
 			return "user/donate-form";
 		} catch (Exception e) {
-			// log.error("DonateController ERROR - donateForm(): ", e);
+			// log.error("UserDonationController ERROR - userDonationForm(): ", e);
 			return "common/error-page";
 		}
 	}
 
 	@PostMapping("/processDonating")
-	public String processDonating(HttpServletRequest request, @ModelAttribute("donate") Donate donate,
+	public String processDonating(HttpServletRequest request, @ModelAttribute("userDonation") UserDonation userDonation,
 			@RequestParam("donationId") int donationId) {
-
+		System.out.println("=================>>>>>>>>>>>>>>>>>>>>>> in processDonating");
 		try {
 			HttpSession session = request.getSession();
 			Integer currentUserId = (Integer) session.getAttribute("currentUserId");
-
+			System.out.println("=================>>>>>>>>>>>>>>>>>>>>>> in processDonating: currentUserid: " +currentUserId);
 			User user = userService.getUser(currentUserId);
+			System.out.println("=================>>>>>>>>>>>>>>>>>>>>>> in processDonating: currentUser: " +user);
 			Donation donation = donationService.getDonation(donationId);
-			donate.setUser(user);
-			donate.setDonation(donation);
-			donateService.save(donate);
+			System.out.println("=================>>>>>>>>>>>>>>>>>>>>>> in processDonating: donation: " +donation);
+			userDonation.setUser(user);
+			userDonation.setDonation(donation);
+			
+			System.out.println("=================>>>>>>>>>>>>>>>>>>>>>> in processDonating: userDonation: " +userDonation);
+			userDonationService.save(userDonation);
 			return "redirect:/v1/home";
 		} catch (Exception e) {
-			// log.error("DonateController ERROR - processDonating(): ", e);
+			// log.error("UserDonationController ERROR - processDonating(): ", e);
 			return "common/error-page";
 		}
 	}

@@ -1,6 +1,10 @@
 package me.haitmq.spring.mvc.crud.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -10,11 +14,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import me.haitmq.spring.mvc.crud.utils.status.UserStatus;
 import me.haitmq.spring.mvc.crud.validation.EmailFormat;
 import me.haitmq.spring.mvc.crud.validation.PhoneNumberFormat;
 
@@ -56,7 +64,7 @@ public class User {
 	private String address;
 	
 	@Column(name = "status")
-	private int status;
+	private UserStatus status;
 	
 	@Column(name = "created_date")
 	private String createdDate;
@@ -70,6 +78,15 @@ public class User {
 	@JoinColumn(name = "role_id")
 	private Role role;
 	
+	/*
+	@ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+	@JoinTable(name="user_donation", joinColumns = { @JoinColumn(name= "donation_id") })
+	Set<Donation> donations = new HashSet<Donation>();
+	*/
+	
+	
+	@OneToMany(mappedBy = "user", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
+	private List<UserDonation> userDonations = new ArrayList<>();
 	
 	
 	//constructor
@@ -134,11 +151,11 @@ public class User {
 		this.address = address;
 	}
 
-	public int getStatus() {
+	public UserStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(int status) {
+	public void setStatus(UserStatus status) {
 		this.status = status;
 	}
 
@@ -166,6 +183,17 @@ public class User {
 
 	public void setRole(Role role) {
 		this.role = role;
+	}
+	
+	
+	
+
+	public List<UserDonation> getUserDonations() {
+		return userDonations;
+	}
+
+	public void setUserDonations(List<UserDonation> userDonations) {
+		this.userDonations = userDonations;
 	}
 
 	@Override

@@ -1,13 +1,20 @@
 package me.haitmq.spring.mvc.crud.entity;
 
-import java.util.Date;
+import java.util.ArrayList;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import me.haitmq.spring.mvc.crud.utils.status.DonationStatus;
 
 @Entity
 @Table(name = "donation")
@@ -41,7 +48,7 @@ public class Donation {
 	private String description;
 	
 	@Column(name = "status")
-	private int status;
+	private DonationStatus status;
 	
 	@Column(name = "start_date")
 	private String startDate;
@@ -49,11 +56,16 @@ public class Donation {
 	@Column(name = "end_date")
 	private String endDate;
 	
-	@Column(name="donation_number")
-	private int donationNumber;
+	@Column(name="donation_quantity")
+	private int donationQuantity;
 	
 	@Column(name = "showing")
 	private boolean showing;
+	
+	
+	@OneToMany(mappedBy = "donation", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
+	private List<UserDonation> userDonations = new ArrayList<>();
+	
 	
 	//constructor
 	public Donation() {
@@ -124,11 +136,11 @@ public class Donation {
 		this.description = description;
 	}
 
-	public int getStatus() {
+	public DonationStatus getStatus() {
 		return status;
 	}
 
-	public void setStatus(int status) {
+	public void setStatus(DonationStatus status) {
 		this.status = status;
 	}
 
@@ -148,12 +160,12 @@ public class Donation {
 		this.endDate = endDate;
 	}
 
-	public int getDonationNumber() {
-		return donationNumber;
+	public int getDonationQuantity() {
+		return donationQuantity;
 	}
 
-	public void setDonationNumber(int donationNumber) {
-		this.donationNumber = donationNumber;
+	public void setDonationNumber(int donationQuantity) {
+		this.donationQuantity = donationQuantity;
 	}
 
 	public boolean getShowing() {
@@ -163,13 +175,25 @@ public class Donation {
 	public void setShowing(boolean showing) {
 		this.showing = showing;
 	}
+	
+	
+	
+	
+
+	public List<UserDonation> getUserDonations() {
+		return userDonations;
+	}
+
+	public void setUserDonations(List<UserDonation> userDonations) {
+		this.userDonations = userDonations;
+	}
 
 	@Override
 	public String toString() {
 		return "Donation [id=" + id + ", code=" + code + ", name=" + name + ", phoneNumber=" + phoneNumber
 				+ ", organization=" + organization + ", createdDate=" + createdDate + ", money=" + money
 				+ ", description=" + description + ", status=" + status + ", startDate=" + startDate + ", endDate="
-				+ endDate + ", donationNumber=" + donationNumber + ", showing=" + showing + "]";
+				+ endDate + ", donationQuantity=" + donationQuantity + ", showing=" + showing + "]";
 	}
 	
 	

@@ -13,11 +13,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import me.haitmq.spring.mvc.crud.dao.DonateDAO;
+import me.haitmq.spring.mvc.crud.dao.UserDonationDAO;
 import me.haitmq.spring.mvc.crud.dao.DonationDAO;
 import me.haitmq.spring.mvc.crud.entity.Donation;
 
 import me.haitmq.spring.mvc.crud.utils.*;
+import me.haitmq.spring.mvc.crud.utils.status.DonationStatus;
 
 
 @Service
@@ -29,7 +30,7 @@ public class DonationServiceImpl implements DonationService {
 	private DonationDAO donationDAO;
 	
 	@Autowired
-	private DonateService donateService;
+	private UserDonationService userDonationService;
 	
 	
 	// save donation obj
@@ -51,7 +52,7 @@ public class DonationServiceImpl implements DonationService {
 		 */
 		if(donation.getCreatedDate() == null) {
 			donation.setCreatedDate(Time.getCurrentDateTime());
-			donation.setStatus(0);
+			donation.setStatus(DonationStatus.NEW);
 		}
 		System.out.println("================>> donation service iml: test 1");
 
@@ -65,7 +66,7 @@ public class DonationServiceImpl implements DonationService {
 	
 	@Override
 	@Transactional
-	public void addMoneyFromDonateToDonation(Long moneyAmount, int donationId) {
+	public void addMoneyFromUserDonationToDonation(Long moneyAmount, int donationId) {
 		Donation donation = donationDAO.getDontaion(donationId);
 		donation.setMoney(donation.getMoney()+moneyAmount);
 		donationDAO.saveOrUpdate(donation);
@@ -73,7 +74,7 @@ public class DonationServiceImpl implements DonationService {
 	}
 	
 	@Override
-	public void changeDonationStatus(int status, int donationId) {
+	public void changeDonationStatus(DonationStatus status, int donationId) {
 		 
 		/*
 		try {
@@ -120,12 +121,12 @@ public class DonationServiceImpl implements DonationService {
 	}
 
 	@Override
-	public void updateAllMoneyDonatetoDonation(int donationId) {
+	public void updateAllMoneyUserDonationtoDonation(int donationId) {
 		try {
 			Donation donation = donationDAO.getDontaion(donationId);
-			donation.setMoney(donateService.getTotalMoneyByDonationId(donationId));
+			donation.setMoney(userDonationService.getTotalMoneyByDonationId(donationId));
 		} catch (Exception e) {
-			//log.error("DonationService ERROR - updateAllMoneyDonatetoDonation(): ", e);
+			//log.error("DonationService ERROR - updateAllMoneyUserDonationtoDonation(): ", e);
 		}
 		
 	}
@@ -279,7 +280,7 @@ public class DonationServiceImpl implements DonationService {
 	}
 	
 	
-	private boolean isAbleToDonate(int theId) {
+	private boolean isAbleToUserDonation(int theId) {
 		Donation donation = getDonation(theId);
 		if(donation.getStatus() == 1) {
 			return true;

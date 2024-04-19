@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import me.haitmq.spring.mvc.crud.entity.Donate;
+import me.haitmq.spring.mvc.crud.entity.UserDonation;
 import me.haitmq.spring.mvc.crud.entity.Donation;
 import me.haitmq.spring.mvc.crud.entity.User;
-import me.haitmq.spring.mvc.crud.service.DonateService;
+import me.haitmq.spring.mvc.crud.service.UserDonationService;
 import me.haitmq.spring.mvc.crud.service.DonationService;
 import me.haitmq.spring.mvc.crud.service.UserService;
 
@@ -29,7 +29,7 @@ public class AdminController {
 	private UserService userService;
 
 	@Autowired
-	private DonateService donateService;
+	private UserDonationService userDonationService;
 
 	@Autowired
 	private DonationService donationService;
@@ -41,7 +41,7 @@ public class AdminController {
 
 		return "admin/manager";
 	}
-
+/*
 	@GetMapping("/manager3")
 	public String managerPage3(
 			@RequestParam(name = "tableOut", defaultValue = "donations", required = false) String tableOut,
@@ -53,12 +53,12 @@ public class AdminController {
 		} else if (tableOut.equals("users")) {
 			theModel.addAttribute("tableC", "/admin/users");
 		} else {
-			theModel.addAttribute("tableC", "/admin/donates");
+			theModel.addAttribute("tableC", "/admin/userDonations");
 		}
 
 		return "admin/manager2";
 	}
-
+*/
 	@GetMapping("/donations")
 	public String donationlist(HttpServletRequest request, @RequestParam(defaultValue = "1") int page,
 			@RequestParam(name = "size", defaultValue = "5") int size,
@@ -405,10 +405,10 @@ public class AdminController {
 	
 	
 	
-	////// donate
+	////// userDonation
 	
-	@GetMapping("/donates")
-	public String donateList(HttpServletRequest request, @RequestParam(defaultValue = "1") int page,
+	@GetMapping("/userDonations")
+	public String userDonationList(HttpServletRequest request, @RequestParam(defaultValue = "1") int page,
 			@RequestParam(name = "size", defaultValue = "5") int size,
 			@RequestParam(name = "searchingValue", defaultValue = "", required = false) String searchingValue,
 			Model theModel) {
@@ -422,21 +422,21 @@ public class AdminController {
 			}
 			
 
-			Page<Donate> donates = donateService.findAll(page, size);
+			Page<UserDonation> userDonations = userDonationService.findAll(page, size);
 
 			if (!searchingValue.equals("")) {
-				donates = donateService.findAllSortByStatusByCreatedDate(page, size);
+				userDonations = userDonationService.findAllSortByStatusByCreatedDate(page, size);
 				theModel.addAttribute("searchingValue", searchingValue);
 			}
 
-			for (Donate donate : donates) {
-				System.out.println(donate);
+			for (UserDonation userDonation : userDonations) {
+				System.out.println(userDonation);
 			}
 
-			theModel.addAttribute("donates", donates);
+			theModel.addAttribute("userDonations", userDonations);
 
 			theModel.addAttribute("currentPage", page);
-			theModel.addAttribute("totalPage", donates.getTotalPages());
+			theModel.addAttribute("totalPage", userDonations.getTotalPages());
 
 			theModel.addAttribute("currentSize", size);
 
@@ -449,43 +449,43 @@ public class AdminController {
 
 			theModel.addAttribute("prevPage", prevPage);
 			System.out.println("current page" + page);
-			System.out.println("total page: " + donates.getTotalPages());
-			if (page >= (donates.getTotalPages())) {
-				nextPage = donates.getTotalPages();
+			System.out.println("total page: " + userDonations.getTotalPages());
+			if (page >= (userDonations.getTotalPages())) {
+				nextPage = userDonations.getTotalPages();
 			}
 
 			theModel.addAttribute("nextPage", nextPage);
 
 //			return "user/donationList";
 
-			return "admin/donate-table";
+			return "admin/userDonation-table";
 		} catch (Exception e) {
-			// log.error("DonateController ERROR - list(): ", e);
+			// log.error("UserDonationController ERROR - list(): ", e);
 			return "common/error-page";
 		}
 	}
 	
-	@GetMapping("donateStatusComfirm")
+	@GetMapping("userDonationStatusComfirm")
 	public String statusProcessing(@RequestParam("id")int theId) {
-		donateService.donateComfirm(theId);
-		return "redirect:/admin/donates";
+		userDonationService.userDonationComfirm(theId);
+		return "redirect:/admin/userDonations";
 	}
 	
 
-	@GetMapping("/deleteDonate")
-	public String deleteDonate(@RequestParam("id") int theId) {
-		donateService.delete(theId);
+	@GetMapping("/deleteUserDonation")
+	public String deleteUserDonation(@RequestParam("id") int theId) {
+		userDonationService.delete(theId);
 	
 	
 	
-		return "redirect:/admin/donates";
+		return "redirect:/admin/userDonations";
 	}
 	/*
-	@GetMapping("/deleteDonate")
-	public String deleteDonate(@RequestParam("id") int theId) {
-		donateService.changeDonateShowingStatus(theId);
+	@GetMapping("/deleteUserDonation")
+	public String deleteUserDonation(@RequestParam("id") int theId) {
+		userDonationService.changeUserDonationShowingStatus(theId);
 	
-		return "redirect:/admin/donates";
+		return "redirect:/admin/userDonations";
 	}
 	 */
 	
