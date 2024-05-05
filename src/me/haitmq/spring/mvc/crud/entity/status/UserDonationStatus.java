@@ -1,4 +1,4 @@
-package me.haitmq.spring.mvc.crud.utils.status;
+package me.haitmq.spring.mvc.crud.entity.status;
 
 public enum UserDonationStatus {
 	WAITING,

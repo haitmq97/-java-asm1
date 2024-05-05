@@ -5,6 +5,8 @@ package me.haitmq.spring.mvc.crud.entity;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
+import javax.persistence.EnumType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -12,7 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import me.haitmq.spring.mvc.crud.utils.status.UserDonationStatus;
+import me.haitmq.spring.mvc.crud.entity.status.UserDonationStatus;
 
 @Entity
 @Table(name = "user_donation")
@@ -33,6 +35,7 @@ public class UserDonation {
 	@Column(name = "money")
 	private long money;
 	
+	@Enumerated(EnumType.STRING)
 	@Column(name = "status")
 	private UserDonationStatus status;
 	

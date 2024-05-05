@@ -2,10 +2,14 @@ package me.haitmq.spring.mvc.crud.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import me.haitmq.spring.mvc.crud.entity.role.UserRole;
 
 @Entity
 @Table(name = "role")
@@ -17,8 +21,9 @@ public class Role {
 	@Column(name = "id")
 	private int id;
 	
+	@Enumerated(EnumType.STRING)
 	@Column(name = "role_name")
-	private String roleName;
+	private UserRole roleName;
 	
 	// constructor
 	
@@ -26,7 +31,7 @@ public class Role {
 		
 	}
 
-	public Role(String roleName) {
+	public Role(UserRole roleName) {
 		this.roleName = roleName;
 	}
 
@@ -40,11 +45,11 @@ public class Role {
 		this.id = id;
 	}
 
-	public String getRoleName() {
+	public UserRole getRoleName() {
 		return roleName;
 	}
 
-	public void setRoleName(String roleName) {
+	public void setRoleName(UserRole roleName) {
 		this.roleName = roleName;
 	}
 

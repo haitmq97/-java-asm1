@@ -18,6 +18,9 @@ import me.haitmq.spring.mvc.crud.entity.UserDonation;
 import me.haitmq.spring.mvc.crud.entity.Donation;
 import me.haitmq.spring.mvc.crud.entity.User;
 import me.haitmq.spring.mvc.crud.utils.Time;
+import me.haitmq.spring.mvc.crud.entity.status.DonationStatus;
+import me.haitmq.spring.mvc.crud.entity.status.UserDonationStatus;
+import me.haitmq.spring.mvc.crud.entity.status.UserStatus;
 
 @Service
 public class UserDonationServiceImpl implements UserDonationService {
@@ -36,8 +39,8 @@ public class UserDonationServiceImpl implements UserDonationService {
 	@Override
 	@Transactional
 	public void save(UserDonation userDonation) {
-		int userStatus = userDonation.getUser().getStatus();
-		int donationStatus = userDonation.getDonation().getStatus();
+		UserStatus userStatus = userDonation.getUser().getStatus();
+		DonationStatus donationStatus = userDonation.getDonation().getStatus();
 		System.out.println("=================>>>>>>>>>>>>>>>>>>>>>> in userdonation service - save method");
 		System.out.println("=================>>>>>>>>>>>>>>>>>>>>>> in userdonation service - save method: " + userDonation);
 		
@@ -46,6 +49,7 @@ public class UserDonationServiceImpl implements UserDonationService {
 			if(userDonation.getCreatedDate()==null) {
 				System.out.println("=================>>>>>>>>>>>>>>>>>>>>>> in userdonation service - save method: (isableto donate)- (in check date created) " + userDonation);
 				userDonation.setCreatedDate(Time.getCurrentDateTime());
+				userDonation.setStatus(UserDonationStatus.WAITING);
 			}
 			System.out.println("=================>>>>>>>>>>>>>>>>>>>>>> in userdonation service - save method: (isableto donate)- (in check date created) (false)" + userDonation);
 			userDonationDAO.save(userDonation);
@@ -178,7 +182,7 @@ public class UserDonationServiceImpl implements UserDonationService {
 	public boolean isAbletoUserDonation(User user, Donation donation) {
 		System.out.println("===================> in isable: user status: " + user.getStatus());
 		System.out.println("===================> in isable: donation status: " + donation.getStatus());
-		if(user.getStatus() == 1 && donation.getStatus() == 1) {
+		if(user.getStatus() == UserStatus.ACTIVE && donation.getStatus() == DonationStatus.DONATING) {
 			System.out.println("===================> in isable: (true)");
 			return true;
 		}
@@ -190,7 +194,7 @@ public class UserDonationServiceImpl implements UserDonationService {
 	@Transactional
 	public void userDonationComfirm(int userDonationId) {
 		UserDonation userDonation = userDonationDAO.getUserDonation(userDonationId);
-		userDonation.setStatus(1);
+		userDonation.setStatus(UserDonationStatus.CONFIRMED);
 		donationService.addMoneyFromUserDonationToDonation(userDonation.getMoney(), userDonation.getDonation().getId());
 		userDonationDAO.update(userDonation);
 	}

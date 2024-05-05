@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 import me.haitmq.spring.mvc.crud.dao.UserDAO;
 import me.haitmq.spring.mvc.crud.entity.Role;
 import me.haitmq.spring.mvc.crud.entity.User;
+import me.haitmq.spring.mvc.crud.entity.role.UserRole;
 import me.haitmq.spring.mvc.crud.utils.Time;
+import me.haitmq.spring.mvc.crud.entity.status.UserStatus;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -27,11 +29,34 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public void saveOrUpdate(User user) {
 		
-		//  them ngay tao va status ban dau
-		if(user.getCreatedDate()==null) {
-			user.setCreatedDate(Time.getCurrentDateTime());
-			user.setStatus(1);
+		
+		
+		// giu nguyen cac truong không cập nhật
+
+		if(user.getId() != 0) {
+			User existingUser = userDAO.getUser(user.getId());
+			
+			user.setRole(existingUser.getRole());
+			
+			user.setPassword(existingUser.getPassword());
+			user.setStatus(existingUser.getStatus());
+			user.setCreatedDate(existingUser.getCreatedDate());
+			user.setShowing(existingUser.getShowing());
+			System.out.println("==================================>>>>>>>>service existing user: " + existingUser);
 		}
+		
+		
+		
+		System.out.println("==================================>>>>>>>> test here in service");
+
+		System.out.println("==================================>>>>>>>>service user: " + user);
+
+		
+	//  them ngay tao va status ban dau
+			if(user.getCreatedDate()==null) {
+				user.setCreatedDate(Time.getCurrentDateTime());
+				user.setStatus(UserStatus.ACTIVE);
+			}
 		
 		userDAO.saveOrUpdate(user);
 	}
@@ -45,10 +70,12 @@ public class UserServiceImpl implements UserService {
 		//  them ngay tao va status ban dau
 		if(user.getCreatedDate()==null) {
 			user.setCreatedDate(Time.getCurrentDateTime());
-			user.setStatus(1);
-			user.setRole(new Role("user"));
+			user.setStatus(UserStatus.ACTIVE);
+			user.setRole(new Role(UserRole.USER));
 			user.setShowing(true);
 		}
+		
+		
 		
 		userDAO.saveOrUpdate(user);
 	}
@@ -62,7 +89,7 @@ public class UserServiceImpl implements UserService {
 		// get user by id
 		User user = userDAO.getUser(userId);
 		// set user status
-		user.setStatus(user.getStatus()== 1 ? 0: 1);
+		user.setStatus(user.getStatus()== UserStatus.ACTIVE ? UserStatus.LOCKED: UserStatus.ACTIVE);
 		userDAO.saveOrUpdate(user);
 	}
 
@@ -197,7 +224,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional
 	public boolean isAdmin(User user) {
-		if(user.getRole().getRoleName().toLowerCase().equals("admin")) {
+		if(user.getRole().getRoleName()== UserRole.USER.ADMIN) {
 			return true;
 		}
 		return false;
@@ -207,7 +234,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional
 	public boolean isAdmin(int theId) {
-		if(userDAO.getUser(theId).getRole().getRoleName().equals("admin")) {
+		if(userDAO.getUser(theId).getRole().getRoleName()== UserRole.USER.ADMIN) {
 			return true;
 		}
 		return false;

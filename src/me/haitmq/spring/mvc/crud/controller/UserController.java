@@ -26,8 +26,11 @@ import org.springframework.web.servlet.ModelAndView;
 import me.haitmq.spring.mvc.crud.entity.Donation;
 import me.haitmq.spring.mvc.crud.entity.Role;
 import me.haitmq.spring.mvc.crud.entity.User;
+import me.haitmq.spring.mvc.crud.entity.UserDonation;
+import me.haitmq.spring.mvc.crud.service.UserDonationService;
 import me.haitmq.spring.mvc.crud.service.UserService;
 import me.haitmq.spring.mvc.crud.utils.Time;
+import me.haitmq.spring.mvc.crud.entity.status.UserStatus;
 
 @Controller
 @RequestMapping("/user")
@@ -35,6 +38,9 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private UserDonationService userDonationService;
 
 	/*
 	 * @GetMapping("/list") public String list(Model theModel) { // get customer
@@ -391,13 +397,14 @@ public class UserController {
 	}
 	
 	@PostMapping("/processUpdate")
-	public String processUpdate(@ModelAttribute("user") User theUser) {
+	public String processUpdate(@ModelAttribute("user") User theUser,
+			@RequestParam(name="currentUrl", defaultValue = "/user/profile") String currentUrl) {
 		
 		
 		
  		userService.saveOrUpdate(theUser);
 		
-		return "redirect:/user/list";
+		return "redirect:" + currentUrl;
 	}
 	
 	@GetMapping("/changeStatus")
@@ -406,7 +413,7 @@ public class UserController {
 		
 		
 		User theUser = userService.getUser(userId);
-		theUser.setStatus((theUser.getStatus() == 1? 0: 1));
+		theUser.setStatus((theUser.getStatus() == UserStatus.ACTIVE? UserStatus.LOCKED: UserStatus.ACTIVE));
 		userService.saveOrUpdate(theUser);
 		return "redirect:/user/list";
 	}
@@ -433,18 +440,48 @@ public class UserController {
 	
 	@GetMapping("/profile")
 	public String userProfile(HttpServletRequest request, Model theModel) {
-		try {
-			HttpSession session = request.getSession();
-			Integer currentUserId = (Integer) session.getAttribute("currentUserId");
-			
-			User user = userService.getUser(currentUserId);
-	 		
-			theModel.addAttribute("user", user);
+		HttpSession session = request.getSession();
+		Integer currentUserId = (Integer) session.getAttribute("currentUserId");
+		
+		
+		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> current user id: " + currentUserId);
+		User user = userService.getUser(currentUserId);
+ 		
+		theModel.addAttribute("user", user);
+		
+		theModel.addAttribute("process", "processUpdate");
+		
+		// nav and authorites model attributes
+		
+		
 
-			return "user/user-profile";
-		} catch (Exception e) {
-			return "common/error-page";
+
+		System.out.println("=======================>>>>>>>>>>>>>>> home page Current userId :" + currentUserId);
+		
+		
+		Boolean isLogined = false;
+		Boolean isAuthorities = false; 
+		
+		if(currentUserId != null) {
+			isLogined = true;
+			if (userService.isAdmin((int) currentUserId)) {
+				isAuthorities = true;
+			}
 		}
+		
+		theModel.addAttribute("isLogined", isLogined);
+		theModel.addAttribute("authorities", isAuthorities);
+		
+		
+		
+		
+		// userDonaion list
+
+		List<UserDonation> userDonations = userDonationService.getUserDonationByUserId(currentUserId);
+		theModel.addAttribute("userDonations", userDonations);
+		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>   test: " + userDonations);
+			
+		return "user/user-profile";
 	}
 	
 }	

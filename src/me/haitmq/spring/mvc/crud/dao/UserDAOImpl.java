@@ -75,9 +75,20 @@ public class UserDAOImpl implements UserDAO {
 	public void saveOrUpdate(User user) {
 		Session session = sessionFactory.getCurrentSession();
 		Role role = user.getRole();
-
-		// session.saveOrUpdate(role);
+		System.out.println("==================================>>>>>>>>dao role: " + role);
+		System.out.println("==================================>>>>>>>> test here in dao");
+		System.out.println("==================================>>>>>>>>dao: " + user);
+		try {
+			
+			session.evict(session.get(User.class, user.getId()));
+		} catch (Exception e) {
+			// 
+		}
+		
 		session.saveOrUpdate(user);
+
+//		session.merge(user);
+
 
 	}
 

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 
 import me.haitmq.spring.mvc.crud.entity.Donation;
+import me.haitmq.spring.mvc.crud.entity.status.DonationStatus;
 
 public interface DonationService {
 	
@@ -37,7 +38,7 @@ public interface DonationService {
 	public void saveOrUpdate(Donation donation);
 	
 	// update donation obj
-	public void changeDonationStatus(int status, int donationId);
+	public void changeDonationStatus(DonationStatus status, int donationId);
 	
 	public void changeDonationShowingStatus(int donationid);
 	

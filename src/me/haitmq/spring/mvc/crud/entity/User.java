@@ -1,33 +1,36 @@
 package me.haitmq.spring.mvc.crud.entity;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
+
 import java.util.List;
-import java.util.Set;
+
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
+import javax.persistence.EnumType;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-import me.haitmq.spring.mvc.crud.utils.status.UserStatus;
+import org.hibernate.annotations.DynamicUpdate;
+
+import me.haitmq.spring.mvc.crud.entity.status.UserStatus;
 import me.haitmq.spring.mvc.crud.validation.EmailFormat;
 import me.haitmq.spring.mvc.crud.validation.PhoneNumberFormat;
 
 
 @Entity
+@DynamicUpdate
+// vấn đề về hiệu suất nếu bảng dữ liệu lớn
 @Table(name = "user")
 public class User {
 	
@@ -63,6 +66,7 @@ public class User {
 	@Column(name = "address")
 	private String address;
 	
+	@Enumerated(EnumType.STRING)
 	@Column(name = "status")
 	private UserStatus status;
 	

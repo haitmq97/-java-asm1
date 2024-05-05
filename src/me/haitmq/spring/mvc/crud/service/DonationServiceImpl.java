@@ -18,7 +18,7 @@ import me.haitmq.spring.mvc.crud.dao.DonationDAO;
 import me.haitmq.spring.mvc.crud.entity.Donation;
 
 import me.haitmq.spring.mvc.crud.utils.*;
-import me.haitmq.spring.mvc.crud.utils.status.DonationStatus;
+import me.haitmq.spring.mvc.crud.entity.status.DonationStatus;
 
 
 @Service
@@ -140,7 +140,7 @@ public class DonationServiceImpl implements DonationService {
 
 	private boolean isAbleToDelete(int theId) {
 		Donation donation = getDonation(theId);
-		if(donation.getStatus() == 0) {
+		if(donation.getStatus() == DonationStatus.NEW) {
 			return true;
 		}
 		return false;

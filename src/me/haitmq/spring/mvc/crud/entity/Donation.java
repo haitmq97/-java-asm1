@@ -7,6 +7,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
+import javax.persistence.EnumType;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,7 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import me.haitmq.spring.mvc.crud.utils.status.DonationStatus;
+import me.haitmq.spring.mvc.crud.entity.status.DonationStatus;
 
 @Entity
 @Table(name = "donation")
@@ -47,6 +49,7 @@ public class Donation {
 	@Column(name = "description")
 	private String description;
 	
+	@Enumerated(EnumType.STRING)
 	@Column(name = "status")
 	private DonationStatus status;
 	

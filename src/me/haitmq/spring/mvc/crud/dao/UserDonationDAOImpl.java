@@ -137,7 +137,7 @@ public class UserDonationDAOImpl implements UserDonationDAO {
 	@Override
 	public List<UserDonation> getUserDonationByUserId(int theId) {
 		Session session = sessionFactory.getCurrentSession();
-		Query<UserDonation> theQuery = session.createQuery("from UserDonation ud where ud.user=:theId", UserDonation.class);
+		Query<UserDonation> theQuery = session.createQuery("from UserDonation ud where ud.user.id=:theId", UserDonation.class);
 		theQuery.setParameter("theId", theId);
 		return theQuery.getResultList();
 	}

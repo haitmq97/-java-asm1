@@ -63,6 +63,7 @@ public class AdminController {
 	public String donationlist(HttpServletRequest request, @RequestParam(defaultValue = "1") int page,
 			@RequestParam(name = "size", defaultValue = "5") int size,
 			@RequestParam(name = "searchingValue", defaultValue = "", required = false) String searchingValue,
+			@RequestParam(name = "donationId", defaultValue = "0") int donationId,
 			Model theModel) {
 		try {
 			HttpSession session = request.getSession();
@@ -101,6 +102,64 @@ public class AdminController {
 			}
 
 			theModel.addAttribute("nextPage", nextPage);
+			
+			
+			// authorities
+			
+
+
+			System.out.println("=======================>>>>>>>>>>>>>>> home page Current userId :" + currentUserId);
+			
+			
+			Boolean isLogined = false;
+			Boolean isAuthorities = false; 
+			
+			if(currentUserId != null) {
+				isLogined = true;
+				if (userService.isAdmin((int) currentUserId)) {
+					isAuthorities = true;
+				}
+			}
+			
+			theModel.addAttribute("isLogined", isLogined);
+			theModel.addAttribute("authorities", isAuthorities);
+			
+			
+			// donate form model attribute
+			
+			
+			Donation donation = new Donation();
+			
+			theModel.addAttribute("donationId", donationId);
+			
+			String processString = "processAdd";
+			
+			
+			if(donationId != 0) {
+				donation = donationService.getDonation(donationId);
+				
+				
+				theModel.addAttribute("donationName", donation.getName());
+				theModel.addAttribute("donationCode", donation.getCode());
+				processString = "processUpdate";
+			}
+
+
+			
+			System.out.println("=============>>>> test 4");
+			theModel.addAttribute("userDonation", new UserDonation());
+
+			// add process form link to model
+			theModel.addAttribute("process", "processDonating");
+
+			// add donationId to the model (for process form)
+
+			
+			
+			// donation add form model attribute
+			
+			theModel.addAttribute("addDonation", donation);
+			theModel.addAttribute("processAdd", processString);
 
 //			return "user/donationList";
 			return "admin/donation-table";
@@ -252,7 +311,8 @@ public class AdminController {
 	
 	
 	@GetMapping("/addDonation")
-	public String addDonation(Model theModel) {
+	public String addDonation(
+			Model theModel) {
 		Donation donation = new Donation();
 		
 		theModel.addAttribute("process", "processAdd");
@@ -268,17 +328,28 @@ public class AdminController {
  		donationService.saveOrUpdate(theDonation);
 		
 
-		return "redirect:/admin/donations2";
+		return "redirect:/admin/donations";
 	}
 	
 	
 	
 	
 	@GetMapping("/deleteDonation")
-	public String delete(@RequestParam("id") int donationId) {
+	public String delete(@RequestParam("id") int donationId, 
+			@RequestParam(name="currentUrl", defaultValue = "/v1/home") String currentUrl) {
 		donationService.delete(donationId);
 		
-		return "redirect:/admin/donations2";
+		return "redirect:" + currentUrl;
+		
+	}
+	
+	
+	@GetMapping("/deleteTestDonation")
+	public String deleteTest(@RequestParam("id") int donationId, 
+			@RequestParam(name="currentUrl", defaultValue = "/v1/home") String currentUrl) {
+		
+		
+		return "redirect:" + currentUrl;
 		
 	}
 	

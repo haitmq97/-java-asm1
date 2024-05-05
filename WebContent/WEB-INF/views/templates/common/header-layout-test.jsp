@@ -35,12 +35,11 @@
 								</button>
 								
 								 --%>
-								 
-								 
-								 
-								
-								<div class="user-l-btn d-inline-block">
-									<div class="btn-group" id="manager-btn">
+								<% boolean isMngBtnShowing = (Boolean)request.getAttribute("authorities"); %>
+								<% boolean isLogined = (Boolean)request.getAttribute("isLogined"); %>
+    							<% if (isMngBtnShowing) { %>
+        							<div class="user-l-btn d-inline-block">
+									<div class="btn-group" id="mng-btn">
 										<button type="button"
 											class="btn dropdown-toggle none-outline-btn-custom"
 											data-bs-toggle="dropdown" data-bs-display="static"
@@ -69,6 +68,12 @@
 									</div>
 									
 								</div>
+    							<% } %>
+								 
+								 
+								 
+								
+								
 								
 								
 								
@@ -76,6 +81,7 @@
 
 							<li class="nav-item">
 								<div class="user-l-btn">
+									<% if (isLogined) { %>
 									<div class="btn-group" id="user-btn">
 										<button type="button"
 											class="btn dropdown-toggle none-outline-btn-custom"
@@ -99,6 +105,7 @@
 											</li>
 										</ul>
 									</div>
+									<% } else { %>
 									<div class="rs-b" id="rs-b">
 										<button class="btn custom-rs-btn"
 											onclick="window.location.href='${pageContext.request.contextPath}/v1/register'">
@@ -112,6 +119,10 @@
 												class="fa-solid fa-right-to-bracket"></i></span>
 										</button>
 									</div>
+									<% } %>
+									
+									
+									
 								</div>
 							</li>
 						</ul>
