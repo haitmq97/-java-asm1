@@ -1,9 +1,10 @@
 package me.haitmq.spring.mvc.crud.controller;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.springframework.aop.ThrowsAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import me.haitmq.spring.mvc.crud.entity.UserDonation;
+import me.haitmq.spring.mvc.crud.entity.status.DonationStatus;
+import me.haitmq.spring.mvc.crud.entity.status.UserDonationStatus;
+import me.haitmq.spring.mvc.crud.entity.status.UserStatus;
+import me.haitmq.spring.mvc.crud.content_path.ViewConstants;
 import me.haitmq.spring.mvc.crud.entity.Donation;
 import me.haitmq.spring.mvc.crud.entity.User;
 import me.haitmq.spring.mvc.crud.service.UserDonationService;
@@ -35,255 +40,116 @@ public class AdminController {
 	private DonationService donationService;
 
 
-
-	@GetMapping("/manager")
-	public String managerPage() {
-
-		return "admin/manager";
-	}
-/*
-	@GetMapping("/manager3")
-	public String managerPage3(
-			@RequestParam(name = "tableOut", defaultValue = "donations", required = false) String tableOut,
-			Model theModel) {
-		System.out.println("============>" + tableOut);
-		System.out.println("hello");
-		if (tableOut.equals("donations")) {
-			theModel.addAttribute("tableC", "/admin/donations");
-		} else if (tableOut.equals("users")) {
-			theModel.addAttribute("tableC", "/admin/users");
-		} else {
-			theModel.addAttribute("tableC", "/admin/userDonations");
-		}
-
-		return "admin/manager2";
-	}
-*/
+	// donation manager
 	@GetMapping("/donations")
 	public String donationlist(HttpServletRequest request, @RequestParam(defaultValue = "1") int page,
 			@RequestParam(name = "size", defaultValue = "5") int size,
 			@RequestParam(name = "searchingValue", defaultValue = "", required = false) String searchingValue,
-			@RequestParam(name = "donationId", defaultValue = "0") int donationId,
+			@RequestParam(name = "id", defaultValue = "0") int donationId,
 			Model theModel) {
+		
 		try {
+			
+			// kiểm tra quyền (isLogined, isAdmin) (bao gồm phần header)
+
 			HttpSession session = request.getSession();
 			Integer currentUserId = (Integer) session.getAttribute("currentUserId");
-			if (currentUserId == null) {
-				throw new RuntimeException("the error");
+
+			Boolean isLogined = false;
+
+			Boolean isAdmin = false;
+
+			if (currentUserId != null) {
+				isLogined = true;
+				isAdmin = userService.isAdmin(currentUserId);
+			} else {
+				throw new RuntimeException("the error: not admin");
 			}
 
-			System.out.println("size: " + size);
-			Page<Donation> donations = donationService.findAll(page, size);
+			theModel.addAttribute("isLogined", isLogined);
 
-			if (!searchingValue.equals("")) {
-				donations = donationService.findByPhoneNumberOrOrganizationOrCodeOrStatus(searchingValue, page, size);
-				theModel.addAttribute("searchingValue", searchingValue);
-			}
+			theModel.addAttribute("isAdmin", isAdmin);
+			
 
+
+			// Donations table
+			Page<Donation> donations = donationService.findByPhoneNumberOrOrganizationOrCodeOrStatus(searchingValue, page, size);
+
+			theModel.addAttribute("searchingValue", searchingValue);
+			
 			theModel.addAttribute("donations", donations);
 
 			theModel.addAttribute("currentPage", page);
+			
 			theModel.addAttribute("totalPage", donations.getTotalPages());
 
 			theModel.addAttribute("currentSize", size);
 
-			int nextPage = page + 1;
-			int prevPage = page - 1;
 
-			if (page <= 1) {
-				prevPage = 1;
-			}
-
-			theModel.addAttribute("prevPage", prevPage);
-			System.out.println("current page" + page);
-			System.out.println("total page: " + donations.getTotalPages());
-			if (page >= (donations.getTotalPages())) {
-				nextPage = donations.getTotalPages();
-			}
-
-			theModel.addAttribute("nextPage", nextPage);
+			// donation model attribute
 			
-			
-			// authorities
-			
-
-
-			System.out.println("=======================>>>>>>>>>>>>>>> home page Current userId :" + currentUserId);
-			
-			
-			Boolean isLogined = false;
-			Boolean isAuthorities = false; 
-			
-			if(currentUserId != null) {
-				isLogined = true;
-				if (userService.isAdmin((int) currentUserId)) {
-					isAuthorities = true;
-				}
-			}
-			
-			theModel.addAttribute("isLogined", isLogined);
-			theModel.addAttribute("authorities", isAuthorities);
-			
-			
-			// donate form model attribute
-			
+			// add or update
+			String donationProcess = "processAddDonation";
 			
 			Donation donation = new Donation();
 			
-			theModel.addAttribute("donationId", donationId);
-			
-			String processString = "processAdd";
-			
-			
-			if(donationId != 0) {
+			if(donationId!=0) {
 				donation = donationService.getDonation(donationId);
-				
-				
-				theModel.addAttribute("donationName", donation.getName());
-				theModel.addAttribute("donationCode", donation.getCode());
-				processString = "processUpdate";
+				donationProcess = "processUpdateDonation";
 			}
-
-
-			
-			System.out.println("=============>>>> test 4");
-			theModel.addAttribute("userDonation", new UserDonation());
-
-			// add process form link to model
-			theModel.addAttribute("process", "processDonating");
-
-			// add donationId to the model (for process form)
-
-			
-			
-			// donation add form model attribute
-			
-			theModel.addAttribute("addDonation", donation);
-			theModel.addAttribute("processAdd", processString);
-
-//			return "user/donationList";
-			return "admin/donation-table";
-		} catch (Exception e) {
-			return "common/error-page";
-		}
-
-	}
-
-	
-
-	/*
-	 * @GetMapping("/donations2") public String
-	 * donationlist2(@RequestParam(defaultValue = "1") int page,
-	 * 
-	 * @RequestParam(name = "size", defaultValue = "5") int size,
-	 * 
-	 * @RequestParam(name = "searchingValue", defaultValue = "", required = false)
-	 * String searchingValue, Model theModel) {
-	 * 
-	 * System.out.println("size: " + size); Page<Donation> donations =
-	 * donationService.findAll(page, size);
-	 * 
-	 * if (!searchingValue.equals("")) { donations =
-	 * donationService.findByPhoneNumberOrOrganizationOrCodeOrStatus(searchingValue,
-	 * page, size); theModel.addAttribute("searchingValue", searchingValue); }
-	 * 
-	 * theModel.addAttribute("donations", donations);
-	 * 
-	 * theModel.addAttribute("currentPage", page);
-	 * theModel.addAttribute("totalPage", donations.getTotalPages());
-	 * 
-	 * theModel.addAttribute("currentSize", size);
-	 * 
-	 * int nextPage = page + 1; int prevPage = page - 1;
-	 * 
-	 * if (page <= 1) { prevPage = 1; }
-	 * 
-	 * theModel.addAttribute("prevPage", prevPage);
-	 * System.out.println("current page" + page); System.out.println("total page: "
-	 * + donations.getTotalPages()); if (page >= (donations.getTotalPages())) {
-	 * nextPage = donations.getTotalPages(); }
-	 * 
-	 * theModel.addAttribute("nextPage", nextPage);
-	 * 
-	 * // return "user/donationList"; return "admin/donation-table2"; }
-	 */
-	
-	
-	
-	
-	@GetMapping("/donations2")
-	public String donationlist2(HttpServletRequest request, @RequestParam(defaultValue = "1") int page,
-			@RequestParam(name = "size", defaultValue = "5") int size,
-			@RequestParam(name = "searchingValue", defaultValue = "", required = false) String searchingValue, 
-			@RequestParam(name="id", defaultValue = "1") int donationId,
-			Model theModel) {
-		try {
-			HttpSession session = request.getSession();
-			Integer currentUserId = (Integer) session.getAttribute("currentUserId");
-			if (currentUserId == null) {
-				throw new RuntimeException("the error");
-			}
-
-			System.out.println("size: " + size);
-			Page<Donation> donations = donationService.findAll(page, size);
-
-			if (!searchingValue.equals("")) {
-				donations = donationService.findByPhoneNumberOrOrganizationOrCodeOrStatus(searchingValue, page, size);
-				theModel.addAttribute("searchingValue", searchingValue);
-			}
-
-			theModel.addAttribute("donations", donations);
-
-			theModel.addAttribute("currentPage", page);
-			theModel.addAttribute("totalPage", donations.getTotalPages());
-
-			theModel.addAttribute("currentSize", size);
-
-			int nextPage = page + 1;
-			int prevPage = page - 1;
-
-			if (page <= 1) {
-				prevPage = 1;
-			}
-
-			theModel.addAttribute("prevPage", prevPage);
-			System.out.println("current page" + page);
-			System.out.println("total page: " + donations.getTotalPages());
-			if (page >= (donations.getTotalPages())) {
-				nextPage = donations.getTotalPages();
-			}
-
-			theModel.addAttribute("nextPage", nextPage);
-			
-			
-			
-			Donation donation = donationService.getDonation(donationId);
-			
-			theModel.addAttribute("process", "processUpdate2");
 			
 			theModel.addAttribute("donation", donation);
-
-//			return "user/donationList";
-			return "admin/donation-table2";
+			
+			theModel.addAttribute("process", donationProcess);
+			
+			return ViewConstants.V_ADMIN_DONATIONS;
 		} catch (Exception e) {
-			return "common/error-page";
+			return ViewConstants.V_ERROR;
 		}
 
 	}
 	
 	
-
 	
-	@PostMapping("/processUpdate2")
-	public String processUpdate2(@ModelAttribute("donation") Donation theDonation) {
-		
- 		donationService.saveOrUpdate(theDonation);
-		
+	@GetMapping("donation-detail")
+	public String donationDetails(HttpServletRequest request, @RequestParam("id") int theId, Model theModel) {
 
-		return "redirect:/admin/donations2";
+		// kiểm tra quyền (isLogined, isAdmin) (bao gồm phần header)
+
+		HttpSession session = request.getSession();
+		Integer currentUserId = (Integer) session.getAttribute("currentUserId");
+
+		Boolean isLogined = false;
+
+		Boolean isAdmin = false;
+
+		if (currentUserId != null) {
+			isLogined = true;
+			isAdmin = userService.isAdmin(currentUserId);
+		}
+
+		theModel.addAttribute("isLogined", isLogined);
+
+		theModel.addAttribute("isAdmin", isAdmin);
+		
+		// donation model attribute
+
+		Donation donation = donationService.getDonation(theId);
+
+		theModel.addAttribute("donation", donation);
+
+		// donate form model attributes
+
+		theModel.addAttribute("userDonation", new UserDonation());
+
+		theModel.addAttribute("process", "processDonating");
+		
+		theModel.addAttribute("donationId", theId);
+		
+	
+		return ViewConstants.V_ADMIN_DONATION_DETAIL;
 	}
-	
-	
+
 	
 
 	
@@ -298,15 +164,59 @@ public class AdminController {
 		return "admin/donation-form";
 	}
 	
+	@GetMapping("/updateDonationStatus")
+	public String updateDonationStatus(@RequestParam("id") int donationId,
+			@RequestParam(name = "status") DonationStatus status,
+			Model  theModel) {
+		
+		donationService.changeDonationStatus(status, donationId);
+		
+		return ViewConstants.V_REDIRECT_ADMIN_DONATIONS;
+	}
 	
-	@PostMapping("/processUpdate")
+	
+	
+	/// thu cai nayf .........................................................................................
+	
+	@GetMapping("/updateDonation2")
+	public String updateDonation2(@RequestParam("id") int donationId,
+			@RequestParam(name = "status", required = false) boolean status,
+			Model  theModel) {
+		Donation donation = donationService.getDonation(donationId);
+		
+		theModel.addAttribute("process", "processUpdate");
+		
+		theModel.addAttribute("donation", donation);
+
+		return "admin/donation-form";
+	}
+	
+	
+	
+	
+	@PostMapping("/processUpdateDonation")
 	public String processUpdate(@ModelAttribute("donation") Donation theDonation) {
 		
  		donationService.saveOrUpdate(theDonation);
 		
 
-		return "redirect:/admin/donations2";
+		return "redirect:/admin/donations";
 	}
+	
+	@GetMapping("/deleteDonation")
+	public String delete(@RequestParam("id") int donationId, 
+			@RequestParam(name="currentUrl", defaultValue = "/admin/donations") String currentUrl) {
+		
+		/*
+		donationService.delete(donationId);
+		
+		*/
+		
+		donationService.changeDonationShowingStatus(donationId);
+		return "redirect:" + currentUrl;
+		
+	}
+	
 	
 	
 	
@@ -322,7 +232,7 @@ public class AdminController {
 		return "admin/donation-form-for-add";
 	}
 	
-	@PostMapping("/processAdd")
+	@PostMapping("/processAddDonation")
 	public String processAdd(@ModelAttribute("donation") Donation theDonation) {
 		
  		donationService.saveOrUpdate(theDonation);
@@ -331,84 +241,76 @@ public class AdminController {
 		return "redirect:/admin/donations";
 	}
 	
-	
-	
-	
-	@GetMapping("/deleteDonation")
-	public String delete(@RequestParam("id") int donationId, 
-			@RequestParam(name="currentUrl", defaultValue = "/v1/home") String currentUrl) {
-		donationService.delete(donationId);
-		
-		return "redirect:" + currentUrl;
-		
-	}
-	
-	
-	@GetMapping("/deleteTestDonation")
-	public String deleteTest(@RequestParam("id") int donationId, 
-			@RequestParam(name="currentUrl", defaultValue = "/v1/home") String currentUrl) {
-		
-		
-		return "redirect:" + currentUrl;
-		
-	}
-	
-	
+
 	
 	///////////////// user
 	
-	
+
+		
 	@GetMapping("/users")
-	public String userList(HttpServletRequest request, @RequestParam(defaultValue = "1") int page,
-			@RequestParam(defaultValue = "5") int size,
+	public String userList(HttpServletRequest request, 
+			@RequestParam(defaultValue = "1") int page,
+			@RequestParam(name = "size", defaultValue = "5") int size,
 			@RequestParam(name = "searchingValue", defaultValue = "", required = false) String searchingValue,
-			@RequestParam(name="id", defaultValue = "1") int userId,
+			@RequestParam(name="id", defaultValue = "0") int userId,
 			Model theModel) {
 		try {
+			// kiểm tra quyền (isLogined, isAdmin) (bao gồm phần header)
+			
 			HttpSession session = request.getSession();
 			Integer currentUserId = (Integer) session.getAttribute("currentUserId");
-			if (currentUserId == null) {
-				throw new RuntimeException("the error");
+
+			Boolean isLogined = false;
+			
+			Boolean isAdmin = false; 
+			
+			if(currentUserId != null) {
+				isLogined = true;
+				isAdmin = userService.isAdmin(currentUserId);
 			}
-
-			System.out.println("size: " + size);
-
+			
+			theModel.addAttribute("isLogined", isLogined);
+			
+			theModel.addAttribute("isAdmin", isAdmin);
+			
+			// user list
+			
 			Page<User> users = userService.findByEmailOrPhoneNumberOrStatus(searchingValue, page, size);
+			System.out.println("///////////////////////////////////////////////// user total element:  " + users.getTotalElements());
+			for(User user: users) {
+				System.out.println("///////////////////////////////////////////////// user :  " + user);
+			}
+			
+			
 			theModel.addAttribute("searchingValue", searchingValue);
 
 			theModel.addAttribute("users", users);
 
 			theModel.addAttribute("currentPage", page);
+			
 			theModel.addAttribute("totalPage", users.getTotalPages());
 
 			theModel.addAttribute("currentSize", size);
 
-			int nextPage = page + 1;
-			int prevPage = page - 1;
-
-			if (page <= 1) {
-				prevPage = 1;
+			// user model attribute
+			
+			// add or update
+			String userProcess = "processAddUser";
+			
+			User user = new User();
+			
+			if(userId!=0) {
+				user = userService.getUser(userId);
+				userProcess = "processUpdateUser";
 			}
-
-			theModel.addAttribute("prevPage", prevPage);
-			System.out.println("current page" + page);
-			System.out.println("total page: " + users.getTotalPages());
-			if (page >= (users.getTotalPages())) {
-				nextPage = users.getTotalPages();
-			}
-
-			theModel.addAttribute("nextPage", nextPage);
 			
-			User theUser = userService.getUser(userId);
+			theModel.addAttribute("user", user);
 			
-			theModel.addAttribute("process", "processUserUpdate");
+			theModel.addAttribute("process", userProcess);
 			
-			theModel.addAttribute("user", theUser);
-
-//		return "user/donationList";
-			return "admin/user-table";
+			return ViewConstants.V_ADMIN_USERS;
 		} catch (Exception e) {
-			return "common/error-page";
+			return ViewConstants.V_ERROR;
 		}
 	}
 
@@ -425,7 +327,7 @@ public class AdminController {
 		return "admin/user-form-for-add";
 	}
 	
-	@PostMapping("/processUserAdd")
+	@PostMapping("/processAddUser")
 	public String processAdd(@ModelAttribute("user") User theUser) {
 		
  		userService.saveOrUpdate(theUser);
@@ -446,7 +348,7 @@ public class AdminController {
 		return "admin/user-form";
 	}
 	
-	@PostMapping("/processUserUpdate")
+	@PostMapping("/processUpdateUser")
 	public String processUpdate(@ModelAttribute("user") User theUser) {
 		
 		
@@ -454,6 +356,17 @@ public class AdminController {
  		userService.saveOrUpdate(theUser);
 		
 		return "redirect:/admin/users";
+	}
+	
+	
+	@GetMapping("/updateUserStatus")
+	public String updateUserStatus(@RequestParam("id") int userId,
+			@RequestParam(name = "status") UserStatus status,
+			Model  theModel) {
+		
+		userService.changeUserStatus(status, userId);
+		
+		return ViewConstants.V_REDIRECT_ADMIN_USERS;
 	}
 	
 	
@@ -465,18 +378,111 @@ public class AdminController {
 	}
 	
 	
-	@GetMapping("/userDetails")
-	public String userDetail(@RequestParam("id") int userId, Model theModel) {
-		User user = userService.getUser(userId);
- 		
+	
+	@GetMapping("/user-detail")
+	public String userDetail(HttpServletRequest request, @RequestParam("id") int theId, Model theModel) {
+		
+		HttpSession session = request.getSession();
+		Integer currentUserId = (Integer) session.getAttribute("currentUserId");
+
+		Boolean isLogined = false;
+
+		Boolean isAdmin = false;
+
+		if (currentUserId != null) {
+			isLogined = true;
+			isAdmin = userService.isAdmin(currentUserId);
+		}
+
+		theModel.addAttribute("isLogined", isLogined);
+
+		theModel.addAttribute("isAdmin", isAdmin);
+		
+		
+		
+		User user = userService.getUser(theId);
+ 
 		theModel.addAttribute("user", user);
 
-		return "admin/user-detail";
+		return ViewConstants.V_ADMIN_USER_DETAIL;
 	}
 	
 	
 	
 	////// userDonation
+	
+	
+	// donation manager
+		@GetMapping("/user_donations")
+		public String userDonationlist(HttpServletRequest request, @RequestParam(defaultValue = "1") int page,
+				@RequestParam(name = "size", defaultValue = "5") int size,
+				@RequestParam(name = "searchingValue", defaultValue = "", required = false) String searchingValue,
+				@RequestParam(name = "id", defaultValue = "0") int userdonationId,
+				Model theModel) {
+			
+			try {
+				
+				// kiểm tra quyền (isLogined, isAdmin) (bao gồm phần header)
+
+				HttpSession session = request.getSession();
+				Integer currentUserId = (Integer) session.getAttribute("currentUserId");
+
+				Boolean isLogined = false;
+
+				Boolean isAdmin = false;
+
+				if (currentUserId != null) {
+					isLogined = true;
+					isAdmin = userService.isAdmin(currentUserId);
+				} else {
+					throw new RuntimeException("the error: not admin");
+				}
+
+				theModel.addAttribute("isLogined", isLogined);
+
+				theModel.addAttribute("isAdmin", isAdmin);
+
+				// userDonations table
+				Page<UserDonation> userDonations = userDonationService.findByUserNameOrDonationCodeSortByStatusByCreatedDate(searchingValue, page, size);
+
+				theModel.addAttribute("searchingValue", searchingValue);
+				
+				theModel.addAttribute("userDonations", userDonations);
+
+				theModel.addAttribute("currentPage", page);
+				
+				theModel.addAttribute("totalPage", userDonations.getTotalPages());
+
+				theModel.addAttribute("currentSize", size);
+				
+				UserDonation userDonation= new UserDonation();
+				
+				if(userdonationId!=0) {
+					userDonation = userDonationService.getUserDonation(userdonationId);
+				}
+				
+				theModel.addAttribute("userDonation", userDonation);
+				
+				return ViewConstants.V_ADMIN_USERDONATION;
+			} catch (Exception e) {
+				return ViewConstants.V_ERROR;
+			}
+
+		}
+		
+		@GetMapping("/update_user_donations")
+		public String updateUserDonationStatus(HttpServletRequest request,
+				@RequestParam(name = "status") UserDonationStatus status,
+				@RequestParam(name = "id", defaultValue = "0") int userdonationId) {
+			
+			userDonationService.changeUserDonationStatus(userdonationId, status);
+			
+			return ViewConstants.V_REDIRECT_ADMIN_USERDONATIONS;
+			
+		}
+	
+	
+	
 	
 	@GetMapping("/userDonations")
 	public String userDonationList(HttpServletRequest request, @RequestParam(defaultValue = "1") int page,
@@ -542,22 +548,23 @@ public class AdminController {
 		return "redirect:/admin/userDonations";
 	}
 	
-
-	@GetMapping("/deleteUserDonation")
-	public String deleteUserDonation(@RequestParam("id") int theId) {
-		userDonationService.delete(theId);
-	
-	
-	
-		return "redirect:/admin/userDonations";
-	}
 	/*
-	@GetMapping("/deleteUserDonation")
-	public String deleteUserDonation(@RequestParam("id") int theId) {
-		userDonationService.changeUserDonationShowingStatus(theId);
-	
-		return "redirect:/admin/userDonations";
-	}
+	 * @GetMapping("/deleteUserDonation") public String
+	 * deleteUserDonation(@RequestParam("id") int theId) {
+	 * userDonationService.delete(theId);
+	 * 
+	 * 
+	 * 
+	 * return "redirect:/admin/userDonations"; }
 	 */
+	@GetMapping("/deleteUserDonation")
+	public String deleteUserDonation(@RequestParam("id") int userDonationId, 
+			@RequestParam(name="currentUrl", defaultValue = "/admin/user_donations") String currentUrl) {
+		
+		userDonationService.changeUserDonationStatus(userDonationId, UserDonationStatus.CANCELED);
+		return "redirect:" + currentUrl;
+		
+	}
+
 	
 }

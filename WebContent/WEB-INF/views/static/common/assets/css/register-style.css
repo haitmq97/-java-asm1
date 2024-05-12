@@ -128,9 +128,7 @@
   display: inline-block;
 }
 
-.toggle-pass-btn:hover {
-  background-color: var(--pry-light-gray);
-}
+
 
 .no-b-btn {
   border: none;

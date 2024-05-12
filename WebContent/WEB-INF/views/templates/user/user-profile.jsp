@@ -141,7 +141,7 @@
 							style="color: white" 
 							data-toggle="modal" data-target="#exampleModal" 
 							class="btn btn-block btn-primary btn-md"
-							 onclick="openPopup('userUpdate')">Cập nhật</button>
+							 onclick="openPopup('#userUpdate')">Cập nhật</button>
 					</div>
                     
           

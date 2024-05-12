@@ -3,6 +3,9 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ page import="me.haitmq.spring.mvc.crud.content_path.ViewConstants" %>
+<%@ page import="me.haitmq.spring.mvc.crud.utils.JSPDataFormat" %>
+<%@ page import="me.haitmq.spring.mvc.crud.entity.status.DonationStatus" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -89,8 +92,7 @@
 <script src="<c:url value='/static/common/assets/js/form.js' />"></script>
 <script src="<c:url value='/static/common/assets/js/script.js' />"></script> 
 <script src="<c:url value='/static/common/assets/js/data-list.js' />"></script> 
-
-
+<script src="<c:url value='/static/common/assets/js/layout-script.js' />"></script>
 
 
 </head>
@@ -99,7 +101,8 @@
 	<jsp:include page="../common/header-layout-test.jsp">
 		<jsp:param name="includePart" value="headerSection" />
 	</jsp:include>
-
+	
+	<input type="hidden" id="isLogined" value="${isLogined}" />
 
 
 
@@ -109,6 +112,9 @@
 			<div class="row mb-5 justify-content-center">
 				<div class="col-md-7 text-center">
 					<h2 class="section-title mb-2">Các đợt quyên góp</h2>
+					
+					
+
 				</div>
 			</div>
 
@@ -119,11 +125,8 @@
 				<div class="main-content">
 					<div class="h-content">
 					<div class="add-div">
-						<button class="btn btn-success donation-btn" onclick="redirectToAddOrUpdate(0)">Thêm mới</button>
-						<!-- 
-						<a href="addDonation">them moi</a>
-						
-						 -->
+						<button class="btn btn-success donation-btn" onclick="toAddOrUpdate(0, '#donation-addOrUpdate')">Thêm mới</button>
+	
 						
 					</div>
 		
@@ -131,8 +134,8 @@
 							<div class="page-selector">
 
 								<input id="currentPage" type="hidden" name="currentPage"
-									value="${currentPage}" /> <label for="size">Rows
-									per page:</label> 
+									value="${currentPage}" /> 
+								<label for="size">Rows per page:</label> 
 								<select id="pageSize" name="size"
 									
 									class="entries-select rounded form-control">
@@ -142,7 +145,7 @@
 									<option value="10" ${donations.size == 10 ? 'selected' : ''}>10</option>
 									<option value="15" ${donations.size == 15 ? 'selected' : ''}>15</option>
 									<option value="20" ${donations.size == 20 ? 'selected' : ''}>20</option>
-									<!-- Add more options as needed -->
+									
 								</select>
 							
 			
@@ -167,7 +170,7 @@
 					
 					
 					
-					<div class="m-content list" id="donation-list">
+					<div class="m-content list" id="data-list">
 						<div class="table-div">
 							<table class="table table-striped table-content">
 							<thead class="tb-head-title">
@@ -195,7 +198,7 @@
 										<c:param name="id" value="${tempDonation.id}" />
 									</c:url>
 
-									<c:url var="detailLink" value="/v1/donation-detail">
+									<c:url var="detailLink" value="${ViewConstants.E_ADMIN_DONATION_DETAIL}">
 										<c:param name="id" value="${tempDonation.id}" />
 									</c:url>
 									
@@ -206,6 +209,23 @@
 									
 									<c:url var="updateLink" value="/admin/updateDonation">
 										<c:param name="id" value="${tempDonation.id}" />
+									</c:url>
+									
+									<c:url var="donatingStatusLink" value="/admin/updateDonationStatus">
+										<c:param name="id" value="${tempDonation.id}" />
+										<c:param name="status" value="${DonationStatus.DONATING}" />
+									</c:url>
+									
+									
+									
+									<c:url var="endStatusLink" value="/admin/updateDonationStatus">
+										<c:param name="id" value="${tempDonation.id}" />
+										<c:param name="status" value="${DonationStatus.END}" />
+									</c:url>
+									
+									<c:url var="closedStatusLink" value="/admin/updateDonationStatus">
+										<c:param name="id" value="${tempDonation.id}" />
+										<c:param name="status" value="${DonationStatus.CLOSED}" />
 									</c:url>
 									
 									<c:url var="testLink" value="/admin/donations">
@@ -228,56 +248,77 @@
 										<td><p>${tempDonation.organization}</p></td>
 										<td><p>${tempDonation.phoneNumber}</p></td>
 										<td><p>${tempDonation.money}</p></td>
-										<td><p class="d-status">${tempDonation.status}</p></td>
+										<td><p class="d-status">${JSPDataFormat.donationStatusFormat(tempDonation.status)}</p></td>
 										<td class="action-c">
-											<button class="btn btn-success donation-btn donation-update-btn" title="Chi tiết" onclick="redirectToAddOrUpdate('${tempDonation.id}')">
-												<span class="content-btn-text">Cập nhật</span><span
-													class="content-btn-icon"></span>
-											</button>
-											<button class="btn btn-success donation-btn"
-												title="Quyên góp" >
-												<span class="content-btn-text">Chi tiết</span><span
-													class="content-btn-icon"></span>
-											</button>
-											<button class="btn btn-success donation-btn d-delete-btn" title="Xóa" data-url="${deleteLink}">
-												<span class="content-btn-text">Xóa</span><span
-													class="content-btn-icon"></span>
-											</button>
-											<button class="btn btn-success donation-btn"
-												title="Quyên góp" >
-												<span class="content-btn-text" onclick="toDonateForm(${tempDonation.id},$('#authorities').val())">Quyên góp</span><span
-													class="content-btn-icon"></span>
-											</button>
-											<button class="btn btn-success donation-btn" title="Chi tiết">
-												<span class="content-btn-text">Đóng</span><span
-													class="content-btn-icon"></span>
-											</button>
-											<button class="btn btn-success donation-btn"
-												title="Quyên góp" >
-												<span class="content-btn-text">Kết thúc</span><span
-													class="content-btn-icon"></span>
-											</button>
-											<a href="${updateLink}"></a>
+											
+											<c:if test="${tempDonation.status != DonationStatus.CLOSED}">
+												<button class="btn btn-success donation-btn donation-update-btn" 
+														title="Chi tiết" 
+														onclick="toAddOrUpdate('${tempDonation.id}','#donation-addOrUpdate')">
+													<span class="content-btn-text">Cập nhật</span>
+												</button>
+											</c:if>
+											
+										
+										
+											
+											<button class="btn btn-success donation-btn" 
+													title="Chi tiết"
+													onclick="window.location.href='${detailLink}'">
+												<span class="content-btn-text">Chi tiết</span>
+											</button> 
+											
+											
+											<c:choose>
+												
+												<c:when test="${tempDonation.status == DonationStatus.NEW}">
+												
+													<button class="btn btn-success donation-btn d-delete-btn"
+														title="Xóa"
+														onclick="toDelete('${tempDonation.id}', '#delete')"
+														data-url="${deleteLink}">
+														<span class="content-btn-text">Xóa</span><span
+															class="content-btn-icon"></span>
+													</button>
+													
+													<button class="btn btn-success donation-btn"
+															title="Quyên góp"
+															onclick="window.location.href='${donatingStatusLink}'">
+														<span class="content-btn-text">Quyên góp</span>
+													</button>
+												</c:when>
+												
+												<c:when test="${tempDonation.status == DonationStatus.DONATING}">
+            										
+            										<button class="btn btn-success donation-btn"
+															title="Quyên góp"
+															onclick="window.location.href='${endStatusLink}'">
+														<span class="content-btn-text">Kết thúc</span><span
+															class="content-btn-icon"></span>
+													</button>
+            										
+         										</c:when>
+
+												<c:when test="${tempDonation.status == DonationStatus.END}">
+            										<button class="btn btn-success donation-btn" 
+															title="Chi tiết"
+															onclick="window.location.href='${closedStatusLink}'">
+													<span class="content-btn-text">Đóng</span>
+													</button>
+         										</c:when>
+
+												<c:otherwise>
+            
+         										</c:otherwise>
+											</c:choose> 
+												
+											
+
 										</td>
 									</tr>
 									
 									
-									<div class="overlay-container">
-										<div class="row">
-											<div id="overlay" onclick="closeAllPopup()"></div>
-											<div class="popup col-12 col-sm-8 col-md-4">
-												
-											
-											</div>
-										</div>
-									</div>	
-									
-									
-									
-									
-									
-									
-									
+								
 									
 								</c:forEach>
 
@@ -285,72 +326,35 @@
 							</tbody>
 						</table>
 						</div>
+						
+						
 						<div>
 							<div>
 								<input id="currentPage1" type="hidden" value="${currentPage}" />
-								<c:out value="current Pg:  ${currentPage}  " />
+
 								<br> 
-								<input id="totalPages1" type="hidden" value="${totalPage}" />
-								<c:out value="total Pg:  ${totalPage}  " />
-								
-	
-								<br> <input id="size1" type="hidden" value="${currentSize}" />
-								<c:out value="size:  ${currentSize}  " />
-								<br> <input id="searchingValue1" type="hidden"
-									value="${searchingValue}" />
-								<c:out value="searchingValue:  ${searchingValue}  " />
+								<input id="totalPages1" type="hidden"
+									value="${totalPage}" /> 
+								<br> 
+								<input id="size1"
+									type="hidden" value="${currentSize}" /> 
+								<br> 
+								<input
+									id="searchingValue1" type="hidden" value="${searchingValue}" />
+
 								<br> <input id="importUrl1" type="hidden"
 									value="${searchingValue}" />
-								<c:out value="searchingValue:  ${searchingValue}  " />
-								
+
+
 								<c:set var="testValue1" value="<c:url value='/v1/donations'/>" />
 
- 
- 								
+
+
 							</div>
 							<div id="pagination-container"></div>
 						
 						
 						
-						
-						
-						
-							<script>
-							
-							$(document).ready(function() {
-								$('#pageSize').change(function() {
-									updateShowingTable($('#pageSize').val(), $('#searchingValue').val(), "#donation-list");
-								});
-
-								$('#searchingValue').on('input', function() {
-									updateShowingTable($('#pageSize').val(), $('#searchingValue').val(), "#donation-list")
-								});
-								
-								
-								var currentPage = parseInt(document.getElementById("currentPage1").value, 10);
-								var totalPages = parseInt(document.getElementById("totalPages1").value, 10);
-
-
-
-								generatePaginationButtons(currentPage, totalPages, $('#pageSize').val(), $('#searchingValue').val(), "#donation-list");
-								
-								let btnList = document.getElementsByClassName("page-btn");
-								Array.from(btnList).forEach(btn => {
-								    if (parseInt(btn.textContent) === currentPage) {
-								    	
-								        btn.disabled = true;
-								    }
-								});
-								
-								
-
-							});
-							
-							
-							
-							
-							</script>
-
 
 						</div>
 
@@ -363,29 +367,9 @@
 		</div>
 	</section>
 
-<%-- 
-	<div id="">
-		<c:import url="/admin/updateDonation?id=1" />
-
-	</div>
-	
-	 --%>
-	 
-	 
+ 
 
 	<script src="<c:url value='/static/common/assets/js/script.js' />"></script> 
-<%-- 	
-<script src="<c:url value='/static/common/assets/js/script.js' />"></script>
-
- --%>
-<%-- 
-<script src="<c:url value='/static/common/assets/js/header.js' />"></script> 
-
-<script src="<c:url value='/static/common/assets/js/form.js' />"></script>
- --%>
-<%-- <script src="<c:url value='/static/common/assets/js/pagination.js' />"></script> --%>
-
-
 
 
 	
@@ -399,101 +383,60 @@
 			<div id="overlay" onclick="closeAllPopup()"></div>
 			<div class="popup col-12 col-sm-8 col-md-4">
 		
-		
-				<% int donationId = (int)request.getAttribute("donationId"); %>
-    			<% if (donationId != 0) { %> 
-			        <div class="form-container donate-form " id="donate">
-				        <div class="container form-head">
-				            <div class="form-title">
-				                <div class="d-flex justify-content-between">
-				                    <p>Quyên góp:</p>
-				                    <p>${donationCode}</p>
-				                </div>
-				                <h4 class="d-inline-block mx-auto">${donationName}</h4>
-				
-				            </div>
-				        </div>
-				        <div class="container form-main">
-				            <form:form modelAttribute="userDonation" action="${process}"
-				                method="POST">
-				                <input type="hidden" name="donationId" value="${donationId}" />
-				
-				                <div class="form-group form-group-custom">
-				                  <label class="field-label" for="fullName">Họ và Tên:</label>
-				                  <form:input type="text" class="form-control" id="fullName" path="name" />
-				                  
-				                </div>
-				                <div class="form-group form-group-custom">
-				                  <label class="field-label" for="donationAmount">Số Tiền Quyên Góp:</label>
-				                  <form:input type="number" class="form-control" id="donationAmount" path="money" />
-				                </div>
-				                <div class="form-group form-group-custom">
-				                  <label class="field-label" for="note">Ghi Chú:</label>
-				                  <form:textarea class="form-control" id="note" path="note" rows="3"></form:textarea>
-				                </div>
-				
-				                <div class="submit-p">
-				                    <button type="button" class="cancel-btn "
-				                        onclick="closeAllPopup()">Hủy</button>
-				                    <button type="submit" class="submit-btn">Quyên góp</button>
-				                </div>
-				            </form:form>
-				        </div>
-	
-	    		</div>
-	    		
-	    		
-	    		
-	    		
-	    		<!-- delete modal -->
-			
-				<div class="form-container donate-form" id="delete">
+			<% boolean isLogined = (Boolean)request.getAttribute("isLogined"); %>
+			<% boolean isAdmin = (Boolean)request.getAttribute("isAdmin"); %>
+    		
+    		<% if (isAdmin) { %>
+    			<div class="form-container donate-form" id="delete">
 					<div class="container form-head">
 						<h3>Bạn có chắc chắn xóa?</h3>
 					</div>
 					<div class="container form-main">
 						<p>
-							Đợt quyên góp: <span></span>
+							Đợt quyên góp: <span>${donation.name}</span>
 						</p>
 						<p>
-							Mã quyên góp: <span></span>
+							Mã quyên góp: <span>${donation.code}</span>
 						</p>
 						<div class="submit-p">
 							<button type="button" class="cancel-btn "
 								onclick="closeAllPopup()">Hủy</button>
 							<button type="submit" class="submit-btn" id="confirm-delete-btn"
-								onclick="window.location.href=''">Xóa</button>
+								onclick="window.location.href='${pageContext.request.contextPath}/admin/deleteDonation?id=${donation.id}'">Xóa</button>
 						</div>
 
 					</div>
 				</div>
-    		
-    		<% } %>
-			
 				
-
 				
-			<div class="form-container donate-form " id="donation-addOrUpdate">
+				
+				
+				
+				<div class="form-container donate-form " id="donation-addOrUpdate">
 			        <div class="container form-head">
 			            <div class="form-title">
 			                <div class="d-flex justify-content-between">
-			                	<% if (donationId != 0) { %>
-			                		<h4 class="d-inline-block mx-auto">Cập nhật</h4>
-			                	
-			                	<% } else { %>
-			                     	<h4 class="d-inline-block mx-auto">Thêm mới</h4>
+
+
+								<c:choose>
+									<c:when test="${donation.id != 0}">
+										<h4 class="d-inline-block mx-auto">Cập nhật</h4>
+									</c:when>
+									<c:otherwise>
+										<h4 class="d-inline-block mx-auto">Thêm mới</h4>
+									</c:otherwise>
+								</c:choose>
 			                     
-			                     <% } %>
 			                </div>
-			               
 			
 			            </div>
 			        </div>
 			        <div class="container form-main">
-			            <form:form modelAttribute="addDonation" action="${processAdd}"
+			            <form:form modelAttribute="donation" action="${process}"
 			                method="POST">
-			                <input type="hidden" name="donationId" value="${donationId}" />
-			
+			  		
+			 				<form:input type="hidden"  id="donationId" path="id" />
+			 				
 			                <div class="form-group form-group-custom">
 			                  <label class="field-label" for="code-add">Mã đợt quyên góp</label>
 			                  <form:input type="text" class="form-control" id="code-add" path="code" />
@@ -537,10 +480,17 @@
 			        </div>
 
     		</div>
+				
+    		
+    		 <% } else { %>
+    		 
+    		 <% } %>
+    		
+    		
 
 		
-		
-			
+    		
+    		
 
 			
 
@@ -549,29 +499,6 @@
 		
 		</div>
 	
-	
-	<script>
-	function redirectToAddOrUpdate(donationId) {
-		$.ajax({
-			type: "GET",
-			url: window.location.href,
-			data: {
-
-				donationId: donationId
-			},
-			success: function(data) {
-				$('#donation-addOrUpdate').html(
-					$(data).find('#donation-addOrUpdate').html());
-			}
-		});
-		
-		openPopup('donation-addOrUpdate');
-
-	}
-	
-	</script>
-		
-		
 	</div>
 
 
@@ -588,7 +515,7 @@ $(document).ready(function() {
 	      window.location.href = url;
 	    });
 	     
-	     openPopup("delete");
+	     openModal("delete");
 
 	  });
 	});

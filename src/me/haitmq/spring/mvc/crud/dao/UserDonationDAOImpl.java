@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import me.haitmq.spring.mvc.crud.entity.User;
 import me.haitmq.spring.mvc.crud.entity.UserDonation;
 
 
@@ -245,7 +246,7 @@ public class UserDonationDAOImpl implements UserDonationDAO {
 	@Override
 	public Long getTotalMoneyByDonationId(int theId) {
 		 try {
-			 	String queryString = "select COALESCE(sum(money), 0) from UserDonation ud where ud.donation.id = :donationId and ud.status = 1";
+			 	String queryString = "select COALESCE(sum(money), 0) from UserDonation ud where ud.donation.id = :donationId and ud.status = 'CONFIRM'";
 		        Session session = sessionFactory.getCurrentSession();
 		        Query<Long> query = session.createQuery(queryString, Long.class);
 		        
@@ -257,6 +258,8 @@ public class UserDonationDAOImpl implements UserDonationDAO {
 		        // Handle HibernateException (or a more specific exception) appropriately
 		        throw new RuntimeException("Error processing findByUserId", e);
 		    }
+		 
+		 // nếu nhiều thì cộng hiện tại với amount mới
 	}
 	
 	@Override
@@ -275,6 +278,26 @@ public class UserDonationDAOImpl implements UserDonationDAO {
 		        // Handle HibernateException (or a more specific exception) appropriately
 		        throw new RuntimeException("Error processing findByUserId", e);
 		    }
+	}
+	
+	
+	@Override
+	public Page<UserDonation> findByUserNameOrDonationCodeSortByStatusByCreatedDate(String searchingValue, Pageable pageable) {
+		
+		String theQueryString = "from UserDonation ud where"
+				 	+ " ud.showing = 1 and ("
+					+ " ud.donation.code like concat(:searchingValue, '%') or" 
+					+ " ud.user.userName like concat(:searchingValue, '%'))";
+
+		Session session = sessionFactory.getCurrentSession();
+		Query<UserDonation> theQuery = session.createQuery(theQueryString, UserDonation.class);
+		theQuery.setFirstResult((int) pageable.getOffset());
+		theQuery.setMaxResults(pageable.getPageSize());
+		theQuery.setParameter("searchingValue", searchingValue);
+		
+		Query<Long> theCountQuery = session.createQuery("select count(ud) " + theQueryString, Long.class);
+		theCountQuery.setParameter("searchingValue", searchingValue);
+		return new PageImpl<>(theQuery.getResultList(), pageable, theCountQuery.uniqueResult());
 	}
 	
 }

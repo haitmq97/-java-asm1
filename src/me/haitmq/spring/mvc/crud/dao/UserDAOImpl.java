@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
+import me.haitmq.spring.mvc.crud.entity.Donation;
 import me.haitmq.spring.mvc.crud.entity.Role;
 import me.haitmq.spring.mvc.crud.entity.User;
 
@@ -126,6 +127,38 @@ public class UserDAOImpl implements UserDAO {
 		return new PageImpl<>(theQuery.getResultList(), pageable, theCountQuery.uniqueResult());
 	}
 
+	
+	@Override
+	public Page<User> findByQuery(String theQueryString, String searchingValue, Pageable pageable) {
+		Session session = sessionFactory.getCurrentSession();
+		Query<User> theQuery = session.createQuery(theQueryString, User.class);
+		theQuery.setParameter("searchingValue", searchingValue);
+		theQuery.setFirstResult((int) pageable.getOffset());
+		theQuery.setMaxResults(pageable.getPageSize());
+		
+		Query<Long> countQuery = session.createQuery("select count(u) " + theQueryString, Long.class);
+		countQuery.setParameter("searchingValue", searchingValue);
+		return new PageImpl<>(theQuery.getResultList(), pageable, countQuery.uniqueResult());
+	}
+	
+	/*
+	@Override
+	public Page<User> findByEmailOrPhoneNumberOrStatus(String searchingValue, Pageable pageable) {
+
+		String theQueryString = 
+				"from User u where"
+				+ " d.showing = 1 and ("
+				+ " u.status like concat(:searchingValue, '%') or" 
+				+ " u.phoneNumber like concat(:searchingValue, '%') or"
+				+ " u.email like concat(:searchingValue, '%'))";
+
+		return findByQuery(theQueryString, searchingValue, pageable);
+	}
+
+	
+	*/
+	
+	
 	@Override
 	public Page<User> findByEmailOrPhoneNumberOrStatus(String searchingValue, Pageable pageable) {
 
@@ -144,7 +177,7 @@ public class UserDAOImpl implements UserDAO {
 		theCountQuery.setParameter("searchingValue", searchingValue);
 		return new PageImpl<>(theQuery.getResultList(), pageable, theCountQuery.uniqueResult());
 	}
-
+	
 
 	
 	

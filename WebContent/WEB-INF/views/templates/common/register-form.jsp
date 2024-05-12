@@ -157,31 +157,12 @@
                   </div>
                   <div class="input-d">
                     <div class="field-input">
-                      <form:input type="password" id="passwordInput" class="input-p form-control pw-field-custom-fix" path="password" autocomplete="off"/>
+                      <form:input type="password" id="passwordInput" class="input-p form-control pw-field-custom-fix" path="password" autocomplete="new-password"/>
                       <button type="button" class="button no-b-btn toggle-pass-btn" onclick="togglePassword()" title="Hiện mật khẩu">
                         <i id="eyeIcon" class="fa-regular fa-eye"></i>
                       </button>
                     </div>
-                    <script>
-                    function togglePassword() {
-                		var passwordInput = document.getElementById("passwordInput");
-                		var eyeIcon = document.getElementById("eyeIcon");
 
-                		if (passwordInput.type === "password") {
-                			passwordInput.type = "text";
-                			eyeIcon.className = "fa-regular fa-eye-slash";
-                			document.querySelector(".toggle-pass-btn").title = "Ẩn mật khẩu";
-                		} else {
-                	    	passwordInput.type = "password";
-                	        eyeIcon.className = "fa-regular fa-eye";
-                	        document.querySelector(".toggle-pass-btn").title = "Hiện mật khẩu";
-                		}
-                	}
-                    </script>
-                    
-                    
-                    
-                    
                  
                   </div>
                 </div>

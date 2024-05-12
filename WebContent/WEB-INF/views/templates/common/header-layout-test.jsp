@@ -2,7 +2,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-
+<%@ page import="me.haitmq.spring.mvc.crud.content_path.ViewConstants" %>
 <div id="header-sec">
 	<c:choose>
 		<c:when test="${param.includePart eq 'headerSection'}">
@@ -22,22 +22,15 @@
 						<ul class="nav-list">
 							<li class="nav-item">
 								<button class="btn active-b"
-									onclick="window.location.href='${pageContext.request.contextPath}/v1/home'">
+									onclick="window.location.href='${pageContext.request.contextPath}${ViewConstants.E_HOME}'">
 									<span class="txt-nav-i">Home</span><span class="icon-nav-i"><i
 										class="fa fa-home" aria-hidden="true"></i></span>
 								</button>
-								<%-- 
-								
-								<button id="manager-btn" class="btn"
-									onclick="window.location.href='${pageContext.request.contextPath}/admin/donations'">
-									<span class="txt-nav-i">Quản lý</span><span class="icon-nav-i"><i
-										class="fa-solid fa-list-check"></i></span>
-								</button>
-								
-								 --%>
-								<% boolean isMngBtnShowing = (Boolean)request.getAttribute("authorities"); %>
+
 								<% boolean isLogined = (Boolean)request.getAttribute("isLogined"); %>
-    							<% if (isMngBtnShowing) { %>
+								<% boolean isAdmin = (Boolean)request.getAttribute("isAdmin"); %>
+								
+    							<% if (isAdmin) { %>
         							<div class="user-l-btn d-inline-block">
 									<div class="btn-group" id="mng-btn">
 										<button type="button"
@@ -51,17 +44,17 @@
 											class="dropdown-menu dropdown-menu-lg-end dropdown-menu-custom">
 											<li>
 												<button class="dropdown-item" type="button"
-													onclick="window.location.href='${pageContext.request.contextPath}/admin/donations'">
+													onclick="window.location.href='${pageContext.request.contextPath}${ViewConstants.E_ADMIN_DONATIONS}'">
 													Donations</button>
 											</li>
 											<li>
 												<button class="dropdown-item" type="button"
-													onclick="window.location.href='${pageContext.request.contextPath}/admin/users'">
+													onclick="window.location.href='${pageContext.request.contextPath}${ViewConstants.E_ADMIN_USERS}'">
 													Users</button>
 											</li>
 											<li>
 												<button class="dropdown-item" type="button"
-													onclick="window.location.href='${pageContext.request.contextPath}/admin/userDonations'">
+													onclick="window.location.href='${pageContext.request.contextPath}${ViewConstants.E_ADMIN_USERDONATIONS}'">
 													Donates</button>
 											</li>
 										</ul>
@@ -69,13 +62,6 @@
 									
 								</div>
     							<% } %>
-								 
-								 
-								 
-								
-								
-								
-								
 								
 							</li>
 
@@ -95,12 +81,12 @@
 											class="dropdown-menu dropdown-menu-lg-end dropdown-menu-custom">
 											<li>
 												<button class="dropdown-item" type="button"
-													onclick="window.location.href='${pageContext.request.contextPath}/user/profile'">
+													onclick="window.location.href='${pageContext.request.contextPath}${ViewConstants.E_USER_PROFILE}'">
 													Profile</button>
 											</li>
 											<li>
 												<button class="dropdown-item" type="button"
-													onclick="window.location.href='${pageContext.request.contextPath}/v1/logout'">
+													onclick="window.location.href='${pageContext.request.contextPath}${ViewConstants.E_LOGOUT}'">
 													Logout</button>
 											</li>
 										</ul>
@@ -108,15 +94,14 @@
 									<% } else { %>
 									<div class="rs-b" id="rs-b">
 										<button class="btn custom-rs-btn"
-											onclick="window.location.href='${pageContext.request.contextPath}/v1/register'">
+											onclick="window.location.href='${pageContext.request.contextPath}${ViewConstants.E_REGISTER}'">
 											<span class="txt-nav-i">Đăng ký</span><span
 												class="icon-nav-i"><i
 												class="fa-solid fa-user-plus"></i></span>
 										</button>
-										<button class="btn custom-rs-btn" onclick="openPopup('login')">
-											<span class="txt-nav-i">Đăng nhập</span><span
-												class="icon-nav-i"><i
-												class="fa-solid fa-right-to-bracket"></i></span>
+										<button class="btn custom-rs-btn" onclick="openPopup('#login')">
+											<span class="txt-nav-i">Đăng nhập</span>
+											<span class="icon-nav-i"><i class="fa-solid fa-right-to-bracket"></i></span>
 										</button>
 									</div>
 									<% } %>

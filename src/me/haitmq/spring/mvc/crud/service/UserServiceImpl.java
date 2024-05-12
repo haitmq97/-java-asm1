@@ -10,10 +10,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import me.haitmq.spring.mvc.crud.dao.UserDAO;
+import me.haitmq.spring.mvc.crud.entity.Donation;
 import me.haitmq.spring.mvc.crud.entity.Role;
 import me.haitmq.spring.mvc.crud.entity.User;
 import me.haitmq.spring.mvc.crud.entity.role.UserRole;
 import me.haitmq.spring.mvc.crud.utils.Time;
+import me.haitmq.spring.mvc.crud.entity.status.DonationStatus;
 import me.haitmq.spring.mvc.crud.entity.status.UserStatus;
 
 @Service
@@ -28,16 +30,14 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional
 	public void saveOrUpdate(User user) {
-		
-		
-		
+
 		// giu nguyen cac truong không cập nhật
 
 		if(user.getId() != 0) {
 			User existingUser = userDAO.getUser(user.getId());
-			
+			/*
 			user.setRole(existingUser.getRole());
-			
+			 */
 			user.setPassword(existingUser.getPassword());
 			user.setStatus(existingUser.getStatus());
 			user.setCreatedDate(existingUser.getCreatedDate());
@@ -56,6 +56,7 @@ public class UserServiceImpl implements UserService {
 			if(user.getCreatedDate()==null) {
 				user.setCreatedDate(Time.getCurrentDateTime());
 				user.setStatus(UserStatus.ACTIVE);
+				user.setShowing(true);
 			}
 		
 		userDAO.saveOrUpdate(user);
@@ -241,6 +242,20 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	
+	
+	@Override
+	@Transactional
+	public void changeUserStatus(UserStatus status, int userId) {
+
+		try {
+			User user = userDAO.getUser(userId);
+			user.setStatus(status);
+			userDAO.saveOrUpdate(user);
+		} catch (Exception e) {
+			
+		}
+		
+	}
 	
 	
 }

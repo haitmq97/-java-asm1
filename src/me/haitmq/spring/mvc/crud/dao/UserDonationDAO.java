@@ -92,4 +92,6 @@ public interface UserDonationDAO {
 	
 	public List<UserDonation> getUserDonationListByDonationId(int theId);
 
+	
+	public Page<UserDonation> findByUserNameOrDonationCodeSortByStatusByCreatedDate(String searchingValue, Pageable pageable);
 }

@@ -188,12 +188,15 @@ public class DonationDAOImpl implements DonationDAO {
 
 	@Override
 	public Page<Donation> findByPhoneNumberOrOrganizationOrCodeOrStatus(String searchingValue, Pageable pageable) {
+		
 		String theQueryString =
 				"from Donation d where "
+				+ "d.showing = 1 and ("
 				+ " d.status like concat(:searchingValue, '%') or" 
 				+ " d.phoneNumber like concat(:searchingValue, '%') or"
 				+ " d.organization like concat(:searchingValue, '%') or" 
-				+ " d.code like concat(:searchingValue, '%')";
+				+ " d.code like concat(:searchingValue, '%'))";
+		
 		return findByQuery(theQueryString, searchingValue, pageable);
 	}
 	

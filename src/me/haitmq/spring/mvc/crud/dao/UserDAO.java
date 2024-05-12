@@ -70,6 +70,9 @@ public interface UserDAO{
 	
 	
 	//// find all, findByEmailorPhoneNumberOrStatus
+	
+	public Page<User> findByQuery(String theQueryString, String searchingValue, Pageable pageable);
+	
 	public Page<User> findByEmailOrPhoneNumberOrStatus(String searchingValue, Pageable pageable);
 
 	public Page<User> findAll(Pageable pageable);

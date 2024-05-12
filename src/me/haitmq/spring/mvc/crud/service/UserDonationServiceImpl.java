@@ -2,6 +2,8 @@ package me.haitmq.spring.mvc.crud.service;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
@@ -41,21 +43,16 @@ public class UserDonationServiceImpl implements UserDonationService {
 	public void save(UserDonation userDonation) {
 		UserStatus userStatus = userDonation.getUser().getStatus();
 		DonationStatus donationStatus = userDonation.getDonation().getStatus();
-		System.out.println("=================>>>>>>>>>>>>>>>>>>>>>> in userdonation service - save method");
-		System.out.println("=================>>>>>>>>>>>>>>>>>>>>>> in userdonation service - save method: " + userDonation);
 		
 		if(isAbletoUserDonation(userDonation.getUser(), userDonation.getDonation())) {
-			System.out.println("=================>>>>>>>>>>>>>>>>>>>>>> in userdonation service - save method: (isableto donate) " + userDonation);
 			if(userDonation.getCreatedDate()==null) {
-				System.out.println("=================>>>>>>>>>>>>>>>>>>>>>> in userdonation service - save method: (isableto donate)- (in check date created) " + userDonation);
 				userDonation.setCreatedDate(Time.getCurrentDateTime());
 				userDonation.setStatus(UserDonationStatus.WAITING);
+				userDonation.setShowing(true);
 			}
-			System.out.println("=================>>>>>>>>>>>>>>>>>>>>>> in userdonation service - save method: (isableto donate)- (in check date created) (false)" + userDonation);
 			userDonationDAO.save(userDonation);
 		}
 		
-		System.out.println("=================>>>>>>>>>>>>>>>>>>>>>> in userdonation service - save method: (finished) " + userDonation);
 		
 	}
 	
@@ -65,6 +62,7 @@ public class UserDonationServiceImpl implements UserDonationService {
 		try {
 			userDonation.setUser(userService.getUser(userId));
 			userDonation.setDonation(donationService.getDonation(donationId));
+			userDonation.setShowing(true);
 			userDonationDAO.save(userDonation);
 		} catch (Exception e) {
 			//log.error("UserDonationService ERROR - save(UserDonation userDonation, int userId, int donationId): ", e);
@@ -202,29 +200,6 @@ public class UserDonationServiceImpl implements UserDonationService {
 	
 	
 
-	@Override
-	public Long getTotalMoneyByDonationId(int donationId) {
-		try {
-			return userDonationDAO.getTotalMoneyByDonationId(donationId);
-		} catch (Exception e) {
-			//log.error("UserDonationService ERROR - getTotalMoneyByDonationId(): ", e);
-			return null;
-		}
-	}
-
-	@Override
-	@Transactional
-	public void updateAllMoney() {
-		try {
-			List<Donation> donations = donationService.getDonationList();
-			for (Donation donation: donations) {
-				donation.setMoney(getTotalMoneyByDonationId(donation.getId()));
-			}
-		} catch (Exception e) {
-			//e.printStackTrace();
-		}
-	}
-
 	
 
 	
@@ -244,5 +219,58 @@ public class UserDonationServiceImpl implements UserDonationService {
 		
 	}
 	
+	@Override
+	@Transactional
+	public Page<UserDonation> findByUserNameOrDonationCodeSortByStatusByCreatedDate(String searchingValue,int page,int size) {
+		
+		PageRequest pageRequest = PageRequest.of(page-1, size);
+		return userDonationDAO.findByUserNameOrDonationCodeSortByStatusByCreatedDate(searchingValue, pageRequest);
+	}
+	
+	
+	
+
+	@Override
+	public Long getTotalMoneyByDonationId(int donationId) {
+		try {
+			return userDonationDAO.getTotalMoneyByDonationId(donationId);
+		} catch (Exception e) {
+			//log.error("UserDonationService ERROR - getTotalMoneyByDonationId(): ", e);
+			return null;
+		}
+	}
+
+	@Override
+	public void updateAllMoney() {
+		try {
+			List<Donation> donations = donationService.getDonationList();
+			for (Donation donation: donations) {
+				donation.setMoney(getTotalMoneyByDonationId(donation.getId()));
+			}
+		} catch (Exception e) {
+			//e.printStackTrace();
+		}
+	}
+
+	
+	
+	
+	@Override
+	@Transactional
+	public void changeUserDonationStatus(int theId, UserDonationStatus status) {
+		try {
+			UserDonation userDonation= userDonationDAO.getUserDonation(theId);
+			
+			if(status == UserDonationStatus.CANCELED) {
+				userDonation.setShowing(false);
+			}
+			userDonation.setStatus(status);
+			userDonationDAO.saveOrUpdate(userDonation);
+		} catch (Exception e) {
+			//log.error("DonationService ERROR - changeDonationStatus(): ", e);
+		}
+	}
+	
+
 
 }

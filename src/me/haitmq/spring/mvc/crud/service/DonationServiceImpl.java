@@ -13,7 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import me.haitmq.spring.mvc.crud.dao.UserDonationDAO;
+
 import me.haitmq.spring.mvc.crud.dao.DonationDAO;
 import me.haitmq.spring.mvc.crud.entity.Donation;
 
@@ -35,6 +35,7 @@ public class DonationServiceImpl implements DonationService {
 	
 	// save donation obj
 	
+	
 	@Override
 	@Transactional
 	public void saveOrUpdate(Donation donation) {
@@ -53,7 +54,9 @@ public class DonationServiceImpl implements DonationService {
 		if(donation.getCreatedDate() == null) {
 			donation.setCreatedDate(Time.getCurrentDateTime());
 			donation.setStatus(DonationStatus.NEW);
+			donation.setShowing(true);
 		}
+		System.out.println("================>> donation service iml: test 1");
 		System.out.println("================>> donation service iml: test 1");
 
 		donationDAO.saveOrUpdate(donation);
@@ -74,6 +77,7 @@ public class DonationServiceImpl implements DonationService {
 	}
 	
 	@Override
+	@Transactional
 	public void changeDonationStatus(DonationStatus status, int donationId) {
 		 
 		/*
@@ -110,10 +114,15 @@ public class DonationServiceImpl implements DonationService {
 	}
 
 	@Override
+	@Transactional
 	public void changeDonationShowingStatus(int donationId) {
 		try {
+			
+			
 			Donation donation = donationDAO.getDontaion(donationId);
+			
 			donation.setShowing(donation.getShowing() ==  true? false: true);
+			donationDAO.saveOrUpdate(donation);
 		} catch (Exception e) {
 			//log.error("DonationService ERROR - changeDonationShowingStatus(): ", e);
 		}
@@ -121,6 +130,7 @@ public class DonationServiceImpl implements DonationService {
 	}
 
 	@Override
+	@Transactional
 	public void updateAllMoneyUserDonationtoDonation(int donationId) {
 		try {
 			Donation donation = donationDAO.getDontaion(donationId);
@@ -254,7 +264,7 @@ public class DonationServiceImpl implements DonationService {
 	@Override
 	@Transactional
 	public Page<Donation> findByPhoneNumberOrOrganizationOrCodeOrStatus2(String searchingValue, int page, int size) {
-		PageRequest pageRequest = PageRequest.of(page, size);
+		PageRequest pageRequest = PageRequest.of(page-1, size);
 		return donationDAO.findByPhoneNumberOrOrganizationOrCodeOrStatus2(searchingValue, pageRequest);
 	}
 

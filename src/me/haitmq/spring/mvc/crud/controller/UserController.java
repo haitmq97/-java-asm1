@@ -440,8 +440,28 @@ public class UserController {
 	
 	@GetMapping("/profile")
 	public String userProfile(HttpServletRequest request, Model theModel) {
+		
+		// kiểm tra quyền (isLogined, isAdmin) (bao gồm phần header)
+
 		HttpSession session = request.getSession();
 		Integer currentUserId = (Integer) session.getAttribute("currentUserId");
+
+		Boolean isLogined = false;
+
+		Boolean isAdmin = false;
+
+		if (currentUserId != null) {
+			isLogined = true;
+			isAdmin = userService.isAdmin(currentUserId);
+		}
+
+		theModel.addAttribute("isLogined", isLogined);
+
+		theModel.addAttribute("isAdmin", isAdmin);
+		
+		
+		
+		
 		
 		
 		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> current user id: " + currentUserId);
@@ -459,20 +479,7 @@ public class UserController {
 		System.out.println("=======================>>>>>>>>>>>>>>> home page Current userId :" + currentUserId);
 		
 		
-		Boolean isLogined = false;
-		Boolean isAuthorities = false; 
-		
-		if(currentUserId != null) {
-			isLogined = true;
-			if (userService.isAdmin((int) currentUserId)) {
-				isAuthorities = true;
-			}
-		}
-		
-		theModel.addAttribute("isLogined", isLogined);
-		theModel.addAttribute("authorities", isAuthorities);
-		
-		
+
 		
 		
 		// userDonaion list

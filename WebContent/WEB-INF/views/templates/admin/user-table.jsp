@@ -3,6 +3,11 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ page import="me.haitmq.spring.mvc.crud.content_path.ViewConstants" %>
+<%@ page import="me.haitmq.spring.mvc.crud.utils.JSPDataFormat" %>
+<%@ page import="me.haitmq.spring.mvc.crud.entity.status.UserStatus" %>
+<%@ page import="me.haitmq.spring.mvc.crud.entity.role.UserRole" %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -34,9 +39,6 @@
 <link rel="stylesheet"
 	href="<c:url value='/static/user/assets/css/animate.min.css' />">
 
-<!-- MAIN CSS -->
-<link rel="stylesheet"
-	href="<c:url value='/static/user/assets/css/style.css' />">
 
 <script src="<c:url value='/static/user/assets/js/jquery.min.js' />"></script>
 <script
@@ -72,13 +74,12 @@
 	href="<c:url value='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css'/>"
 	integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
 	crossorigin="anonymous" referrerpolicy="no-referrer" />
+	
 
-
-<!-- customer style -->
-
-<link rel="stylesheet"
+ <!-- customer style -->
+ <link rel="stylesheet"
 	href="<c:url value='/static/common/assets/css/style.css'/>" />
-
+	
 <link rel="stylesheet"
 	href="<c:url value='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css'/>"
 	integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
@@ -86,29 +87,25 @@
 
 
 
-<!-- customer js -->
 
-<script
-	src="<c:url value='https://code.jquery.com/jquery-3.6.4.min.js'/>"> </script>
+<!-- customer js -->	
+
+<script src="<c:url value='https://code.jquery.com/jquery-3.6.4.min.js'/>"> </script>
 <script src="<c:url value='/static/common/assets/js/form.js' />"></script>
-<script src="<c:url value='/static/common/assets/js/script.js' />"></script>
-<script src="<c:url value='/static/common/assets/js/data-list.js' />"></script>
-
-
+<script src="<c:url value='/static/common/assets/js/script.js' />"></script> 
+<script src="<c:url value='/static/common/assets/js/data-list.js' />"></script> 
+<script src="<c:url value='/static/common/assets/js/layout-script.js' />"></script>
 
 
 </head>
 <body>
-<div>
-			
-			
-				 <button class="data-table-btn" onclick="window.location.href='${pageContext.request.contextPath}/admin/donations2'">Donations</button>
-				<button class="data-table-btn" onclick="window.location.href='${pageContext.request.contextPath}/admin/users'"
-								>Users</button>
-				<button class="data-table-btn" onclick="window.location.href='${pageContext.request.contextPath}/admin/donates'"
-								>Donates</button>
+<!-- Header layout -->
+	<jsp:include page="../common/header-layout-test.jsp">
+		<jsp:param name="includePart" value="headerSection" />
+	</jsp:include>
+	
+	<input type="hidden" id="isLogined" value="${isLogined}" />
 
-</div>
 
 
 	<section class="site-section content">
@@ -121,17 +118,22 @@
 
 
 			<div class="container">
-				<div class="content">
+				<div class="main-content">
 					<div class="h-content">
-					<div>
-							<a href="addUser">them moi</a>
+						<div class="add-div">
+							<button class="btn btn-success donation-btn"
+								onclick="toAddOrUpdate(0, '#user-addOrUpdate')">Thêm
+								mới</button>
+
+
 						</div>
 						<div class="sp-tool d-flex flex-row justify-content-between mt-3">
 							<div class="page-selector">
 
 								<input id="currentPage" type="hidden" name="currentPage"
-									value="${currentPage}" /> <label for="size">Rows per
-									page:</label> <select id="pageSize" name="size"
+									value="${currentPage}" /> 
+								<label for="size">Rows per page:</label> 
+								<select id="pageSize" name="size"
 									class="entries-select rounded form-control">
 									<option value="3" ${users.size == 3 ? 'selected' : ''}>3</option>
 									<option value="4" ${users.size == 4 ? 'selected' : ''}>4</option>
@@ -139,7 +141,7 @@
 									<option value="10" ${users.size == 10 ? 'selected' : ''}>10</option>
 									<option value="15" ${users.size == 15 ? 'selected' : ''}>15</option>
 									<option value="20" ${users.size == 20 ? 'selected' : ''}>20</option>
-									<!-- Add more options as needed -->
+									
 								</select>
 
 
@@ -155,11 +157,11 @@
 
 						</div>
 					</div>
-					<div class="m-content list" id="user-list">
+					<div class="m-content list" id="data-list">
 						<table class="table table-striped table-content">
 							<thead class="tb-head-title">
 								<tr>
-									<th scope="col" class="th-custom"><p>id</p></th>
+									
 									<th scope="col" class="th-custom"><p>Name</p></th>
 									<th scope="col" class="th-custom"><p>Email</p></th>
 									<th scope="col" class="th-custom"><p>Phone number</p></th>
@@ -173,7 +175,7 @@
 								<c:forEach var="tempUser" items="${users.content}">
 
 
-									<c:url var="detailLink" value="/admin/userDetails">
+									<c:url var="detailLink" value="${ViewConstants.E_ADMIN_USER_DETAIL}">
 										<c:param name="id" value="${tempUser.id}" />
 									</c:url>
 
@@ -188,19 +190,29 @@
 									<c:url var="changeStatusLink" value="/user/changeStatus">
 										<c:param name="userId" value="${tempUser.id}" />
 									</c:url>
+									
+									<c:url var="activeStatusLink" value="/admin/updateUserStatus">
+										<c:param name="id" value="${tempUser.id}" />
+										<c:param name="status" value="${UserStatus.ACTIVE}" />
+									</c:url>
+									
+									<c:url var="closedStatusLink" value="/admin/updateUserStatus">
+										<c:param name="id" value="${tempUser.id}" />
+										<c:param name="status" value="${UserStatus.LOCKED}" />
+									</c:url>
 
 
 
 									<tr>
-										<td><p>${tempUser.id}</p></td>
+										
 										<td><p>${tempUser.fullName}</p></td>
 										<td><p>${tempUser.email}</p></td>
 										<td><p>${tempUser.phoneNumber}</p></td>
 										<td><p>${tempUser.userName}</p></td>
 										<td><p>${tempUser.role.roleName}</p></td>
-										<td><p>${tempUser.status}</p></td>
+										<td><p>${JSPDataFormat.userStatusFormat(tempUser.status)}</p></td>
 										<td class="action-c">
-											<button class="btn btn-success user-btn" title="Chi tiết" onclick="updateBtn('${tempUser.id}')">
+											<button class="btn btn-success user-btn" title="Cập nhật" onclick="toAddOrUpdate('${tempUser.id}', '#user-addOrUpdate')">
 												<span class="content-btn-text">Cập nhật</span><span
 													class="content-btn-icon"></span>
 											</button>
@@ -208,22 +220,51 @@
 												<span class="content-btn-text">Chi tiết</span><span
 													class="content-btn-icon"></span>
 											</button>
-											<button class="btn btn-success user-btn" title="Chi tiết" onclick="deleteBtn('${tempUser.id}', '${tempUser.userName}','${tempUser.phoneNumber}')">
-												<span class="content-btn-text">Xóa</span><span
-													class="content-btn-icon"></span>
-											</button>
-											<button class="btn btn-success user-btn" title="Quyên góp">
-												<span class="content-btn-text">Quyên góp</span><span
-													class="content-btn-icon"></span>
-											</button>
-											<button class="btn btn-success user-btn" title="Chi tiết">
-												<span class="content-btn-text">Đóng</span><span
-													class="content-btn-icon"></span>
-											</button>
-											<button class="btn btn-success user-btn" title="Quyên góp">
-												<span class="content-btn-text">Kết thúc</span><span
-													class="content-btn-icon"></span>
-											</button>
+											
+											
+											<c:if test="${tempUser.role.roleName == UserRole.USER}">
+
+
+												<button class="btn btn-success user-btn" title="Chi tiết"
+													onclick="deleteBtn('${tempUser.id}', '${tempUser.userName}','${tempUser.phoneNumber}')">
+													<span class="content-btn-text">Xóa</span><span
+														class="content-btn-icon"></span>
+												</button>
+
+
+
+												<c:choose>
+
+
+													<c:when test="${tempUser.status == UserStatus.ACTIVE}">
+
+														<button class="btn btn-success donation-btn d-delete-btn"
+																title="Khóa"
+																onclick="window.location.href='${closedStatusLink}'">
+															<span class="content-btn-text">Khóa</span><span
+																class="content-btn-icon"></span>
+														</button>
+
+													</c:when>
+
+													<c:when test="${tempUser.status == UserStatus.LOCKED}">
+
+														<button class="btn btn-success donation-btn" title="Mở"
+															onclick="window.location.href='${activeStatusLink}'">
+															<span class="content-btn-text">Mở</span><span
+																class="content-btn-icon"></span>
+														</button>
+
+													</c:when>
+
+													<c:otherwise>
+
+													</c:otherwise>
+												</c:choose>
+
+
+											</c:if>
+
 
 
 										</td>
@@ -236,63 +277,30 @@
 						<div>
 							<div>
 								<input id="currentPage1" type="hidden" value="${currentPage}" />
-								<c:out value="current Pg:  ${currentPage}  " />
-								<br> <input id="totalPages1" type="hidden"
-									value="${totalPage}" />
-								<c:out value="total Pg:  ${totalPage}  " />
 
+								<br> 
+								<input id="totalPages1" type="hidden"
+									value="${totalPage}" /> 
+								<br> 
+								<input id="size1"
+									type="hidden" value="${currentSize}" /> 
+								<br> 
+								<input
+									id="searchingValue1" type="hidden" value="${searchingValue}" />
 
-								<br> <input id="size1" type="hidden" value="${currentSize}" />
-								<c:out value="size:  ${currentSize}  " />
-								<br> <input id="searchingValue1" type="hidden"
-									value="${searchingValue}" />
-								<c:out value="searchingValue:  ${searchingValue}  " />
 								<br> <input id="importUrl1" type="hidden"
 									value="${searchingValue}" />
-								<c:out value="searchingValue:  ${searchingValue}  " />
 
-								<c:set var="testValue1" value="<c:url value='/v1/users'/>" />
+
+								<c:set var="testValue1" value="<c:url value='/v1/donations'/>" />
 
 
 
 							</div>
 							<div id="pagination-container"></div>
-<script>
-							
-							$(document).ready(function() {
-								$('#pageSize').change(function() {
-									updateShowingTable($('#pageSize').val(), $('#searchingValue').val(), "#user-list");
-								});
-
-								$('#searchingValue').on('input', function() {
-									updateShowingTable($('#pageSize').val(), $('#searchingValue').val(), "#user-list")
-								});
-								
-								
-								var currentPage = parseInt(document.getElementById("currentPage1").value, 10);
-								var totalPages = parseInt(document.getElementById("totalPages1").value, 10);
-
-
-
-								generatePaginationButtons(currentPage, totalPages, $('#pageSize').val(), $('#searchingValue').val(), "#user-list");
-								
-								let btnList = document.getElementsByClassName("page-btn");
-								Array.from(btnList).forEach(btn => {
-								    if (parseInt(btn.textContent) === currentPage) {
-								    	
-								        btn.disabled = true;
-								    }
-								});
-								
-								
-
-							});
-							
-							
-							
-							
-							</script>
-
+						
+						
+						
 
 						</div>
 
@@ -320,7 +328,132 @@
 
 
 
-<div class="overlay-container">
+	<jsp:include page="../common/footer-layout2.jsp">
+		<jsp:param name="includePart" value="footerSection" />
+	</jsp:include>
+
+	
+	<div class="overlay-container">
+		<div class="row">
+			<div id="overlay" onclick="closeAllPopup()"></div>
+			<div class="popup col-12 col-sm-8 col-md-4">
+		
+			<% boolean isLogined = (Boolean)request.getAttribute("isLogined"); %>
+			<% boolean isAdmin = (Boolean)request.getAttribute("isAdmin"); %>
+    		
+    		<% if (isAdmin) { %>
+				<div class="form-container donate-form " id="user-addOrUpdate">
+			        <div class="container form-head">
+			            <div class="form-title">
+			                <div class="d-flex justify-content-between">
+
+
+								<c:choose>
+									<c:when test="${user.id != 0}">
+										<h4 class="d-inline-block mx-auto">Cập nhật</h4>
+									</c:when>
+									<c:otherwise>
+										<h4 class="d-inline-block mx-auto">Thêm mới</h4>
+									</c:otherwise>
+								</c:choose>
+			                     
+			                </div>
+			
+			            </div>
+			        </div>
+			        <div class="container form-main">
+			            <form:form modelAttribute="user" action="${process}"
+			                method="POST">
+			  		
+			 				<form:input type="hidden"  id="donationId" path="id" />
+			 				
+			                <div class="form-group form-group-custom">
+			                  <label class="field-label" for="fullName">Họ và tên</label>
+			                  <form:input type="text" class="form-control" id="fullName" path="fullName" />
+			                  
+			                </div>
+			                <div class="form-group form-group-custom">
+			                  <label class="field-label" for="email">Email:</label>
+			                  <form:input type="text" class="form-control" id="email" path="email" readonly="${user.id != 0 ? 'true' : 'false'}"/>
+			                </div>
+			                
+			                <div class="form-group form-group-custom">
+			                  <label class="field-label" for="phoneNumber">Số điện thoại:</label>
+			                  <form:input type="text" class="form-control" id="phoneNumber" path="phoneNumber" />
+			                </div>
+			                <div class="form-group form-group-custom">
+			                  <label class="field-label" for="address">Địa chỉ:</label>
+			                  <form:input type="text" class="form-control" id="address" path="address" />
+			                </div>
+			                <div class="form-group form-group-custom">
+			                  <label class="field-label" for="userName">Tài khoản:</label>
+			                  <form:input type="text" class="form-control" id="userName" path="userName" readonly="${user.id != 0 ? 'true' : 'false'}"/>
+			                </div>
+			                
+			                <c:if test="${user.id == 0}">
+			                	<div class="form-group form-group-custom">
+			                  		<label class="field-label" for="password">Mật khẩu:</label>
+			                  		<form:input type="text" class="form-control" id="password" path="password" />
+			                	</div>
+			                </c:if>
+							<c:if test="${user.role.roleName != UserRole.ADMIN}">
+								<div class="form-group form-group-custom">
+									<label class="field-label" for="description-add">Vai
+										trò:</label>
+									<form:select id="role" class="form-control"
+										path="role.roleName">
+										
+										<form:option value="${UserRole.USER}">USER</form:option>
+										<form:option value="${UserRole.ADMIN}">ADMIN</form:option>
+										<%-- 
+										<form:option value="${UserRole.USER}"
+											${user.role.roleName == UserRole.USER ? 'selected' : ''}>User</form:option>
+										<form:option value="${UserRole.ADMIN}"
+											${user.role.roleName == UserRole.ADMIN ? 'selected' : ''}>Admin</form:option>
+										 --%>
+									</form:select>
+								</div>
+
+
+
+							</c:if>
+							
+							
+			                <div class="submit-p">
+			                    <button type="button" class="cancel-btn "
+			                        onclick="closeAllPopup()">Hủy</button>
+			                    <button type="submit" class="submit-btn">
+			                    	<c:choose>
+										<c:when test="${user.id != 0}">
+											Cập nhật
+										</c:when>
+										<c:otherwise>
+											Thêm mới
+										</c:otherwise>
+			                    	</c:choose>
+			                    
+			                    </button>
+			                </div>
+			            </form:form>
+			        </div>
+
+    		</div>
+				
+    		
+    		 <% } else { %>
+    		 
+    		 <% } %>
+    		 
+    
+		</div>
+		
+		
+		</div>
+	
+	</div>
+    
+
+<%-- <div class="overlay-container">
 		<div id="overlay" onclick="closeAllPopup()"></div>
 		<div class="popup">
 		
@@ -452,8 +585,8 @@
 		</div>
 	</div>
 
-
-
+ --%>
+<!-- 
 	<script>
 	function updateBtn(id) {
 		$.ajax({
@@ -468,7 +601,7 @@
 			}
 		});
 		
-		openPopup('update');
+		openModal('update');
 	}
 	
 	function deleteBtn(id, name, code) {
@@ -481,14 +614,14 @@
 		confirmBtn.addEventListener("click", function() {
 			window.location.href='${pageContext.request.contextPath}/admin/deleteUser?id=' +id;
 		});
-		openPopup('delete');
+		openModal('delete');
 	}
 
 </script>
 
 
-
-
+ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 </body>
 </html>

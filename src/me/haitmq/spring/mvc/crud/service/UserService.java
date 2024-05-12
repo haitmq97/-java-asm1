@@ -9,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import me.haitmq.spring.mvc.crud.entity.User;
+import me.haitmq.spring.mvc.crud.entity.status.DonationStatus;
+import me.haitmq.spring.mvc.crud.entity.status.UserStatus;
 
 public interface UserService  {
 	
@@ -104,7 +106,7 @@ public interface UserService  {
 	
 	public boolean isAdmin(int theId );
 	
-	
+	public void changeUserStatus(UserStatus status, int userId);
 
 
 }
