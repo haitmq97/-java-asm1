@@ -2,19 +2,23 @@ package me.haitmq.spring.mvc.crud.controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import me.haitmq.spring.mvc.crud.entity.UserDonation;
+import me.haitmq.spring.mvc.crud.common.LoginUser;
 import me.haitmq.spring.mvc.crud.content_path.ViewConstants;
 import me.haitmq.spring.mvc.crud.entity.Donation;
 import me.haitmq.spring.mvc.crud.entity.User;
@@ -36,101 +40,104 @@ public class HomeController {
 
 	@Autowired
 	private DonationService donationService;
+
+	/*
+	 * trong phương thức home cần đưa ra view: + isLogined (kiểm tra đã đăng nhập
+	 * chưa) => donate form + isAdmin => manager
+	 * 
+	 * + các donation + current page (trang hiện tại mặc định là 1) + số entries mỗi
+	 * page (current size) + searchingValue
+	 * 
+	 * + donate form <= donationId tương ứng
+	 */
 	
 	/*
-	trong phương thức home
-	cần đưa ra view:
-		+ isLogined (kiểm tra đã đăng nhập chưa) => donate form
-		+ isAdmin => manager
-		
-		+ các donation
-		+ current page (trang hiện tại mặc định là 1)
-		+ số entries mỗi page (current size)
-		+ searchingValue
-		
-		+ donate form <= donationId tương ứng
-	*/
+	 * @RequestParam(name = "errorLoginOrRegister", defaultValue = "false", required
+	 * = false) boolean errorLoginOrRegister,
+	 */
 	@GetMapping("/home")
 	public String donationlist4(HttpServletRequest request, @RequestParam(defaultValue = "1") int page,
 			@RequestParam(name = "size", defaultValue = "5") int size,
 			@RequestParam(name = "searchingValue", defaultValue = "", required = false) String searchingValue,
 			@RequestParam(name = "donationId", defaultValue = "1") int donationId,
+			
 			Model theModel) {
-		
-		// chỉnh lại default donationid????????????????????????????????????????????????????????????
-		
+
+		// chỉnh lại default
+		// donationid????????????????????????????????????????????????????????????
+
 		// kiểm tra quyền (isLogined, isAdmin) (bao gồm phần header)
-		
+
 		HttpSession session = request.getSession();
 		Integer currentUserId = (Integer) session.getAttribute("currentUserId");
+		
 
 		Boolean isLogined = false;
-		
-		Boolean isAdmin = false; 
-		
-		if(currentUserId != null) {
+
+		Boolean isAdmin = false;
+
+		if (currentUserId != null) {
 			isLogined = true;
 			isAdmin = userService.isAdmin(currentUserId);
 		}
-		
+
 		theModel.addAttribute("isLogined", isLogined);
-		
+
 		theModel.addAttribute("isAdmin", isAdmin);
-		
 
-		
-		// donation table model attributes (donations , currentSize, searchingValue, currentPage)
-		
-		/*
-		Page<Donation> donations = donationService.findAll(page, size);
+		Page<Donation> donations = donationService.findByPhoneNumberOrOrganizationOrCodeOrStatus(searchingValue, page,
+				size);
 
-		if (!searchingValue.equals("")) {
-			donations = donationService.findByPhoneNumberOrOrganizationOrCodeOrStatus(searchingValue, page, size);
-			theModel.addAttribute("searchingValue", searchingValue);
-			
-		}
-		*/
-		
-		Page<Donation> donations = donationService.findByPhoneNumberOrOrganizationOrCodeOrStatus(searchingValue, page, size);
-		
 		theModel.addAttribute("searchingValue", searchingValue);
-
+		
 		theModel.addAttribute("donations", donations);
 
 		theModel.addAttribute("currentPage", page);
-		
+
 		theModel.addAttribute("totalPage", donations.getTotalPages());
 
 		theModel.addAttribute("currentSize", size);
-		
+
 		// donate form model attributes
-		
+
 		theModel.addAttribute("userDonation", new UserDonation());
 
 		theModel.addAttribute("process", "processDonating");
 
 		// add donationId to the model (for process form)
 		Donation donation = donationService.getDonation(donationId);
-		
+
 		// ??????????????????????????????????????????????????????
 		theModel.addAttribute("donation", donation);
-		/* 
-		theModel.addAttribute("donationId", donationId); 
-		 */
-		
 		/*
-		theModel.addAttribute("donationName", donation.getName());
-		theModel.addAttribute("donationCode", donation.getCode());
-		*/
-		// other model attributes
-		
-		theModel.addAttribute("totalElements", donations.getTotalElements());
+		 * theModel.addAttribute("donationId", donationId);
+		 */
 
+		theModel.addAttribute("totalElements", donations.getTotalElements());
+		
+		Boolean errorLogin = false;
+		
+		
+		if (theModel.containsAttribute("errorLoginOrRegister")) {
+            errorLogin = (Boolean) theModel.getAttribute("errorLoginOrRegister");
+            // Xử lý logic với errorLoginOrRegister ở đây
+        }
+		
+		theModel.addAttribute("errorLoginOrRegister", errorLogin);
+		
+		
+		System.out.println("?>?>?>>?>?>??>?>??>??>??>?>????> errorLoginOrRegister: " + errorLogin);
+		
+		if (theModel.containsAttribute("loginUser")) {
+            theModel.addAttribute("loginUser", theModel.getAttribute("loginUser"));
+        } else {
+            theModel.addAttribute("loginUser", new LoginUser());
+        }
+		
 
 		return ViewConstants.V_HOME;
 	}
-	
-	
+
 	@GetMapping("donation-detail")
 	public String donationDetails(HttpServletRequest request, @RequestParam("id") int theId, Model theModel) {
 
@@ -151,7 +158,7 @@ public class HomeController {
 		theModel.addAttribute("isLogined", isLogined);
 
 		theModel.addAttribute("isAdmin", isAdmin);
-		
+
 		// donation model attribute
 
 		Donation donation = donationService.getDonation(theId);
@@ -163,167 +170,10 @@ public class HomeController {
 		theModel.addAttribute("userDonation", new UserDonation());
 
 		theModel.addAttribute("process", "processDonating");
-		
+
 		theModel.addAttribute("donationId", theId);
-		
-		/*
-		
-		theModel.addAttribute("donationName", donation.getName());
-		theModel.addAttribute("donationCode", donation.getCode());
-		 */
-		return ViewConstants.V_PUBLIC_DONATION_DETAILS;
-	}
-	
-	
-	@GetMapping("donation-detail2")
-	public String donationDetails2(HttpServletRequest request, @RequestParam("id") int theId, Model theModel) {
-		HttpSession session = request.getSession();
-
-		Donation donation = donationService.getDonation(theId);
-
-		theModel.addAttribute("donation", donation);
-		
-
-
-		Integer currentUserId = (Integer) session.getAttribute("currentUserId");
-		
-		
-
-		Boolean isLogined = false;
-		Boolean isAuthorities = false; 
-		
-		if(currentUserId != null) {
-			isLogined = true;
-			if (userService.isAdmin((int) currentUserId)) {
-				isAuthorities = true;
-			}
-		}
-		
-		theModel.addAttribute("isLogined", isLogined);
-		theModel.addAttribute("authorities", isAuthorities);
-		
-		
-		theModel.addAttribute("userDonation", new UserDonation());
-
-		// add process form link to model
-		theModel.addAttribute("process", "processDonating");
-		
-		
-		
-		theModel.addAttribute("donationId", theId);
-		theModel.addAttribute("donationName", donation.getName());
-		theModel.addAttribute("donationCode", donation.getCode());
-		
 
 		return ViewConstants.V_PUBLIC_DONATION_DETAILS;
-	}
-	
-	
-
-	@GetMapping("/donations3")
-	public String donationlist(HttpServletRequest request, @RequestParam(defaultValue = "1") int page,
-			@RequestParam(name = "size", defaultValue = "5") int size,
-			@RequestParam(name = "searchingValue", defaultValue = "", required = false) String searchingValue,
-			Model theModel) {
-
-		System.out.println("size: " + size);
-		Page<Donation> donations = donationService.findAll(page, size);
-
-		if (!searchingValue.equals("")) {
-			donations = donationService.findByPhoneNumberOrOrganizationOrCodeOrStatus(searchingValue, page, size);
-			theModel.addAttribute("searchingValue", searchingValue);
-		}
-
-		theModel.addAttribute("donations", donations);
-
-		theModel.addAttribute("currentPage", page);
-		theModel.addAttribute("totalPage", donations.getTotalPages());
-
-		theModel.addAttribute("currentSize", size);
-
-		int nextPage = page + 1;
-		int prevPage = page - 1;
-
-		if (page <= 1) {
-			prevPage = 1;
-		}
-
-		theModel.addAttribute("prevPage", prevPage);
-		System.out.println("current page" + page);
-		System.out.println("total page: " + donations.getTotalPages());
-		if (page >= (donations.getTotalPages())) {
-			nextPage = donations.getTotalPages();
-		}
-
-		theModel.addAttribute("nextPage", nextPage);
-		theModel.addAttribute("authorities", "admin");
-
-		HttpSession session = request.getSession();
-		Integer currentUserId = (Integer) session.getAttribute("currentUserId");
-
-		System.out.println("=======================>>>>>>>>>>>>>>> home page Current userId :" + currentUserId);
-		if (currentUserId != null) {
-
-			if (userService.isAdmin((int) currentUserId)) {
-				theModel.addAttribute("authorities", "admin");
-
-				System.out.println("=============>>>> test 1");
-			} else {
-				theModel.addAttribute("authorities", "user");
-				System.out.println("=============>>>> test 2");
-			}
-
-		} else {
-
-			theModel.addAttribute("authorities", "none");
-			System.out.println("=============>>>> test 3");
-		}
-
-		System.out.println("=============>>>> test 4");
-
-//		return "user/donationList";
-		return "public/donation-table3";
-	}
-
-	@GetMapping("/donations2")
-	public String donationlist2(@RequestParam(defaultValue = "1") int page,
-			@RequestParam(name = "size", defaultValue = "5") int size,
-			@RequestParam(name = "searchingValue", defaultValue = "", required = false) String searchingValue,
-			Model theModel) {
-
-		System.out.println("size: " + size);
-		Page<Donation> donations = donationService.findAll(page, size);
-
-		if (!searchingValue.equals("")) {
-			donations = donationService.findByPhoneNumberOrOrganizationOrCodeOrStatus(searchingValue, page, size);
-			theModel.addAttribute("searchingValue", searchingValue);
-		}
-
-		theModel.addAttribute("donations", donations);
-
-		theModel.addAttribute("currentPage", page);
-		theModel.addAttribute("totalPage", donations.getTotalPages());
-
-		theModel.addAttribute("currentSize", size);
-
-		int nextPage = page + 1;
-		int prevPage = page - 1;
-
-		if (page <= 1) {
-			prevPage = 1;
-		}
-
-		theModel.addAttribute("prevPage", prevPage);
-		System.out.println("current page" + page);
-		System.out.println("total page: " + donations.getTotalPages());
-		if (page >= (donations.getTotalPages())) {
-			nextPage = donations.getTotalPages();
-		}
-
-		theModel.addAttribute("nextPage", nextPage);
-
-//		return "user/donationList";
-		return "public/donation-table2";
 	}
 
 	// register
@@ -338,44 +188,79 @@ public class HomeController {
 	}
 
 	@PostMapping("/processRegister")
-	public String processRegister(@ModelAttribute("user") User theUser) {
-		userService.register(theUser);
+	public String processRegister(@Valid @ModelAttribute("user") User theUser, 
+			BindingResult theBindingResult,
+			RedirectAttributes redirectAttributes) {
+		
 
-		return ViewConstants.V_REDIRECT_HOME;
+		if(theBindingResult.hasErrors()) {
+
+			return ViewConstants.V_REGISTER;
+		} else {
+			
+			userService.register(theUser);
+			
+			return ViewConstants.V_REDIRECT_HOME;
+		}
 	}
 
 	// login
 	@GetMapping("login")
 	public String showLoginForm(Model theModel) {
-
-		System.out.println("test hearssssssssssssssssssssss");
-		User theLoginUser = new User();
-		theModel.addAttribute("user", theLoginUser);
+		LoginUser theLoginUser = new LoginUser();
+		theModel.addAttribute("loginUser", theLoginUser);
 		theModel.addAttribute("process", "processLogin");
 
 		return ViewConstants.V_LOGIN;
 	}
 
 	@PostMapping("processLogin")
-	public String processLogin(HttpServletRequest request, @ModelAttribute("user") User loginUser) {
-		int userId = userService.getIdIfUserExisted(loginUser);
+	public String processLogin(HttpServletRequest request,
+								@Valid @ModelAttribute("loginUser") LoginUser loginUser, 
+								BindingResult theBindingResult,
+								RedirectAttributes redirectAttributes) {
+		
+		HttpSession session = request.getSession();
+		
+		Boolean isLogined = false;
+		
+		Boolean isActive = false;
+		
+		Boolean isAdmin = false;
+		
+		if (theBindingResult.hasErrors()) {
+	            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.loginUser", theBindingResult);
+	            redirectAttributes.addFlashAttribute("loginUser", loginUser);
+				/* redirectAttributes.addFlashAttribute("errorLoginOrRegister", true); */
+	            redirectAttributes.addFlashAttribute("errorLogin", true);
+	            
+	    } else {
+	    	int userId = userService.getIdIfUserExisted(loginUser);
+			
+			if (userId != -1) {
+				
+				User user = userService.getUser(userId);
 
-		if (userId != -1) {
-			HttpSession session = request.getSession();
-
-			session.setAttribute("currentUserId", userId);
-
-			Integer currentUserId = (Integer) session.getAttribute("currentUserId");
-
-			System.out.println("=========================>>>>>> user id: " + currentUserId);
-		}
-
+				session.setAttribute("currentUserId", userId);
+				
+				isLogined = true;
+				
+				if(userService.isActive(userId)) {
+					isActive = true;
+					isAdmin = userService.isAdmin(userId);
+					
+				}
+			} 
+	    }
+		
+		session.setAttribute("isLogined", isLogined);
+		session.setAttribute("isActive", isActive);
+		session.setAttribute("isAdmin", isAdmin);
+		
 		return ViewConstants.V_REDIRECT_HOME;
+		
+		
 	}
-
-	
-
-	
 
 	@GetMapping("donateForm")
 	public String userDonationForm(HttpServletRequest request, @RequestParam("id") int donationId, Model theModel) {
@@ -387,7 +272,7 @@ public class HomeController {
 			if (currentUserId == null) {
 				return "redirect:/v1/home";
 			}
-			
+
 			Donation donation = donationService.getDonation(donationId);
 			// add new UserDonation obj to the model
 			theModel.addAttribute("userDonation", new UserDonation());
@@ -399,7 +284,6 @@ public class HomeController {
 			theModel.addAttribute("donationId", donationId);
 			theModel.addAttribute("donationName", donation.getName());
 			theModel.addAttribute("donationId", donation.getCode());
-			
 
 			// return view
 			return "user/donate-form";
@@ -412,19 +296,13 @@ public class HomeController {
 	@PostMapping("/processDonating")
 	public String processDonating(HttpServletRequest request, @ModelAttribute("userDonation") UserDonation userDonation,
 			@RequestParam("donationId") int donationId) {
-		System.out.println("=================>>>>>>>>>>>>>>>>>>>>>> in processDonating");
 		try {
 			HttpSession session = request.getSession();
 			Integer currentUserId = (Integer) session.getAttribute("currentUserId");
-			System.out.println("=================>>>>>>>>>>>>>>>>>>>>>> in processDonating: currentUserid: " +currentUserId);
 			User user = userService.getUser(currentUserId);
-			System.out.println("=================>>>>>>>>>>>>>>>>>>>>>> in processDonating: currentUser: " +user);
 			Donation donation = donationService.getDonation(donationId);
-			System.out.println("=================>>>>>>>>>>>>>>>>>>>>>> in processDonating: donation: " +donation);
 			userDonation.setUser(user);
 			userDonation.setDonation(donation);
-			
-			System.out.println("=================>>>>>>>>>>>>>>>>>>>>>> in processDonating: userDonation: " +userDonation);
 			userDonationService.save(userDonation);
 			return ViewConstants.V_REDIRECT_HOME;
 		} catch (Exception e) {
@@ -433,43 +311,15 @@ public class HomeController {
 		}
 	}
 
-	
-
 	// logout
 	@GetMapping(value = { "processLogout", "/logout" })
 	public String processLogout(HttpServletRequest request, @ModelAttribute("user") User loginUser) {
-		int userId = userService.getIdIfUserExisted(loginUser);
 
 		HttpSession session = request.getSession();
 
 		session.removeAttribute("currentUserId");
-		try {
 
-			Integer currentUserId = (Integer) session.getAttribute("currentUserId");
-
-			System.out.println("=========================>>>>>> user id: " + currentUserId);
-		} catch (Exception e) {
-			System.out.println(
-					"==========================================================>>>>>>>>>>>>>>>no user login currently");
-		}
-		System.out.println("============>>>>test");
-
-		return "redirect:/v1/home";
+		return ViewConstants.V_REDIRECT_HOME;
 	}
-	
-	
-	@GetMapping("/myPage")
-    public String myPage(Model model) {
-        
-		/*
-		boolean showDiv = myService.shouldShowDiv(); // Assume MyService has a method to determine if the div should be shown
-		*/
-		
-		boolean showDiv = false;
-		
-        model.addAttribute("showDiv", showDiv);
-        return "public/test";
-    }
-	
 
 }

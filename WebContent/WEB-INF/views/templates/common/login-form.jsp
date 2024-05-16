@@ -26,10 +26,10 @@
 					</div>
 				</div>
 				<div class="form-main">
-					<form:form  modelAttribute="user"
+					<form:form  modelAttribute="loginUser"
 				action="${process}"
 				method="POST">
-
+						<div class="test d-none" id="test123"><p>error here</p></div>
 						<div class="f-field">
 							<div class="label-d">
 								<label class="field-label"> <span class="label-text">Tài
@@ -38,9 +38,15 @@
 							</div>
 							<div class="input-d">
 								<div class="field-input">
-									<form:input type="text" class="input-p form-control" path="userName"/>
+									<form:input type="text" class="input-p form-control" path="userNameOrEmail"/>
+							
+
 								</div>
-								<div class=""></div>
+							
+							</div>
+							
+							<div>
+								 <form:errors path="userNameOrEmail" />
 							</div>
 						</div>
 
@@ -58,8 +64,14 @@
 										onclick="togglePassword()" title="Hiện mật khẩu">
 										<i id="eyeIcon" class="fa-regular fa-eye"></i>
 									</button>
+									
+
 								</div>
 
+							</div>
+							
+							<div>
+								 <form:errors path="password" />
 							</div>
 
 						</div>
@@ -79,11 +91,6 @@
 					</form:form>
 				</div>
 
-			</div>
-			<div>
-				<div class="form-container" id="login-warning">
-				<p>Ban can dang nhap truoc khi thuc hien quyen gop</p>
-				</div>
 			</div>
 			
 		</div>

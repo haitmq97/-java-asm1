@@ -91,6 +91,12 @@ public interface DonationService {
 	public Page<Donation> findAll(int page, int size);
 	
 	public Page<Donation> findByPhoneNumberOrOrganizationOrCodeOrStatus2(String searchingValue, int page, int size);
+	
+	public void addMoneyToDonation(int theId, long amount);
+	
+	public void updateDonationMoneyByUserDonation(int theId);
+	
+	public void updateAllDonationMoney();
 
 
 

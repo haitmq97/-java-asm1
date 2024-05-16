@@ -27,98 +27,6 @@ public class DonationController {
 	private DonationService donationService;
 
 	
-	/*
-	@GetMapping("/list")
-	public String donationlist(Model theModel) {
-		List<Donation> donations = donationService.getDonationList();
-
-		theModel.addAttribute("donations", donations);
-
-		return "donation-list";
-	}
-
-	@GetMapping("/donation-detail")
-	public String userDetails(@RequestParam("donationId") int theId, Model theModel) {
-		Donation tempDonation = donationService.getDonation(theId);
-
-		theModel.addAttribute("user", tempDonation);
-
-		return "donation-detail";
-	}
-
-	@GetMapping("/showFormForAdd")
-	public String getDonationForm(Model theModel) {
-		theModel.addAttribute("donation", new Donation());
-		return "donation-form";
-	}
-
-	@PostMapping("/save-donation")
-	public String saveOrUpdate(@ModelAttribute("donation") Donation donation) {
-		donationService.saveOrUpdate(donation);
-
-		return "redirect:/donation/list";
-	}
-
-	@GetMapping("/delete")
-	public String delete(@RequestParam("id") int theId) {
-		System.out.println("test 1");
-		donationService.delete(theId);
-		System.out.println("test 2");
-		return "redirect:/donation/list";
-	}
-
-	@GetMapping("/updateForm")
-	public String updateForm(@RequestParam("id") int theId, Model theModel) {
-		Donation tempDonation = donationService.getDonation(theId);
-		theModel.addAttribute("donation", tempDonation);
-
-		return "donation-form";
-	}
-
-	@GetMapping("datetest")
-	public String dateTest() {
-
-		return "datetest";
-	}
-
-	@GetMapping("/detail")
-	public String detail(@RequestParam("id") int theId, Model theModel) {
-		Donation donation = donationService.getDonation(theId);
-
-		theModel.addAttribute("donation", donation);
-
-		return "donation-detail";
-	}
-
-	@GetMapping("/donation-table")
-	public String donationTable(Model theModel) {
-		List<Donation> donations = donationService.getDonationList();
-
-		theModel.addAttribute("donations", donations);
-		return "donation-table";
-	}
-
-	@GetMapping("/master")
-	public String master() {
-		return "master-layout-donation";
-	}
-
-	@GetMapping("donation-details")
-	public String donationDetails(HttpServletRequest request, @RequestParam("id") int theId, Model theModel) {
-		HttpSession session = request.getSession();
-		
-		System.out.println("==================>>>>>>> from donation controler in donation-details method - currentUserId: " + session.getAttribute("currentUserId"));;
-		
-		Donation donation = donationService.getDonation(theId);
-
-		theModel.addAttribute("donation", donation);
-
-		return "donationDetails";
-	}
-	*/
-
-	
-	////////////////////////////////////////////////////
 	@GetMapping("/list")
 	public String donationlist(@RequestParam(defaultValue = "1") int page, @RequestParam(name="size", defaultValue = "5") int size,
 			@RequestParam(name = "searchingValue", defaultValue = "", required = false) String searchingValue,
@@ -164,7 +72,6 @@ public class DonationController {
 	
 	@GetMapping("donation-details")
 	public String donationDetails(HttpServletRequest request, @RequestParam("id") int theId, Model theModel) {
-		HttpSession session = request.getSession();
 		
 		Donation donation = donationService.getDonation(theId);
 

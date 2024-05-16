@@ -2,6 +2,8 @@ package me.haitmq.spring.mvc.crud.service;
 
 
 
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
+
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 
 import me.haitmq.spring.mvc.crud.dao.DonationDAO;
+import me.haitmq.spring.mvc.crud.dao.UserDonationDAO;
 import me.haitmq.spring.mvc.crud.entity.Donation;
 
 import me.haitmq.spring.mvc.crud.utils.*;
@@ -31,6 +34,9 @@ public class DonationServiceImpl implements DonationService {
 	
 	@Autowired
 	private UserDonationService userDonationService;
+	
+	@Autowired
+	private UserDonationDAO userDonationDAO;
 	
 	
 	// save donation obj
@@ -304,7 +310,28 @@ public class DonationServiceImpl implements DonationService {
 	
 
 
+	@Override
+	@Transactional
+	public void addMoneyToDonation(int theId, long amount) {
+		Donation donation = donationDAO.getDontaion(theId);
+		donation.setMoney(donation.getMoney() + amount);
+		donationDAO.saveOrUpdate(donation);
+	}
 	
 	
+	public void updateDonationMoneyByUserDonation(int theId) {
+		Donation donation = donationDAO.getDontaion(theId);
+		
+		donation.setMoney(userDonationDAO.getTotalMoneyByDonationId(theId));
+		donationDAO.saveOrUpdate(donation);
+	}
+	
+	public void updateAllDonationMoney() {
+		List<Donation> donations = donationDAO.getDonationList();
+		for (Donation donation: donations) {
+			updateDonationMoneyByUserDonation(donation.getId());
+			donationDAO.saveOrUpdate(donation);
+		}
+	}
 	
 }

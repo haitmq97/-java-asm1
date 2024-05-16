@@ -98,6 +98,8 @@
                   <div class="input-d">
                     <div class="field-input">
                       <form:input type="email" class="input-p form-control" path="email" />
+                      
+                      <form:errors path="email" />
                     </div>
                     <div class=""></div>
                   </div>
@@ -109,11 +111,13 @@
                   <div class="label-d">
                     <label class="field-label">
                       <span class="label-text">Số điện thoại (tùy chọn):</span>
+                      
                     </label>
                   </div>
                   <div class="input-d">
                     <div class="field-input">
                       <form:input type="number" class="input-p form-control" path="phoneNumber"/>
+                      <form:errors path="phoneNumber" />
                     </div>
                     <div class=""></div>
                   </div>
@@ -144,6 +148,8 @@
                   <div class="input-d">
                     <div class="field-input">
                       <form:input type="text" class="input-p form-control" path="userName" autocomplete="off"/>
+                      
+                      <form:errors path="userName" />
                     </div>
                     <div class=""></div>
                   </div>
@@ -161,6 +167,8 @@
                       <button type="button" class="button no-b-btn toggle-pass-btn" onclick="togglePassword()" title="Hiện mật khẩu">
                         <i id="eyeIcon" class="fa-regular fa-eye"></i>
                       </button>
+                      
+                      <form:errors path="password" />
                     </div>
 
                  

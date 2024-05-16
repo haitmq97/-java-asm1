@@ -322,6 +322,7 @@ public class UserController {
 		return "common/login-form";
 	}
 
+	/*
 	@PostMapping("processLogin")
 	public String processLogin(HttpServletRequest request, @ModelAttribute("user") User loginUser) {
 		int userId = userService.getIdIfUserExisted(loginUser);
@@ -339,7 +340,7 @@ public class UserController {
 
 		return "redirect:/v1/home";
 	}
-
+*/
 	@GetMapping("processLogout")
 	public String processLogin(HttpServletRequest request) {
 		HttpSession session = request.getSession();

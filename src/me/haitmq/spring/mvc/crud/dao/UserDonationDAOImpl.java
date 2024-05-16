@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 
 import me.haitmq.spring.mvc.crud.entity.User;
 import me.haitmq.spring.mvc.crud.entity.UserDonation;
+import me.haitmq.spring.mvc.crud.entity.status.UserDonationStatus;
 
 
 
@@ -246,11 +247,13 @@ public class UserDonationDAOImpl implements UserDonationDAO {
 	@Override
 	public Long getTotalMoneyByDonationId(int theId) {
 		 try {
-			 	String queryString = "select COALESCE(sum(money), 0) from UserDonation ud where ud.donation.id = :donationId and ud.status = 'CONFIRM'";
+			 	String queryString = "select COALESCE(sum(money), 0) from UserDonation ud where ud.donation.id = :donationId and ud.status = :status";
 		        Session session = sessionFactory.getCurrentSession();
 		        Query<Long> query = session.createQuery(queryString, Long.class);
 		        
 		        query.setParameter("donationId", theId);
+		        
+		        query.setParameter("status", UserDonationStatus.CONFIRMED);
 		        
 
 		        return query.uniqueResult();

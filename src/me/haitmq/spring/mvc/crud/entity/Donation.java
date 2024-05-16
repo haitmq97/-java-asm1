@@ -15,6 +15,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 import me.haitmq.spring.mvc.crud.entity.status.DonationStatus;
 
@@ -28,13 +30,17 @@ public class Donation {
 	@Column(name = "id")
 	private int id;
 	
+	
 	@Column(name = "code")
+	@Pattern(regexp = "^[a-zA-Z]{2}[0-9]{3}$", message = "Mã phải gồm 2 kí tự chữ và 3 kí tự số")
 	private String code;
 	
 	@Column(name = "name")
+	@NotBlank(message = "is required")
 	private String name;
 	
 	@Column(name = "phone_number")
+	@NotBlank(message = "is required")
 	private String phoneNumber;
 	
 	@Column(name = "organization")

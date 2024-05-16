@@ -27,9 +27,11 @@
 										class="fa fa-home" aria-hidden="true"></i></span>
 								</button>
 
-								<% boolean isLogined = (Boolean)request.getAttribute("isLogined"); %>
-								<% boolean isAdmin = (Boolean)request.getAttribute("isAdmin"); %>
-								
+								<% Boolean isLogined = ((Boolean)request.getAttribute("isLogined")) != null ? (Boolean)request.getAttribute("isLogined") : false; %>
+								<% Boolean isAdmin = ((Boolean)request.getAttribute("isAdmin")) != null ? (Boolean)request.getAttribute("isAdmin") : false; %>
+								<%-- 
+								<% Boolean isAdmin = (Boolean)request.getAttribute("isAdmin"); %>
+								 --%>
     							<% if (isAdmin) { %>
         							<div class="user-l-btn d-inline-block">
 									<div class="btn-group" id="mng-btn">
@@ -99,7 +101,7 @@
 												class="icon-nav-i"><i
 												class="fa-solid fa-user-plus"></i></span>
 										</button>
-										<button class="btn custom-rs-btn" onclick="openPopup('#login')">
+										<button class="btn custom-rs-btn" onclick="openModal('#login')">
 											<span class="txt-nav-i">Đăng nhập</span>
 											<span class="icon-nav-i"><i class="fa-solid fa-right-to-bracket"></i></span>
 										</button>

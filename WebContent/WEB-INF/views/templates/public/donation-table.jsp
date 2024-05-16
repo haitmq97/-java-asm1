@@ -340,8 +340,10 @@
 			<div class="popup col-12 col-sm-8 col-md-4">
 		
 		
+			<% Boolean isLogined = ((Boolean)request.getAttribute("isLogined")) != null ? (Boolean)request.getAttribute("isLogined") : false; %>
+		<%-- 
 			<% boolean isLogined = (Boolean)request.getAttribute("isLogined"); %>
-			
+			 --%>
 			
 		    <% if (isLogined) { %>
 				<div class="form-container donate-form " id="donate">
@@ -552,7 +554,11 @@
 		
 	</div>
 
+	
+	<input id="errorLoginOrRegister" type="hidden" value="${errorLoginOrRegister}"/>
+	
 
+	
 	<c:import url="${ViewConstants.E_LOGIN}" />
 
 
@@ -569,7 +575,25 @@
 
 
 	<script type="text/javascript">
-	
+	$(document).ready(function() {
+	    // Kiểm tra nếu phần tử #errorLoginOrRegister có giá trị
+	    if ($("#errorLoginOrRegister").val() === 'true') {
+	        // Thay đổi class của phần tử #test123
+	        $("#test123").removeClass("d-none").addClass("d-block");
+	        
+	        // Mở modal (đảm bảo bạn có định nghĩa openModal hoặc sử dụng một phương thức hợp lệ)
+	        openModal('#login');
+	        
+	        console.log("test test : true");
+	    } else {
+	        // Thay đổi class của phần tử #test123
+	        $("#test123").removeClass("d-block").addClass("d-none");
+	        
+	        console.log("test test : false");
+	    }
+	    
+	    console.log("test test ssss: " + $("#errorLoginOrRegister").val());
+	});
 		
 	
 	

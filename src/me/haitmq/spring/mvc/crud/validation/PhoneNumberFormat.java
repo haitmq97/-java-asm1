@@ -20,7 +20,7 @@ public @interface PhoneNumberFormat {
 		      + "|^(\\+\\d{1,3}( )?)?(\\d{3}[ ]?)(\\d{2}[ ]?){2}\\d{2}$";
 
 	// define default message
-	public String message() default "only Phone Number format";
+	public String message() default "Định dạng số điện thoại không đúng";
 
 	// define default groups
 	public Class<?>[] groups() default {};

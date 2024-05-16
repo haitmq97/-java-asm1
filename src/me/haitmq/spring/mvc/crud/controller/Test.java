@@ -2,6 +2,11 @@ package me.haitmq.spring.mvc.crud.controller;
 
 import java.util.regex.Pattern;
 
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+@Controller
+@RequestMapping("/v2")
 public class Test {
 
 	public static void main(String[] args) {

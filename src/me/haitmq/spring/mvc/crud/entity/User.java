@@ -19,7 +19,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+
+import javax.validation.constraints.Pattern;
 
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -43,24 +44,26 @@ public class User {
 	
 	
 	@Column(name = "full_name")
-	//@NotBlank(message = "is required")
+	@NotBlank(message = "is required")
 	private String fullName;
 	
 	@Column(name="user_name")
-	//@NotBlank(message = "is required")
+	@NotBlank(message = "is required")
+	@Pattern(regexp = "^[^\\s]*$", message = "Không được chứa khoảng trắng")
 	private String userName;
 	
 	@Column(name = "password")
-	//@NotBlank(message = "is required")
+	@NotBlank(message = "is required")
+	@Pattern(regexp = "^[^\\s]*$", message = "Không được chứa khoảng trắng")
 	private String password;
 	
 	@Column(name = "email")
-	//@NotBlank
-	//@EmailFormat
+	@NotBlank
+	@EmailFormat
 	private String email;
 	
 	@Column(name = "phone_number")
-	//@PhoneNumberFormat
+	@PhoneNumberFormat
 	private String phoneNumber;
 	
 	@Column(name = "address")

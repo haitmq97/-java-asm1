@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import me.haitmq.spring.mvc.crud.common.LoginUser;
 import me.haitmq.spring.mvc.crud.dao.UserDAO;
 import me.haitmq.spring.mvc.crud.entity.Donation;
 import me.haitmq.spring.mvc.crud.entity.Role;
@@ -204,8 +205,8 @@ public class UserServiceImpl implements UserService {
 	// user trong method nay chi co 2 thuoc tinh co gia tri la userName va password
 	@Override
 	@Transactional
-	public boolean isUserExisted(User loginUser) {
-		User dbUser = getUserByUserNameOrEmail(loginUser.getUserName());
+	public boolean isUserExisted(LoginUser loginUser) {
+		User dbUser = getUserByUserNameOrEmail(loginUser.getUserNameOrEmail());
 		if((dbUser!=null)&&(dbUser.getPassword().equals(loginUser.getPassword()))) {
 			return true;
 		}
@@ -214,8 +215,8 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	@Transactional
-	public int getIdIfUserExisted(User loginUser) {
-		User dbUser = getUserByUserNameOrEmail(loginUser.getUserName());
+	public int getIdIfUserExisted(LoginUser loginUser) {
+		User dbUser = getUserByUserNameOrEmail(loginUser.getUserNameOrEmail());
 		if((dbUser!=null)&&(dbUser.getPassword().equals(loginUser.getPassword()))) {
 			return dbUser.getId();
 		}
@@ -242,6 +243,18 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	
+	@Override
+	@Transactional
+	public boolean isActive(int theId) {
+		boolean result =false;
+		User theUser = userDAO.getUser(theId);
+		if(theUser.getStatus() == UserStatus.ACTIVE) {
+			result = true;
+		}
+		
+		return result;
+		
+	}
 	
 	@Override
 	@Transactional

@@ -1,7 +1,5 @@
 package me.haitmq.spring.mvc.crud.controller;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.forwardedUrl;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -39,17 +37,15 @@ public class AdminController {
 	@Autowired
 	private DonationService donationService;
 
-
 	// donation manager
 	@GetMapping("/donations")
 	public String donationlist(HttpServletRequest request, @RequestParam(defaultValue = "1") int page,
 			@RequestParam(name = "size", defaultValue = "5") int size,
 			@RequestParam(name = "searchingValue", defaultValue = "", required = false) String searchingValue,
-			@RequestParam(name = "id", defaultValue = "0") int donationId,
-			Model theModel) {
-		
+			@RequestParam(name = "id", defaultValue = "0") int donationId, Model theModel) {
+
 		try {
-			
+
 			// kiểm tra quyền (isLogined, isAdmin) (bao gồm phần header)
 
 			HttpSession session = request.getSession();
@@ -69,48 +65,44 @@ public class AdminController {
 			theModel.addAttribute("isLogined", isLogined);
 
 			theModel.addAttribute("isAdmin", isAdmin);
-			
-
 
 			// Donations table
-			Page<Donation> donations = donationService.findByPhoneNumberOrOrganizationOrCodeOrStatus(searchingValue, page, size);
+			Page<Donation> donations = donationService.findByPhoneNumberOrOrganizationOrCodeOrStatus(searchingValue,
+					page, size);
 
 			theModel.addAttribute("searchingValue", searchingValue);
-			
+
 			theModel.addAttribute("donations", donations);
 
 			theModel.addAttribute("currentPage", page);
-			
+
 			theModel.addAttribute("totalPage", donations.getTotalPages());
 
 			theModel.addAttribute("currentSize", size);
 
-
 			// donation model attribute
-			
+
 			// add or update
 			String donationProcess = "processAddDonation";
-			
+
 			Donation donation = new Donation();
-			
-			if(donationId!=0) {
+
+			if (donationId != 0) {
 				donation = donationService.getDonation(donationId);
 				donationProcess = "processUpdateDonation";
 			}
-			
+
 			theModel.addAttribute("donation", donation);
-			
+
 			theModel.addAttribute("process", donationProcess);
-			
+
 			return ViewConstants.V_ADMIN_DONATIONS;
 		} catch (Exception e) {
 			return ViewConstants.V_ERROR;
 		}
 
 	}
-	
-	
-	
+
 	@GetMapping("donation-detail")
 	public String donationDetails(HttpServletRequest request, @RequestParam("id") int theId, Model theModel) {
 
@@ -131,7 +123,7 @@ public class AdminController {
 		theModel.addAttribute("isLogined", isLogined);
 
 		theModel.addAttribute("isAdmin", isAdmin);
-		
+
 		// donation model attribute
 
 		Donation donation = donationService.getDonation(theId);
@@ -143,245 +135,187 @@ public class AdminController {
 		theModel.addAttribute("userDonation", new UserDonation());
 
 		theModel.addAttribute("process", "processDonating");
-		
+
 		theModel.addAttribute("donationId", theId);
-		
-	
+
 		return ViewConstants.V_ADMIN_DONATION_DETAIL;
 	}
 
-	
-
-	
 	@GetMapping("/updateDonation")
-	public String updateDonation(@RequestParam("id") int donationId, Model  theModel) {
+	public String updateDonation(@RequestParam("id") int donationId, Model theModel) {
 		Donation donation = donationService.getDonation(donationId);
-		
+
 		theModel.addAttribute("process", "processUpdate");
-		
+
 		theModel.addAttribute("donation", donation);
 
 		return "admin/donation-form";
 	}
-	
+
 	@GetMapping("/updateDonationStatus")
 	public String updateDonationStatus(@RequestParam("id") int donationId,
-			@RequestParam(name = "status") DonationStatus status,
-			Model  theModel) {
-		
+			@RequestParam(name = "status") DonationStatus status, Model theModel) {
+
 		donationService.changeDonationStatus(status, donationId);
-		
+
 		return ViewConstants.V_REDIRECT_ADMIN_DONATIONS;
 	}
-	
-	
-	
-	/// thu cai nayf .........................................................................................
-	
-	@GetMapping("/updateDonation2")
-	public String updateDonation2(@RequestParam("id") int donationId,
-			@RequestParam(name = "status", required = false) boolean status,
-			Model  theModel) {
-		Donation donation = donationService.getDonation(donationId);
-		
-		theModel.addAttribute("process", "processUpdate");
-		
-		theModel.addAttribute("donation", donation);
 
-		return "admin/donation-form";
-	}
-	
-	
-	
-	
 	@PostMapping("/processUpdateDonation")
 	public String processUpdate(@ModelAttribute("donation") Donation theDonation) {
-		
- 		donationService.saveOrUpdate(theDonation);
-		
 
-		return "redirect:/admin/donations";
+		donationService.saveOrUpdate(theDonation);
+
+		return ViewConstants.V_ADMIN_DONATIONS;
 	}
-	
+
 	@GetMapping("/deleteDonation")
-	public String delete(@RequestParam("id") int donationId, 
-			@RequestParam(name="currentUrl", defaultValue = "/admin/donations") String currentUrl) {
-		
-		/*
-		donationService.delete(donationId);
-		
-		*/
-		
+	public String delete(@RequestParam("id") int donationId,
+			@RequestParam(name = "currentUrl", defaultValue = "/admin/donations") String currentUrl) {
+
 		donationService.changeDonationShowingStatus(donationId);
 		return "redirect:" + currentUrl;
-		
+
 	}
-	
-	
-	
-	
+
 	@GetMapping("/addDonation")
-	public String addDonation(
-			Model theModel) {
+	public String addDonation(Model theModel) {
 		Donation donation = new Donation();
-		
+
 		theModel.addAttribute("process", "processAdd");
-		
+
 		theModel.addAttribute("donation", donation);
 
 		return "admin/donation-form-for-add";
 	}
-	
+
 	@PostMapping("/processAddDonation")
 	public String processAdd(@ModelAttribute("donation") Donation theDonation) {
-		
- 		donationService.saveOrUpdate(theDonation);
-		
+
+		donationService.saveOrUpdate(theDonation);
 
 		return "redirect:/admin/donations";
 	}
-	
 
-	
-	///////////////// user
-	
+	// user manager
 
-		
 	@GetMapping("/users")
-	public String userList(HttpServletRequest request, 
-			@RequestParam(defaultValue = "1") int page,
+	public String userList(HttpServletRequest request, @RequestParam(defaultValue = "1") int page,
 			@RequestParam(name = "size", defaultValue = "5") int size,
 			@RequestParam(name = "searchingValue", defaultValue = "", required = false) String searchingValue,
-			@RequestParam(name="id", defaultValue = "0") int userId,
-			Model theModel) {
+			@RequestParam(name = "id", defaultValue = "0") int userId, Model theModel) {
 		try {
 			// kiểm tra quyền (isLogined, isAdmin) (bao gồm phần header)
-			
+
 			HttpSession session = request.getSession();
 			Integer currentUserId = (Integer) session.getAttribute("currentUserId");
 
 			Boolean isLogined = false;
-			
-			Boolean isAdmin = false; 
-			
-			if(currentUserId != null) {
+
+			Boolean isAdmin = false;
+
+			if (currentUserId != null) {
 				isLogined = true;
 				isAdmin = userService.isAdmin(currentUserId);
 			}
-			
+
 			theModel.addAttribute("isLogined", isLogined);
-			
+
 			theModel.addAttribute("isAdmin", isAdmin);
-			
+
 			// user list
-			
+
 			Page<User> users = userService.findByEmailOrPhoneNumberOrStatus(searchingValue, page, size);
-			System.out.println("///////////////////////////////////////////////// user total element:  " + users.getTotalElements());
-			for(User user: users) {
-				System.out.println("///////////////////////////////////////////////// user :  " + user);
-			}
-			
-			
+
 			theModel.addAttribute("searchingValue", searchingValue);
 
 			theModel.addAttribute("users", users);
 
 			theModel.addAttribute("currentPage", page);
-			
+
 			theModel.addAttribute("totalPage", users.getTotalPages());
 
 			theModel.addAttribute("currentSize", size);
 
 			// user model attribute
-			
+
 			// add or update
 			String userProcess = "processAddUser";
-			
+
 			User user = new User();
-			
-			if(userId!=0) {
+
+			if (userId != 0) {
 				user = userService.getUser(userId);
 				userProcess = "processUpdateUser";
 			}
-			
+
 			theModel.addAttribute("user", user);
-			
+
 			theModel.addAttribute("process", userProcess);
-			
+
 			return ViewConstants.V_ADMIN_USERS;
 		} catch (Exception e) {
 			return ViewConstants.V_ERROR;
 		}
 	}
 
-	
-	
 	@GetMapping("/addUser")
 	public String addUser(Model theModel) {
 		User user = new User();
-		
+
 		theModel.addAttribute("process", "processUserAdd");
-		
+
 		theModel.addAttribute("user", user);
 
 		return "admin/user-form-for-add";
 	}
-	
+
 	@PostMapping("/processAddUser")
 	public String processAdd(@ModelAttribute("user") User theUser) {
-		
- 		userService.saveOrUpdate(theUser);
-		
 
-		return "redirect:/admin/users";
+		userService.saveOrUpdate(theUser);
+
+		return ViewConstants.V_ADMIN_USERS;
 	}
-	
-	
+
 	@GetMapping("/updateUser")
 	public String updateUser(@RequestParam("userId") int userId, Model theModel) {
 		User theUser = userService.getUser(userId);
-		
+
 		theModel.addAttribute("process", "processUpdate");
-		
+
 		theModel.addAttribute("user", theUser);
-		
+
 		return "admin/user-form";
 	}
-	
+
 	@PostMapping("/processUpdateUser")
 	public String processUpdate(@ModelAttribute("user") User theUser) {
-		
-		
-		
- 		userService.saveOrUpdate(theUser);
-		
-		return "redirect:/admin/users";
-	}
-	
-	
-	@GetMapping("/updateUserStatus")
-	public String updateUserStatus(@RequestParam("id") int userId,
-			@RequestParam(name = "status") UserStatus status,
-			Model  theModel) {
-		
-		userService.changeUserStatus(status, userId);
-		
+
+		userService.saveOrUpdate(theUser);
+
 		return ViewConstants.V_REDIRECT_ADMIN_USERS;
 	}
-	
-	
+
+	@GetMapping("/updateUserStatus")
+	public String updateUserStatus(@RequestParam("id") int userId, @RequestParam(name = "status") UserStatus status,
+			Model theModel) {
+
+		userService.changeUserStatus(status, userId);
+
+		return ViewConstants.V_REDIRECT_ADMIN_USERS;
+	}
+
 	@GetMapping("/deleteUser")
 	public String deleteUser(@RequestParam("id") int theId) {
 		userService.deleteUser(theId);
 
-		return "redirect:/admin/users";
+		return ViewConstants.V_REDIRECT_ADMIN_USERS;
 	}
-	
-	
-	
+
 	@GetMapping("/user-detail")
 	public String userDetail(HttpServletRequest request, @RequestParam("id") int theId, Model theModel) {
-		
+
 		HttpSession session = request.getSession();
 		Integer currentUserId = (Integer) session.getAttribute("currentUserId");
 
@@ -397,174 +331,92 @@ public class AdminController {
 		theModel.addAttribute("isLogined", isLogined);
 
 		theModel.addAttribute("isAdmin", isAdmin);
-		
-		
-		
+
 		User user = userService.getUser(theId);
- 
+
 		theModel.addAttribute("user", user);
 
 		return ViewConstants.V_ADMIN_USER_DETAIL;
 	}
-	
-	
-	
-	////// userDonation
-	
-	
-	// donation manager
-		@GetMapping("/user_donations")
-		public String userDonationlist(HttpServletRequest request, @RequestParam(defaultValue = "1") int page,
-				@RequestParam(name = "size", defaultValue = "5") int size,
-				@RequestParam(name = "searchingValue", defaultValue = "", required = false) String searchingValue,
-				@RequestParam(name = "id", defaultValue = "0") int userdonationId,
-				Model theModel) {
-			
-			try {
-				
-				// kiểm tra quyền (isLogined, isAdmin) (bao gồm phần header)
 
-				HttpSession session = request.getSession();
-				Integer currentUserId = (Integer) session.getAttribute("currentUserId");
+	// userDonation manager
 
-				Boolean isLogined = false;
-
-				Boolean isAdmin = false;
-
-				if (currentUserId != null) {
-					isLogined = true;
-					isAdmin = userService.isAdmin(currentUserId);
-				} else {
-					throw new RuntimeException("the error: not admin");
-				}
-
-				theModel.addAttribute("isLogined", isLogined);
-
-				theModel.addAttribute("isAdmin", isAdmin);
-
-				// userDonations table
-				Page<UserDonation> userDonations = userDonationService.findByUserNameOrDonationCodeSortByStatusByCreatedDate(searchingValue, page, size);
-
-				theModel.addAttribute("searchingValue", searchingValue);
-				
-				theModel.addAttribute("userDonations", userDonations);
-
-				theModel.addAttribute("currentPage", page);
-				
-				theModel.addAttribute("totalPage", userDonations.getTotalPages());
-
-				theModel.addAttribute("currentSize", size);
-				
-				UserDonation userDonation= new UserDonation();
-				
-				if(userdonationId!=0) {
-					userDonation = userDonationService.getUserDonation(userdonationId);
-				}
-				
-				theModel.addAttribute("userDonation", userDonation);
-				
-				return ViewConstants.V_ADMIN_USERDONATION;
-			} catch (Exception e) {
-				return ViewConstants.V_ERROR;
-			}
-
-		}
-		
-		@GetMapping("/update_user_donations")
-		public String updateUserDonationStatus(HttpServletRequest request,
-				@RequestParam(name = "status") UserDonationStatus status,
-				@RequestParam(name = "id", defaultValue = "0") int userdonationId) {
-			
-			userDonationService.changeUserDonationStatus(userdonationId, status);
-			
-			return ViewConstants.V_REDIRECT_ADMIN_USERDONATIONS;
-			
-		}
-	
-	
-	
-	
-	@GetMapping("/userDonations")
-	public String userDonationList(HttpServletRequest request, @RequestParam(defaultValue = "1") int page,
+	@GetMapping("/user_donations")
+	public String userDonationlist(HttpServletRequest request, @RequestParam(defaultValue = "1") int page,
 			@RequestParam(name = "size", defaultValue = "5") int size,
 			@RequestParam(name = "searchingValue", defaultValue = "", required = false) String searchingValue,
-			Model theModel) {
+			@RequestParam(name = "id", defaultValue = "0") int userdonationId, Model theModel) {
 
 		try {
-			
+
+			// kiểm tra quyền (isLogined, isAdmin) (bao gồm phần header)
+
 			HttpSession session = request.getSession();
 			Integer currentUserId = (Integer) session.getAttribute("currentUserId");
-			if (currentUserId == null) {
-				throw new RuntimeException("the error");
-			}
-			
 
-			Page<UserDonation> userDonations = userDonationService.findAll(page, size);
+			Boolean isLogined = false;
 
-			if (!searchingValue.equals("")) {
-				userDonations = userDonationService.findAllSortByStatusByCreatedDate(page, size);
-				theModel.addAttribute("searchingValue", searchingValue);
+			Boolean isAdmin = false;
+
+			if (currentUserId != null) {
+				isLogined = true;
+				isAdmin = userService.isAdmin(currentUserId);
+			} else {
+				throw new RuntimeException("the error: not admin");
 			}
 
-			for (UserDonation userDonation : userDonations) {
-				System.out.println(userDonation);
-			}
+			theModel.addAttribute("isLogined", isLogined);
+
+			theModel.addAttribute("isAdmin", isAdmin);
+
+			// userDonations table
+			Page<UserDonation> userDonations = userDonationService
+					.findByUserNameOrDonationCodeSortByStatusByCreatedDate(searchingValue, page, size);
+
+			theModel.addAttribute("searchingValue", searchingValue);
 
 			theModel.addAttribute("userDonations", userDonations);
 
 			theModel.addAttribute("currentPage", page);
+
 			theModel.addAttribute("totalPage", userDonations.getTotalPages());
 
 			theModel.addAttribute("currentSize", size);
 
-			int nextPage = page + 1;
-			int prevPage = page - 1;
+			UserDonation userDonation = new UserDonation();
 
-			if (page <= 1) {
-				prevPage = 1;
+			if (userdonationId != 0) {
+				userDonation = userDonationService.getUserDonation(userdonationId);
 			}
 
-			theModel.addAttribute("prevPage", prevPage);
-			System.out.println("current page" + page);
-			System.out.println("total page: " + userDonations.getTotalPages());
-			if (page >= (userDonations.getTotalPages())) {
-				nextPage = userDonations.getTotalPages();
-			}
+			theModel.addAttribute("userDonation", userDonation);
 
-			theModel.addAttribute("nextPage", nextPage);
-
-//			return "user/donationList";
-
-			return "admin/userDonation-table";
+			return ViewConstants.V_ADMIN_USERDONATION;
 		} catch (Exception e) {
-			// log.error("UserDonationController ERROR - list(): ", e);
-			return "common/error-page";
+			return ViewConstants.V_ERROR;
 		}
+
 	}
-	
-	@GetMapping("userDonationStatusComfirm")
-	public String statusProcessing(@RequestParam("id")int theId) {
-		userDonationService.userDonationComfirm(theId);
-		return "redirect:/admin/userDonations";
+
+	@GetMapping("/update_user_donations")
+	public String updateUserDonationStatus(HttpServletRequest request,
+			@RequestParam(name = "status") UserDonationStatus status,
+			@RequestParam(name = "id", defaultValue = "0") int userdonationId) {
+
+		userDonationService.changeUserDonationStatus(userdonationId, status);
+
+		return ViewConstants.V_REDIRECT_ADMIN_USERDONATIONS;
+
 	}
-	
-	/*
-	 * @GetMapping("/deleteUserDonation") public String
-	 * deleteUserDonation(@RequestParam("id") int theId) {
-	 * userDonationService.delete(theId);
-	 * 
-	 * 
-	 * 
-	 * return "redirect:/admin/userDonations"; }
-	 */
+
+
 	@GetMapping("/deleteUserDonation")
-	public String deleteUserDonation(@RequestParam("id") int userDonationId, 
-			@RequestParam(name="currentUrl", defaultValue = "/admin/user_donations") String currentUrl) {
-		
+	public String deleteUserDonation(@RequestParam("id") int userDonationId,
+			@RequestParam(name = "currentUrl", defaultValue = "/admin/user_donations") String currentUrl) {
+
 		userDonationService.changeUserDonationStatus(userDonationId, UserDonationStatus.CANCELED);
 		return "redirect:" + currentUrl;
-		
+
 	}
 
-	
 }

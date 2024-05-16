@@ -1019,3 +1019,7 @@ td:not(:last-child) {
 	overflow: auto;
 	scroll-behavior: smooth;
 }
+
+.error {
+	color: red;
+}

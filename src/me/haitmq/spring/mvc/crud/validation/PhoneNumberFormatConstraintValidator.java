@@ -19,19 +19,19 @@ public class PhoneNumberFormatConstraintValidator implements ConstraintValidator
 	}
 
 	@Override
-	public boolean isValid(String theCode, ConstraintValidatorContext constraintValidatorContext) {
+	public boolean isValid(String thePhoneNumber, ConstraintValidatorContext constraintValidatorContext) {
 		// TODO Auto-generated method stub
 		
 		// logic check 
 		
-		if(theCode.length()==0) {
+		if(thePhoneNumber.length()==0) {
 			//because this field is not require
 			
 			return true;
 		}
 		
-		if (theCode != null) {
-			return Pattern.compile(phoneNumberRegex).matcher(theCode).matches();
+		if (thePhoneNumber != null) {
+			return Pattern.compile(phoneNumberRegex).matcher(thePhoneNumber).matches();
 		}
 		
 		return false;

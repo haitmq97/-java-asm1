@@ -338,9 +338,12 @@
 			<div id="overlay" onclick="closeAllPopup()"></div>
 			<div class="popup col-12 col-sm-8 col-md-4">
 		
-			<% boolean isLogined = (Boolean)request.getAttribute("isLogined"); %>
+		
+		<% Boolean isLogined = ((Boolean)request.getAttribute("isLogined")) != null ? (Boolean)request.getAttribute("isLogined") : false; %>
+			<% Boolean isAdmin = ((Boolean)request.getAttribute("isAdmin")) != null ? (Boolean)request.getAttribute("isAdmin") : false; %>
+			<%-- <% boolean isLogined = (Boolean)request.getAttribute("isLogined"); %>
 			<% boolean isAdmin = (Boolean)request.getAttribute("isAdmin"); %>
-    		
+    		 --%>
     		<% if (isAdmin) { %>
 				<div class="form-container donate-form " id="user-addOrUpdate">
 			        <div class="container form-head">

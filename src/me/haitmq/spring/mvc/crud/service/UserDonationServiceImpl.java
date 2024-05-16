@@ -263,6 +263,8 @@ public class UserDonationServiceImpl implements UserDonationService {
 			
 			if(status == UserDonationStatus.CANCELED) {
 				userDonation.setShowing(false);
+			} else {
+				donationService.addMoneyToDonation(userDonation.getDonation().getId(),userDonation.getMoney());
 			}
 			userDonation.setStatus(status);
 			userDonationDAO.saveOrUpdate(userDonation);

@@ -8,6 +8,7 @@ import org.hibernate.boot.model.naming.ImplicitNameSource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import me.haitmq.spring.mvc.crud.common.LoginUser;
 import me.haitmq.spring.mvc.crud.entity.User;
 import me.haitmq.spring.mvc.crud.entity.status.DonationStatus;
 import me.haitmq.spring.mvc.crud.entity.status.UserStatus;
@@ -96,15 +97,17 @@ public interface UserService  {
 	
 	public User getUserByUserNameOrEmail(String userName);
 	
-	public boolean isUserExisted(User user);
+	public boolean isUserExisted(LoginUser user);
 	
-	public int getIdIfUserExisted(User user);
+	public int getIdIfUserExisted(LoginUser user);
 	
 	public boolean isAdmin(User user);
 	
 	/////////////////////
 	
 	public boolean isAdmin(int theId );
+	
+	public boolean isActive(int theId);
 	
 	public void changeUserStatus(UserStatus status, int userId);
 
