@@ -38,6 +38,8 @@ public class Test2 {
 			@RequestParam(name = "size", defaultValue = "5") int size ,
 			Model theModel) {
 		
+		
+		donationService.autoUpdateStatusALL();
 		Page<Donation> donations = donationService.findByPhoneNumberOrOrganizationOrCodeOrStatus(searchingValue, page, size);
 		System.out.println(donations.getClass());
 		theModel.addAttribute("donations", donations);

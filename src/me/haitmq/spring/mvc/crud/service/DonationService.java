@@ -8,98 +8,86 @@ import me.haitmq.spring.mvc.crud.entity.Donation;
 import me.haitmq.spring.mvc.crud.entity.status.DonationStatus;
 
 public interface DonationService {
-	
+
 	/*
 	 * Cần định nghĩa các phương thức
 	 * 
-	 * - save donation obj (admin)
-	 * 	+ status ban đầu (mặc định là 0: mới tạo), showing mặc định là true
-	 * 	+ ngày tạo
+	 * - save donation obj (admin) + status ban đầu (mặc định là 0: mới tạo),
+	 * showing mặc định là true + ngày tạo
 	 * 
-	 * - update (admin):
-	 * 	+ thay đổi thông tin
-	 * 	+ thay đổi status
-	 * 	+ showing (true/false)
-	 * 	+ update money từ các userDonation có status = 1
+	 * - update (admin): + thay đổi thông tin + thay đổi status + showing
+	 * (true/false) + update money từ các userDonation có status = 1
 	 * 
-	 * - delete (admin):
-	 * 	+ chỉ có thể xóa các donation có status mới tạo
+	 * - delete (admin): + chỉ có thể xóa các donation có status mới tạo
 	 * 
 	 * - get single donation (details) (admin, user)
 	 * 
-	 * - get donation list (admin, user):
-	 * 	+ không phân trang
-	 * 	+ phân trang tìm kiếm, sắp xếp theo trạng thái, thời gian tạo
+	 * - get donation list (admin, user): + không phân trang + phân trang tìm kiếm,
+	 * sắp xếp theo trạng thái, thời gian tạo
 	 * 
 	 */
+	
+	// kiểm tra xem có cập nhật donation không
+	public boolean isAbleToUpdate(Donation donation);
 
-	
-	// save donation obj (upadate)
+	// save donation obj (create /upadate)
 	public void saveOrUpdate(Donation donation);
-	
+
 	// update donation obj
+
+	// kiểm tra xem donation có thể chuyển sang trạng thái mới hay không
+	public boolean isAbleTochangeStatus(DonationStatus newStatus, int donationId);
+
+	// thay đổi trạng thái cho donation
 	public void changeDonationStatus(DonationStatus status, int donationId);
 	
+	// kiểm tra xem có thể xóa( ẩn) donation không
+	public boolean isAbleToShowOff(Donation donation);
+	
+	// thay đổi trạng thái hiển thị (xóa/ẩn)
 	public void changeDonationShowingStatus(int donationid);
 	
+	
+
+	public void addMoneyToDonation(int theId, long amount);
+
+	public void updateDonationMoneyByUserDonation(int theId);
+
+	public void updateAllDonationMoney();
+
+	
+
+	
+
+	public boolean isAbleToAutoDonatingStatus(Donation donation);
+
+	public boolean isAbleToAutoEndStatus(Donation donation);
+
+	public void autoChangeToDonatingStatus(Donation donation);
+
+	public void autoChangeToEndStatus(Donation donation);
+
+	public void autoUpdateStatus(Donation donation);
+
+	public void autoUpdateStatusALL();
+
 	public void addMoneyFromUserDonationToDonation(Long moneyAmount, int donationId);
-	
+
 	public void updateAllMoneyUserDonationtoDonation(int donationId);
-	
-	
-	// delete donation obj
-	public void delete(int theId);
-	
 	
 	// get single donation obj
 	public Donation getDonation(int theId);
 
-	
 	// get donation list
 	public List<Donation> getDonationList();
-	
-	/*
-	public List<Donation> findByPhoneNumber(String phoneNumber);
 
-	public List<Donation> findByOrganization(String organization);
-
-	public List<Donation> findByCode(String code);
-
-	public List<Donation> findByStatus(String status);
-
-	public List<Donation> findByPhoneNumberOrOrganizationOrCodeOrStatus(String searchString);
-
-	// public Page<Donation> getPaginatedData(int page, int size);
-
-	 */
-
-	
-	
 	// get donation list (pageable)
-
-
-	public Page<Donation> findByPhoneNumber(String phoneNumber, int page, int size);
-
-	public Page<Donation> findByOrganization(String organization, int page, int size);
-
-	public Page<Donation> findByCode(String code, int page, int size);
-
-	public Page<Donation> findByStatus(String status, int page, int size);
 
 	public Page<Donation> findByPhoneNumberOrOrganizationOrCodeOrStatus(String searchingValue, int page, int size);
 
 	public Page<Donation> findAll(int page, int size);
-	
-	public Page<Donation> findByPhoneNumberOrOrganizationOrCodeOrStatus2(String searchingValue, int page, int size);
-	
-	public void addMoneyToDonation(int theId, long amount);
-	
-	public void updateDonationMoneyByUserDonation(int theId);
-	
-	public void updateAllDonationMoney();
 
+	// delete donation obj
+		public void delete(int theId);
 
-
-	
-	
 }

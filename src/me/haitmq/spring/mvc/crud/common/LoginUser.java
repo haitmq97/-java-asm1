@@ -9,10 +9,10 @@ import me.haitmq.spring.mvc.crud.validation.ValidUser;
 public class LoginUser {
 	
 	/* @IsExistedUserNameOrEmail */
-	@NotBlank(message = "not blank")
+	@NotBlank(message = "Username is required")
 	private String userNameOrEmail;
 	
-	@NotBlank(message = "not blank")
+	@NotBlank(message = "Password is required")
 	private String password;
 
 	public LoginUser() {
@@ -46,8 +46,5 @@ public class LoginUser {
 		return super.toString();
 	}
 
-	
-	
-	
 	
 }

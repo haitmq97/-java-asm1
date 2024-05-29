@@ -79,11 +79,6 @@
 	
 
 
-<script src="<c:url value='/static/common/assets/js/form.js' />"></script>
-
-
-
-
  <!-- customer style -->
  <link rel="stylesheet"
 	href="<c:url value='/static/common/assets/css/style.css'/>" />
@@ -99,12 +94,9 @@
 <!-- customer js -->	
 
 <script src="<c:url value='https://code.jquery.com/jquery-3.6.4.min.js'/>"> </script>
-<script src="<c:url value='/static/common/assets/js/form.js' />"></script>
-<script src="<c:url value='/static/common/assets/js/script.js' />"></script> 
-<script src="<c:url value='/static/common/assets/js/data-list.js' />"></script> 
 
-
-
+<script src="<c:url value='/static/common/assets/js/script.js' />"></script>
+<script src="<c:url value='/static/common/assets/js/layout-script.js' />"></script>
 </head>
 <body id="top">
 <jsp:include page="../common/header-layout-test.jsp">
@@ -141,7 +133,7 @@
 							style="color: white" 
 							data-toggle="modal" data-target="#exampleModal" 
 							class="btn btn-block btn-primary btn-md"
-							 onclick="openPopup('#userUpdate')">Cập nhật</button>
+							 onclick="openModal('#userUpdate')">Cập nhật</button>
 					</div>
                     
           
@@ -192,9 +184,76 @@
 			<div id="overlay" onclick="closeAllPopup()"></div>
 			<div class="popup col-12 col-sm-8 col-md-4">
 		
+		<div class="form-container donate-form " id="userUpdate">
+			        <div class="container form-head">
+						<div class="form-title">
+							<div class="d-flex justify-content-between">
+
+								<h4 class="d-inline-block mx-auto">Cập nhật</h4>
+
+							</div>
+
+						</div>
+					</div>
+			        <div class="container form-main">
+			            <form:form modelAttribute="user" action="${process}"
+			                method="POST">
+			  		
+			 				<form:input type="hidden"  id="donationId" path="id" />
+			 				
+			                <div class="form-group form-group-custom">
+			                  <label class="field-label" for="fullName">Họ và tên</label>
+			                  <form:input type="text" class="form-control" id="fullName" path="fullName" />
+			                  
+			                </div>
+			                <div class="form-group form-group-custom">
+			                  <label class="field-label" for="email">Email:</label>
+			                  <form:input type="text" class="form-control" id="email" path="email" readonly="${user.id != 0 ? 'true' : 'false'}"/>
+			                </div>
+			                
+			                <div class="form-group form-group-custom">
+			                  <label class="field-label" for="phoneNumber">Số điện thoại:</label>
+			                  <form:input type="text" class="form-control" id="phoneNumber" path="phoneNumber" />
+			                </div>
+			                <div class="form-group form-group-custom">
+			                  <label class="field-label" for="address">Địa chỉ:</label>
+			                  <form:input type="text" class="form-control" id="address" path="address" />
+			                </div>
+			                <div class="form-group form-group-custom">
+			                  <label class="field-label" for="userName">Tài khoản:</label>
+			                  <form:input type="text" class="form-control" id="userName" path="userName" readonly="${user.id != 0 ? 'true' : 'false'}"/>
+			                </div>
+			                
+			                <c:if test="${user.id == 0}">
+			                	<div class="form-group form-group-custom">
+			                  		<label class="field-label" for="password">Mật khẩu:</label>
+			                  		<form:input type="text" class="form-control" id="password" path="password" />
+			                	</div>
+			                </c:if>
+							
+							
+			                <div class="submit-p">
+			                    <button type="button" class="cancel-btn "
+			                        onclick="closeAllPopup()">Hủy</button>
+			                    <button type="submit" class="submit-btn">
+			                    	<c:choose>
+										<c:when test="${user.id != 0}">
+											Cập nhật
+										</c:when>
+										<c:otherwise>
+											Thêm mới
+										</c:otherwise>
+			                    	</c:choose>
+			                    
+			                    </button>
+			                </div>
+			            </form:form>
+			        </div>
+
+    		</div>
 		
 			
-		        <div class="form-container donate-form " id="userUpdate">
+		        <%-- <div class="form-container donate-form " id="userUpdate">
         <div class="container form-head">
             <div class="form-title">
                 <div class="d-flex justify-content-between">
@@ -247,7 +306,7 @@
             
         </div>
 
-    </div>
+    </div> --%>
 		        
 		
 			

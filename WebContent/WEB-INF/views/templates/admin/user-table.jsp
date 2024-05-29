@@ -179,8 +179,9 @@
 										<c:param name="id" value="${tempUser.id}" />
 									</c:url>
 
-									<c:url var="deleteLink" value="/user/delete">
-										<c:param name="userId" value="${tempUser.id}" />
+									<c:url var="deleteLink" value="/admin/deleteUser">
+										<c:param name="id" value="${tempUser.id}" />
+										<c:param name="currentUrl" value="/admin/users" />
 									</c:url>
 
 									<c:url var="updateLink" value="/user/updateUser">
@@ -225,12 +226,15 @@
 											<c:if test="${tempUser.role.roleName == UserRole.USER}">
 
 
-												<button class="btn btn-success user-btn" title="Chi tiết"
-													onclick="deleteBtn('${tempUser.id}', '${tempUser.userName}','${tempUser.phoneNumber}')">
-													<span class="content-btn-text">Xóa</span><span
-														class="content-btn-icon"></span>
-												</button>
-
+												
+												
+												<button class="btn btn-success donation-btn d-delete-btn"
+														title="Xóa"
+														onclick="toDelete('${tempUser.id}', '#delete')"
+														data-url="${deleteLink}">
+														<span class="content-btn-text">Xóa</span><span
+															class="content-btn-icon"></span>
+													</button>
 
 
 												<c:choose>
@@ -276,6 +280,11 @@
 						</table>
 						<div>
 							<div>
+								<p>showing ${users.number*users.size +1} to ${users.number*users.size +users.numberOfElements} of ${users.totalElements}</p>
+							</div>
+							
+							<div>
+								<div>
 								<input id="currentPage1" type="hidden" value="${currentPage}" />
 
 								<br> 
@@ -298,7 +307,7 @@
 
 							</div>
 							<div id="pagination-container"></div>
-						
+							</div>
 						
 						
 
@@ -441,6 +450,28 @@
 			        </div>
 
     		</div>
+    		
+    		
+    		<div class="form-container donate-form" id="delete">
+					<div class="container form-head">
+						<h3>Bạn có chắc chắn xóa?</h3>
+					</div>
+					<div class="container form-main">
+						<p>
+							Email: <span>${user.email}</span>
+						</p>
+						<p>
+							username: <span>${user.userName}</span>
+						</p>
+						<div class="submit-p">
+							<button type="button" class="cancel-btn "
+								onclick="closeAllPopup()">Hủy</button>
+							<button type="submit" class="submit-btn" id="confirm-delete-btn"
+								onclick="window.location.href='${pageContext.request.contextPath}/admin/deleteUser?id=${user.id}'">Xóa</button>
+						</div>
+
+					</div>
+				</div>
 				
     		
     		 <% } else { %>

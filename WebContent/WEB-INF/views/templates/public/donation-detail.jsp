@@ -531,7 +531,24 @@
 				</div>
 		    <% } %>
 		
-		
+		<c:if test="${successDonate}">
+				<input type = "hidden" id="successDonate" value="${successDonate}">
+				<div class="form-container donate-form " id="success-donate">
+					<div class="container form-head">
+						<div class="form-title">
+							<p>quyên góp thành công. Vui lòng chờ Quản trị viên xác nhận</p>
+						</div>
+					</div>
+					<div class="container form-main">
+						<div class="container form-main d-flex justify-content-end">
+						<button type="button" class="btn btn-secondary cancel-btn "
+                        onclick="closeAllPopup()">Đóng</button>
+					</div>
+					</div>
+
+				</div>
+			</c:if>
+				
 		
 
 			
@@ -544,7 +561,7 @@
 		
 		
 	</div>
-	<c:import url="${ViewConstants.E_LOGIN}" />
+
 
 
 	<script

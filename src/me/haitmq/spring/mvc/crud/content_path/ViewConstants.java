@@ -4,25 +4,26 @@ public final class ViewConstants {
     // view
 	
 	//public
-    public static final String V_HOME = "public/donation-table";
+    public static final String V_HOME = "public/home-page";
     public static final String V_PUBLIC_DONATION_DETAILS = "public/donation-detail";
     
     public static final String V_LOGIN = "common/login-form";
     public static final String V_REGISTER = "common/register-form";
     public static final String V_ERROR = "common/error-page";
-    public static final String V_USER_PROFILE = "profile";
+    public static final String V_USER_PROFILE = "user/user-profile";
     public static final String V_PRODUCT_DETAIL = "productDetail";
     
+    //user 
+
+    
     // admin
-    // donation
+
     public static final String V_ADMIN_DONATIONS = "admin/donation-table";
     public static final String V_ADMIN_DONATION_DETAIL = "admin/donation-detail";
-    
-    // user
+
     public static final String V_ADMIN_USERS = "admin/user-table";
     public static final String V_ADMIN_USER_DETAIL = "admin/user-detail";
-    
-    // userDonation
+
     
     public static final String V_ADMIN_USERDONATION = "admin/userDonation-table";
     

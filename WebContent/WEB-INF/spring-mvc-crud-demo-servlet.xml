@@ -4,6 +4,7 @@
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:task="http://www.springframework.org/schema/task"
 	xsi:schemaLocation="
 		http://www.springframework.org/schema/beans
 		http://www.springframework.org/schema/beans/spring-beans.xsd
@@ -12,7 +13,9 @@
 		http://www.springframework.org/schema/mvc
 		http://www.springframework.org/schema/mvc/spring-mvc.xsd
 		http://www.springframework.org/schema/tx 
-		http://www.springframework.org/schema/tx/spring-tx.xsd">
+		http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/task
+		http://www.springframework.org/schema/task/spring-task.xsd">
 
 	<!-- Add support for component scanning -->
 	<context:component-scan
@@ -76,8 +79,23 @@
 	<!-- Add support for reading web resources: css, images, js, etc ... -->
 	<mvc:resources location="/WEB-INF/views/static/"
 		mapping="/static/**"></mvc:resources>
+	
+	
+	<bean id="donationServiceImpl" class="me.haitmq.spring.mvc.crud.service.DonationServiceImpl" />
+	
+	<bean
+	class="org.springframework.scheduling.support.ScheduledMethodRunnable">
+		<constructor-arg ref="donationServiceImpl" />
+		<constructor-arg value="autoUpdateStatusALL" />
+	</bean>
 
 
+	<task:scheduler id="taskScheduler" pool-size="5" />
+
+	<task:scheduled-tasks>
+		<task:scheduled ref="donationServiceImpl"
+			method="autoUpdateStatusALL" fixed-rate="300000" />
+	</task:scheduled-tasks>
 
 </beans>
 

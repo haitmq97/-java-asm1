@@ -49,7 +49,7 @@ public interface UserService  {
 	
 	// save user (update)
 	
-	public void saveOrUpdate(User user);
+	public void saveOrUpdate(User user, boolean isUpdateManager);
 	
 	public void register(User user);
 	
@@ -110,6 +110,8 @@ public interface UserService  {
 	public boolean isActive(int theId);
 	
 	public void changeUserStatus(UserStatus status, int userId);
+	
+
 
 
 }

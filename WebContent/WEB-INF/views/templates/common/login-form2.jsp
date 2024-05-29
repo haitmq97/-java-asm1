@@ -25,63 +25,38 @@
 					</div>
 				</div>
 				<div class="form-main">
-					<form:form  modelAttribute="loginUser"
+		
+					<form:form cssClass="row needs-validation"  modelAttribute="loginUser"
 				action="${process}"
 				method="POST">
-						
-						<div class="f-field">
-							<div class="label-d">
-								<label class="field-label"> <span class="label-text">Tài
-										khoản:</span>
-								</label>
-							</div>
-							<div class="input-d">
-								<div class="field-input">
-									<form:input id="userNameOrEmail" type="text" class="input-p form-control" path="userNameOrEmail"/>
-							
 
-								</div>
-							
-							</div>
-							
-							<div class="error-msg">
-								 <form:errors path="userNameOrEmail" cssClass="error"/>
-							</div>
-						</div>
-
-						<div class="f-field">
-							<div class="label-d">
-								<label class="field-label"> <span class="label-text">Mật
-										khẩu:</span>
-								</label>
-							</div>
-							<div class="input-d">
-								<div class="field-input">
-									<form:input type="password" id="password"
-										class="input-p form-control pw-field-custom-fix" path="password" />
-									<button type="button" class="button no-b-btn toggle-pass-btn"
-										onclick="togglePassword()" title="Hiện mật khẩu">
-										<i id="eyeIcon" class="fa-regular fa-eye"></i>
-									</button>
-									
+							<div class="col-12">
+								<label for="userNameOrEmail" class="form-label"><span class="label-text">Tài
+										khoản:</span></label>
+								<form:input id="userNameOrEmail" type="text" cssClass="form-control" path="userNameOrEmail"/>
+								<div >
+									<form:errors path="userNameOrEmail" cssClass="error"/>
 								
 								</div>
+							</div>
+							
+							
+							<div class="col-12">
+								<label for="password" class="form-label"><span class="label-text">Mật
+										khẩu:</span></label>
+								<form:input id="password" type="password" cssClass="form-control" path="password"/>
+								<div >
+									<form:errors path="password" cssClass="error"/>
+								
+								</div>
+							</div>
 
-							</div>
-							
-							
-							<div class="error-msg">
-								 <form:errors path="password" cssClass="error"/>
-							</div>
-							
-							<div id="global-error" class="error-msg">
+					
+						
+						<div id="global-error">
 								 <form:errors path="*" cssClass="error" />
 							</div>
-							<div>
-
-							</div>
-						</div>
-						<div class="mt-4">
+						<div>
 						<p>
 					Don't have a account yet, <a
 						href="${pageContext.request.contextPath}/user/registerForm">register

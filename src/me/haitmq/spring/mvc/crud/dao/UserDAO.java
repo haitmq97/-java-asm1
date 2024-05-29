@@ -76,4 +76,7 @@ public interface UserDAO{
 	public Page<User> findByEmailOrPhoneNumberOrStatus(String searchingValue, Pageable pageable);
 
 	public Page<User> findAll(Pageable pageable);
+	
+	
+	public void showoff(User user);
 }

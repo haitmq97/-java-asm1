@@ -13,7 +13,7 @@ import javax.validation.Payload;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ValidUser {
 	
-	String message() default "Invalid username or password";
+	String message() default "*Invalid username or password";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 	

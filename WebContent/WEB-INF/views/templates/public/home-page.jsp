@@ -109,6 +109,7 @@
 	
 	<input type="hidden" id="isLogined" value="${isLogined}" />
 	
+
 	<section class="site-section content" id="m-content">
 		<div class="container">
 			<div class="row mb-5 justify-content-center">
@@ -153,18 +154,7 @@
 					</div>
 
 
-					<%-- 					
-					<c:choose>
-						<c:when test="${totalElements > 0}">
-						
-						
-						</c:when>
-						<c:otherwise>  
-       						<p>Không có kết quả tìm kiếm phù hợp</p>  
-   						</c:otherwise>  
-					
-					</c:choose>
- --%>
+			
 
 
 					<div class="m-content list" id="data-list">
@@ -198,24 +188,8 @@
 									<tr>
 	
 										<th scope="row" class="d-ns-cell">
-											<p class="d-name">${FormatTest.formatTest(tempDonation.name)}</p>
+											<p class="d-name">${tempDonation.name}</p>
 											<p class="d-status">
-															${JSPDataFormat.donationStatusFormat(tempDonation.status)}
-											<%-- 
-												<c:choose>
-												    <c:when test="${tempDonation.status == 'NEW'}">Mới tạo</c:when>
-												    <c:when test="${tempDonation.status == 'DONATING'}">Đang quyên góp</c:when>
-												    <c:when test="${tempDonation.status == 'END'}">Đã kết thúc</c:when>
-												    <c:when test="${tempDonation.status == 'CLOSED'}">Đã đóng</c:when>
-												    <c:otherwise>
-											            Không xác định
-											         </c:otherwise>
-												</c:choose>
-											
-											 --%>
-											
-											
-											
 											
 											</p>
 									
@@ -251,35 +225,6 @@
 											</div>
 
 										</td>
-										
-										
-																		<%-- 
-										<td class="d-flex">
-											
-									 
-											<div class="row col-12 d-flex">
-												<button class="" title="Chi tiết"
-												onclick="window.location.href='${detailLink}'">
-												<span class="content-btn-text">Chi tiết</span><span
-													class="content-btn-icon"><i class="fa-solid fa-info"></i></span>
-											</button> 
-										
-											 <c:if test="${tempDonation.status == 'DONATING'}">
-        											<button class=""
-														title="Quyên góp"
-														onclick="toDonateForm(${tempDonation.id},$('#authorities').val())">
-														<span class="content-btn-text">Quyên góp</span><span
-															class="content-btn-icon"><i
-															class="fa-solid fa-circle-dollar-to-slot"></i></span>
-													</button>
-    										</c:if>
-											
-											</div>
-
-										</td>
-										
-										 --%>
-										
 									</tr>
 								</c:forEach>
 
@@ -288,6 +233,10 @@
 						</table>
 						<div>
 							<div>
+								<p>showing ${donations.number*donations.size +1} to ${donations.number*donations.size +donations.numberOfElements} of ${donations.totalElements}</p>
+							</div>
+							<div>
+								<div>
 								<input id="currentPage1" type="hidden" value="${currentPage}" />
 
 								<br> 
@@ -310,6 +259,8 @@
 
 							</div>
 							<div id="pagination-container"></div>
+							</div>
+							
 
 						</div>
 
@@ -327,12 +278,6 @@
 
 	<script src="<c:url value='/static/common/assets/js/script.js' />"></script>
 
-<%-- 
-	<div>
-		<input id="authorities" type="hidden" value="${authorities}" readonly>
-	</div>
-
- --%>
 
 	<div class="overlay-container">
 		<div class="row">
@@ -341,35 +286,26 @@
 		
 		
 			<% Boolean isLogined = ((Boolean)request.getAttribute("isLogined")) != null ? (Boolean)request.getAttribute("isLogined") : false; %>
-		<%-- 
-			<% boolean isLogined = (Boolean)request.getAttribute("isLogined"); %>
-			 --%>
-			
+			<% Boolean isActive = ((Boolean)request.getAttribute("isActive")) != null ? (Boolean)request.getAttribute("isActive") : false; %>
+		
 		    <% if (isLogined) { %>
-				<div class="form-container donate-form " id="donate">
+				<% if(isActive)  {%>
+					<div class="form-container donate-form " id="donate">
 					<div class="container form-head">
 						<div class="form-title">
 							<div class="d-flex justify-content-between">
 								<p>Quyên góp:</p>
-								<%-- 
-                    <p>${donationCode}</p>
-                     --%>
-
+					
 								<p>${donation.code}</p>
 							</div>
-							<%-- 
-                <h4 class="d-inline-block mx-auto">${donationName}</h4>
- --%>
-							<h4 class="d-inline-block mx-auto">${donation.name}</h4>
+											<h4 class="d-inline-block mx-auto">${donation.name}</h4>
 						</div>
 					</div>
 					<div class="container form-main">
 						<form:form modelAttribute="userDonation" action="${process}"
 							method="POST">
 							<input type="hidden" name="donationId" value="${donation.id}" />
-							<%-- 
-                <input type="hidden" name="donationId" value="${donationId}" />
- --%>
+					
 							<div class="form-group form-group-custom">
 								<label class="field-label" for="fullName">Họ và Tên:</label>
 								<form:input type="text" class="form-control" id="fullName"
@@ -388,58 +324,7 @@
 									rows="3"></form:textarea>
 							</div>
 
-							<!-- 
-                <div class="f-field">
-
-                    <div class="label-d">
-                        <label class="field-label"> <span class="label-text">Họ
-                                tên:</span>
-                        </label>
-                    </div>
-                    <div class="input-d">
-                        <div class="field-input">
-                            <input type="text" class="input-p form-control"
-                                path="name" />
-                        </div>
-                        <div class=""></div>
-                    </div>
-                </div>
-
-                <div class="f-field">
-                    <div class="label-d">
-                        <label class="field-label"> <span class="label-text">Số
-                                tiền quyên góp:</span>
-                        </label>
-                    </div>
-                    <div class="input-d">
-                        <div class="field-input">
-                            <input type="number" class="input-p form-control"
-                                path="money" />
-                        </div>
-
-                    </div>
-
-                </div>
-                <div class="f-field">
-                    <div class="label-d">
-                        <label class="field-label"> <span class="label-text">Lời
-                                nhắn:</span>
-                        </label>
-                    </div>
-                    <div class="input-d">
-                        <div class="field-input">
-                            <input type="text" class="input-p form-control"
-                                path="note" /> 
-
-                                <textarea class="input-p form-control"
-                                path="note" rows="3"></textarea>
-                        </div>
-
-                    </div>
-
-                </div> 
-              -->
-
+				
 
 							<div class="submit-p">
 								<button type="button" class="cancel-btn "
@@ -450,78 +335,24 @@
 					</div>
 
 				</div>
-
-
-				<!-- 
-		        <div class="form-container donate-form" id="donate">
-				<div class="form-head">
-					<div class="form-title">
-						<h3>Quyên góp</h3>
-						<p>donation id: ${donationId}</p>
+				<% } else { %>
+					<div class="form-container donate-form " id="donate">
+					<div class="container form-head">
+						<div class="form-title">
+							<p>Tài khoản của bạn hiện bị khóa. Không thể thực hiện chức năng quyên góp</p>
+						</div>
 					</div>
+					<div class="container form-main">
+						<div class="container form-main d-flex justify-content-end">
+						<button type="button" class="btn btn-secondary cancel-btn "
+                        onclick="closeAllPopup()">Đóng</button>
+					</div>
+					</div>
+
 				</div>
-				<div class="form-main">
-					<form:form modelAttribute="userDonation" action="${process}"
-						method="POST">
-						<input type="hidden" name="donationId" value="${donationId}" />
-						<div class="f-field">
-							<div class="label-d">
-								<label class="field-label"> <span class="label-text">Họ
-										tên:</span>
-								</label>
-							</div>
-							<div class="input-d">
-								<div class="field-input">
-									<form:input type="text" class="input-p form-control"
-										path="name" />
-								</div>
-								<div class=""></div>
-							</div>
-						</div>
-
-						<div class="f-field">
-							<div class="label-d">
-								<label class="field-label"> <span class="label-text">Số
-										tiền quyên góp:</span>
-								</label>
-							</div>
-							<div class="input-d">
-								<div class="field-input">
-									<form:input type="number" class="input-p form-control"
-										path="money" />
-								</div>
-
-							</div>
-
-						</div>
-						<div class="f-field">
-							<div class="label-d">
-								<label class="field-label"> <span class="label-text">Lời
-										nhắn:</span>
-								</label>
-							</div>
-							<div class="input-d">
-								<div class="field-input">
-									<form:input type="text" class="input-p form-control"
-										path="note" />
-								</div>
-
-							</div>
-
-						</div>
+				<% } %>
 
 
-						<div class="submit-p">
-							<button type="button" class="cancel-btn "
-								onclick="closePopup('login')">Hủy</button>
-							<button type="submit" class="submit-btn">Quyên góp</button>
-						</div>
-					</form:form>
-				</div>
-
-			</div>
-		        
-		         -->
 		        
 		    <% } else { %>
 		        <div class="form-container loginWarning-form" id="donate">
@@ -532,7 +363,7 @@
 					
 					<div class="container form-main d-flex justify-content-end">
 						<button type="button" class="btn btn-secondary cancel-btn "
-                        onclick="closeAllPopup()">Hủy</button>
+                        onclick="closeAllPopup()">Đóng</button>
 					
 					</div>
 					
@@ -540,9 +371,25 @@
 				</div>
 		    <% } %>
 		
-		
-		
+			
+			<c:if test="${successDonate}">
+				<input type = "hidden" id="successDonate" value="${successDonate}">
+				<div class="form-container donate-form " id="success-donate">
+					<div class="container form-head">
+						<div class="form-title">
+							<p>quyên góp thành công. Vui lòng chờ Quản trị viên xác nhận</p>
+						</div>
+					</div>
+					<div class="container form-main">
+						<div class="container form-main d-flex justify-content-end">
+						<button type="button" class="btn btn-secondary cancel-btn "
+                        onclick="closeAllPopup()">Đóng</button>
+					</div>
+					</div>
 
+				</div>
+			</c:if>
+				
 			
 
 		</div>
@@ -553,13 +400,6 @@
 		
 		
 	</div>
-
-	
-	<input id="errorLoginOrRegister" type="hidden" value="${errorLoginOrRegister}"/>
-	
-
-	
-	<c:import url="${ViewConstants.E_LOGIN}" />
 
 
 	<script src="https://code.jquery.com/jquery-3.6.4.min.js"
@@ -574,30 +414,7 @@
 	<script src="<c:url value='/static/common/assets/js/layout-script.js' />"></script>
 
 
-	<script type="text/javascript">
-	$(document).ready(function() {
-	    // Kiểm tra nếu phần tử #errorLoginOrRegister có giá trị
-	    if ($("#errorLoginOrRegister").val() === 'true') {
-	        // Thay đổi class của phần tử #test123
-	        $("#test123").removeClass("d-none").addClass("d-block");
-	        
-	        // Mở modal (đảm bảo bạn có định nghĩa openModal hoặc sử dụng một phương thức hợp lệ)
-	        openModal('#login');
-	        
-	        console.log("test test : true");
-	    } else {
-	        // Thay đổi class của phần tử #test123
-	        $("#test123").removeClass("d-block").addClass("d-none");
-	        
-	        console.log("test test : false");
-	    }
-	    
-	    console.log("test test ssss: " + $("#errorLoginOrRegister").val());
-	});
-		
 	
-	
-	</script>
 
 
 

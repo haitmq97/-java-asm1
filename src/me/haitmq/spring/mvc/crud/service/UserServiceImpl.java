@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	@Transactional
-	public void saveOrUpdate(User user) {
+	public void saveOrUpdate(User user, boolean isUpdateManager) {
 
 		// giu nguyen cac truong không cập nhật
 
@@ -43,6 +43,10 @@ public class UserServiceImpl implements UserService {
 			user.setStatus(existingUser.getStatus());
 			user.setCreatedDate(existingUser.getCreatedDate());
 			user.setShowing(existingUser.getShowing());
+			
+			if(!isUpdateManager) {
+				user.setRole(existingUser.getRole());
+			}
 			System.out.println("==================================>>>>>>>>service existing user: " + existingUser);
 		}
 		
@@ -101,6 +105,15 @@ public class UserServiceImpl implements UserService {
 		User user = userDAO.getUser(userId);
 		// set user showing status
 		user.setShowing(user.getShowing()== true ? false:  true);
+		
+		
+		System.out.println("................................ USIMPL: user showing: " + user.getShowing() );
+		
+		System.out.println("................................ USIMPL: user inf: " + user);
+		/*
+		userDAO.saveOrUpdate(user);
+		*/
+		
 		userDAO.saveOrUpdate(user);
 		
 	}
@@ -236,7 +249,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional
 	public boolean isAdmin(int theId) {
-		if(userDAO.getUser(theId).getRole().getRoleName()== UserRole.USER.ADMIN) {
+		if(userDAO.getUser(theId).getRole().getRoleName()== UserRole.ADMIN) {
 			return true;
 		}
 		return false;

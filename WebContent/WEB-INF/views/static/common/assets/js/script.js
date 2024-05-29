@@ -275,7 +275,7 @@ function onPageButtonClick(pageNumber, size, searchingValue, tableContent) {
 
 }
 */
-
+/*
 
 function onPageButtonClick(pageNumber, size, searchingValue, tableContent) {
     console.log('Navigating to page ', pageNumber);
@@ -308,6 +308,38 @@ function onPageButtonClick(pageNumber, size, searchingValue, tableContent) {
         }
     });
 }
+*/
+
+
+
+function onPageButtonClick(pageNumber, size, searchingValue, tableContent) {
+    console.log('Navigating to page ', pageNumber);
+    console.log('Navigating to page (type of) ', typeof pageNumber);
+    console.log('Navigating to link ', window.location.href);
+	var newUrl = window.location.pathname + "?size=" + size + "&page="+ pageNumber + "&searchingValue=" + encodeURIComponent(searchingValue);
+    $.ajax({
+        type: "GET",
+        url: newUrl,
+        
+        success: function(data) {
+            $(tableContent).html($(data).find(tableContent).html());
+            
+            // Cập nhật lại các nút chuyển trang sau khi thay đổi nội dung bảng
+            var currentPage = parseInt(document.getElementById("currentPage1").value, 10);
+            var totalPages = parseInt(document.getElementById("totalPages1").value, 10);
+            generatePaginationButtons(currentPage, totalPages, $('#pageSize').val(), $('#searchingValue').val(), tableContent);
+            
+            // Đảm bảo rằng div "pagination-container" không bị mất đi sau khi thay đổi nội dung
+            var paginationContainer = document.getElementById('pagination-container');
+            if (!paginationContainer) {
+                paginationContainer = document.createElement('div');
+                paginationContainer.id = 'pagination-container';
+                document.body.appendChild(paginationContainer);
+            }
+        }
+    });
+}
+
 
 
 // update table cho searching value và số entries mỗi trang
@@ -317,9 +349,13 @@ if (typeof previousSearchValue === "undefined") {
     var previousSize = $("#currentPage").val();
 }
 
+
+/*
 function updateShowingTable(size, searchingValue, tableContent) {
     // Kiểm tra xem searchingValue có thay đổi so với lần trước không
     if ((searchingValue !== previousSearchValue)|| (size !== previousSize)) {
+		
+		
         $.ajax({
             type: "GET",
             url: window.location.href,
@@ -350,6 +386,40 @@ function updateShowingTable(size, searchingValue, tableContent) {
         previousSize = size;
     }
 }
+*/
+
+function updateShowingTable(size, searchingValue, tableContent) {
+    // Kiểm tra xem searchingValue có thay đổi so với lần trước không
+    if ((searchingValue !== previousSearchValue)|| (size !== previousSize)) {
+		 var newUrl = window.location.pathname + "?size=" + size + "&page=1" + "&searchingValue=" + encodeURIComponent(searchingValue);
+		
+        $.ajax({
+            type: "GET",
+            url: newUrl,
+            
+            success: function(data) {
+                $(tableContent).html($(data).find(tableContent).html());
+                
+                var currentPage = parseInt(document.getElementById("currentPage1").value, 10);
+            var totalPages = parseInt(document.getElementById("totalPages1").value, 10);
+            generatePaginationButtons(currentPage, totalPages, $('#pageSize').val(), $('#searchingValue').val(), tableContent);
+            
+            // Đảm bảo rằng div "pagination-container" không bị mất đi sau khi thay đổi nội dung
+            var paginationContainer = document.getElementById('pagination-container');
+            if (!paginationContainer) {
+                paginationContainer = document.createElement('div');
+                paginationContainer.id = 'pagination-container';
+                document.body.appendChild(paginationContainer);
+            }
+            
+            }
+        });
+        // Cập nhật giá trị của previousSearchValue
+        previousSearchValue = searchingValue;
+        previousSize = size;
+    }
+}
+
 
 /*
 // cập nhật lại bảng khi user thay đổi size(entries) và searchingValue
@@ -388,7 +458,7 @@ $(document).ready(function() {
 
 	});
 
-
+/*
 	var currentPage = parseInt(document.getElementById("currentPage1").value, 10);
 	var totalPages = parseInt(document.getElementById("totalPages1").value, 10);
 
@@ -405,7 +475,23 @@ $(document).ready(function() {
 	});
 
 
+*/	
+	 var currentPageElement = document.getElementById("currentPage1");
+    var totalPagesElement = document.getElementById("totalPages1");
 
+    if (currentPageElement && totalPagesElement) {
+        var currentPage = parseInt(currentPageElement.value, 10);
+        var totalPages = parseInt(totalPagesElement.value, 10);
+
+        generatePaginationButtons(currentPage, totalPages, $('#pageSize').val(), $('#searchingValue').val(), "#data-list");
+
+        let btnList = document.getElementsByClassName("page-btn");
+        Array.from(btnList).forEach(btn => {
+            if (parseInt(btn.textContent) === currentPage) {
+                btn.disabled = true;
+            }
+        });
+    }
 
 
 

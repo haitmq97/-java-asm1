@@ -1,9 +1,16 @@
 package me.haitmq.spring.mvc.crud.utils;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 import me.haitmq.spring.mvc.crud.entity.status.DonationStatus;
 import me.haitmq.spring.mvc.crud.entity.status.UserStatus;
 
 public class JSPDataFormat {
+	
+	private static DateTimeFormatter dateTimeFormatterRaw =DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	
+	private static DateTimeFormatter dateTimeFormatter =DateTimeFormatter.ofPattern("dd/MM/yyyy");
 	
 	public static String donationStatusFormat(DonationStatus status) {
 		switch(status) {
@@ -30,6 +37,12 @@ public class JSPDataFormat {
 		  default:
 		    return "Không xác định";
 		}
+	}
+	
+	public static String dateFormat(String dateStr) {
+		LocalDate date = LocalDate.parse(dateStr, dateTimeFormatterRaw);
+		
+		return date.format(dateTimeFormatter);
 	}
 
 }

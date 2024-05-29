@@ -163,9 +163,10 @@ public class UserDAOImpl implements UserDAO {
 	public Page<User> findByEmailOrPhoneNumberOrStatus(String searchingValue, Pageable pageable) {
 
 		String theQueryString = "from User u where "
+				+ "u.showing = 1 and ("
 				+ " u.status like concat(:searchingValue, '%') or" 
 				+ " u.phoneNumber like concat(:searchingValue, '%') or"
-				+ " u.email like concat(:searchingValue, '%')";
+				+ " u.email like concat(:searchingValue, '%'))";
 
 		Session session = sessionFactory.getCurrentSession();
 		Query<User> theQuery = session.createQuery(theQueryString, User.class);
@@ -222,6 +223,21 @@ public class UserDAOImpl implements UserDAO {
 		
 		
 		return theQuery.uniqueResult();
+	}
+	
+	
+	@Override
+	public void showoff(User user) {
+		Session session = sessionFactory.getCurrentSession();
+		
+		System.out.println("................................ UDAOIMPL: user showing: " + user.getShowing() );
+		
+		System.out.println("................................ UDAOIMPL: user inf: " + user);
+		
+		session.saveOrUpdate(user);
+
+
+
 	}
 
 }

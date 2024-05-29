@@ -4,6 +4,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ page import="me.haitmq.spring.mvc.crud.content_path.ViewConstants" %>
 <div id="header-sec">
+<c:import url="${ViewConstants.E_LOGIN}" />
+
 	<c:choose>
 		<c:when test="${param.includePart eq 'headerSection'}">
 			<!-- Include only the header section -->

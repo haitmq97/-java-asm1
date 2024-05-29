@@ -11,55 +11,49 @@ import me.haitmq.spring.mvc.crud.entity.Donation;
 public interface DonationDAO {
 	/*
 	 * Cần định nghĩa
-	 *CUD
-	 - tạo 1 donation obj (admin, user)
-	 - update 1 donation obj
-	 	+ update thông tin (admin, user)
-	 	+ update status (admin)
-	 	+ update money từ các donate có status: comfirmed
-	 	+ update trạng thái hiện thị (có show trong list hay ko) (admin)
+	 CREATE / UPDATE
+	  + Create or update a donation obj 
 	 
-	 - xóa 1 donation obj (admin)
+	 READ/GET
+	 	+ get one donation obj
+	 	+ get donation list (list)
+	 	+ Get donation list (pageable)
 	 
-	 *R
-	 - lấy 1 donation obj (admin, user)
-	 
-	 - lấy ds donations (admin, user)
-	 	+ không phân trang 
-	 	+ phân trang, tìm kiếm (phoneNumber, organization, code, status) (admin, user)
-	 	+ phân trang, tìm kiềm sắp xếp theo thời gian tạo (admin, user)
-	 	+ phân trang, tìm kiếm sắp xếp theo trạng thái (admin, user)
-	 	+ phân trang, tìm kiếm sắp xếp theo trạng thái, thời gian tạo (admin, user)
-	 
+	 DELETE
+	 	+ delete a donation obj
 	 */
+	
+	
+	//CREATE / UPDATE
+	// Create or update a donation obj 
 
 	public void saveOrUpdate(Donation donation);
-
+	
+	
+	//READ / GET
+	// + get one donation obj
 	public Donation getDontaion(int theId);
-
+	
+	// + get donation list (list)
 	public List<Donation> getDonationList();
 
-	public void delete(int theId);
-	
-	/// loại?
+
+	// + get donation list (pageable)
 
 	public Page<Donation> findByQuery(String theQueryString, Pageable pageable);
 	
 	public Page<Donation> findByQuery(String theQueryString, String searchingValue, Pageable pageable);
 	
-	public Page<Donation> findByPhoneNumber(String phoneNumber, Pageable pageable);
-
-	public Page<Donation> findByOrganization(String organization, Pageable pageable);
-
-	public Page<Donation> findByCode(String code, Pageable pageable);
-
-	public Page<Donation> findByStatus(String status, Pageable pageable);
-
 	public Page<Donation> findByPhoneNumberOrOrganizationOrCodeOrStatus(String searchString, Pageable pageable);
 
 	public Page<Donation> findAll(Pageable pageable);
 
+	/*
 	public Page<Donation> findByPhoneNumberOrOrganizationOrCodeOrStatus2(String searchingValue, Pageable pageable);
-
-
+	*/
+	
+	//DELETE
+	// + delete a donation obj
+	public void delete(int theId);
+	
 }

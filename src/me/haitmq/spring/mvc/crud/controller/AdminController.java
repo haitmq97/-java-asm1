@@ -23,6 +23,8 @@ import me.haitmq.spring.mvc.crud.entity.User;
 import me.haitmq.spring.mvc.crud.service.UserDonationService;
 import me.haitmq.spring.mvc.crud.service.DonationService;
 import me.haitmq.spring.mvc.crud.service.UserService;
+import me.haitmq.spring.mvc.crud.utils.LoginUserInfomation;
+import me.haitmq.spring.mvc.crud.utils.SessionUtils;
 
 @Controller
 @RequestMapping("/admin")
@@ -49,6 +51,8 @@ public class AdminController {
 			// kiểm tra quyền (isLogined, isAdmin) (bao gồm phần header)
 
 			HttpSession session = request.getSession();
+			SessionUtils.setCurrentEndpoint(request);
+			/*
 			Integer currentUserId = (Integer) session.getAttribute("currentUserId");
 
 			Boolean isLogined = false;
@@ -65,7 +69,11 @@ public class AdminController {
 			theModel.addAttribute("isLogined", isLogined);
 
 			theModel.addAttribute("isAdmin", isAdmin);
-
+			*/
+			
+			LoginUserInfomation.addLoginUserInfoToModel(session, theModel);
+			
+			
 			// Donations table
 			Page<Donation> donations = donationService.findByPhoneNumberOrOrganizationOrCodeOrStatus(searchingValue,
 					page, size);
@@ -95,7 +103,10 @@ public class AdminController {
 			theModel.addAttribute("donation", donation);
 
 			theModel.addAttribute("process", donationProcess);
-
+			
+			donationService.autoUpdateStatusALL();
+			
+			
 			return ViewConstants.V_ADMIN_DONATIONS;
 		} catch (Exception e) {
 			return ViewConstants.V_ERROR;
@@ -138,6 +149,8 @@ public class AdminController {
 
 		theModel.addAttribute("donationId", theId);
 
+		SessionUtils.setCurrentEndpoint(request);
+		
 		return ViewConstants.V_ADMIN_DONATION_DETAIL;
 	}
 
@@ -204,59 +217,77 @@ public class AdminController {
 			@RequestParam(name = "size", defaultValue = "5") int size,
 			@RequestParam(name = "searchingValue", defaultValue = "", required = false) String searchingValue,
 			@RequestParam(name = "id", defaultValue = "0") int userId, Model theModel) {
+		
+		/*
 		try {
 			// kiểm tra quyền (isLogined, isAdmin) (bao gồm phần header)
 
-			HttpSession session = request.getSession();
-			Integer currentUserId = (Integer) session.getAttribute("currentUserId");
-
-			Boolean isLogined = false;
-
-			Boolean isAdmin = false;
-
-			if (currentUserId != null) {
-				isLogined = true;
-				isAdmin = userService.isAdmin(currentUserId);
-			}
-
-			theModel.addAttribute("isLogined", isLogined);
-
-			theModel.addAttribute("isAdmin", isAdmin);
-
-			// user list
-
-			Page<User> users = userService.findByEmailOrPhoneNumberOrStatus(searchingValue, page, size);
-
-			theModel.addAttribute("searchingValue", searchingValue);
-
-			theModel.addAttribute("users", users);
-
-			theModel.addAttribute("currentPage", page);
-
-			theModel.addAttribute("totalPage", users.getTotalPages());
-
-			theModel.addAttribute("currentSize", size);
-
-			// user model attribute
-
-			// add or update
-			String userProcess = "processAddUser";
-
-			User user = new User();
-
-			if (userId != 0) {
-				user = userService.getUser(userId);
-				userProcess = "processUpdateUser";
-			}
-
-			theModel.addAttribute("user", user);
-
-			theModel.addAttribute("process", userProcess);
-
-			return ViewConstants.V_ADMIN_USERS;
+			
 		} catch (Exception e) {
 			return ViewConstants.V_ERROR;
 		}
+		
+		*/
+		
+		
+		HttpSession session = request.getSession();
+		
+		SessionUtils.setCurrentEndpoint(request);
+		
+		/*
+		Integer currentUserId = (Integer) session.getAttribute("currentUserId");
+
+		Boolean isLogined = false;
+
+		Boolean isAdmin = false;
+
+		if (currentUserId != null) {
+			isLogined = true;
+			isAdmin = userService.isAdmin(currentUserId);
+		}
+
+		theModel.addAttribute("isLogined", isLogined);
+
+		theModel.addAttribute("isAdmin", isAdmin);
+		*/
+		
+		Integer currentUserId = LoginUserInfomation.getCurrentUserId(session);
+		
+		LoginUserInfomation.addLoginUserInfoToModel(session, theModel);
+		
+		// user list
+
+		Page<User> users = userService.findByEmailOrPhoneNumberOrStatus(searchingValue, page, size);
+
+		theModel.addAttribute("searchingValue", searchingValue);
+
+		theModel.addAttribute("users", users);
+
+		theModel.addAttribute("currentPage", page);
+
+		theModel.addAttribute("totalPage", users.getTotalPages());
+
+		theModel.addAttribute("currentSize", size);
+
+		// user model attribute
+
+		// add or update
+		String userProcess = "processAddUser";
+
+		User user = new User();
+
+		if (userId != 0) {
+			user = userService.getUser(userId);
+			userProcess = "processUpdateUser";
+		}
+
+		theModel.addAttribute("user", user);
+
+		theModel.addAttribute("process", userProcess);
+		
+		SessionUtils.setCurrentEndpoint(request);
+
+		return ViewConstants.V_ADMIN_USERS;
 	}
 
 	@GetMapping("/addUser")
@@ -271,11 +302,11 @@ public class AdminController {
 	}
 
 	@PostMapping("/processAddUser")
-	public String processAdd(@ModelAttribute("user") User theUser) {
+	public String processAdd(HttpServletRequest request, @ModelAttribute("user") User theUser) {
 
-		userService.saveOrUpdate(theUser);
+		userService.saveOrUpdate(theUser, true);
 
-		return ViewConstants.V_ADMIN_USERS;
+		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
 	}
 
 	@GetMapping("/updateUser")
@@ -290,10 +321,15 @@ public class AdminController {
 	}
 
 	@PostMapping("/processUpdateUser")
-	public String processUpdate(@ModelAttribute("user") User theUser) {
+	public String processUpdate(HttpServletRequest request, @ModelAttribute("user") User theUser) {
 
-		userService.saveOrUpdate(theUser);
-
+		userService.saveOrUpdate(theUser, true);
+		/*
+		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
+		
+		
+		*/
+		
 		return ViewConstants.V_REDIRECT_ADMIN_USERS;
 	}
 
@@ -305,12 +341,23 @@ public class AdminController {
 
 		return ViewConstants.V_REDIRECT_ADMIN_USERS;
 	}
+	
 
+	
+
+	
+	
 	@GetMapping("/deleteUser")
-	public String deleteUser(@RequestParam("id") int theId) {
-		userService.deleteUser(theId);
-
-		return ViewConstants.V_REDIRECT_ADMIN_USERS;
+	public String deleteUser(HttpServletRequest request, @RequestParam("id") int theId,
+			@RequestParam(name = "currentUrl", defaultValue = "/admin/users") String currentUrl) {
+		userService.changeUserShowingStatus(theId);
+		
+		
+		
+		/*
+		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
+*/		
+		return "redirect:" + currentUrl;
 	}
 
 	@GetMapping("/user-detail")
@@ -335,6 +382,8 @@ public class AdminController {
 		User user = userService.getUser(theId);
 
 		theModel.addAttribute("user", user);
+		
+		SessionUtils.setCurrentEndpoint(request);
 
 		return ViewConstants.V_ADMIN_USER_DETAIL;
 	}
@@ -352,6 +401,8 @@ public class AdminController {
 			// kiểm tra quyền (isLogined, isAdmin) (bao gồm phần header)
 
 			HttpSession session = request.getSession();
+			
+			/*
 			Integer currentUserId = (Integer) session.getAttribute("currentUserId");
 
 			Boolean isLogined = false;
@@ -368,7 +419,12 @@ public class AdminController {
 			theModel.addAttribute("isLogined", isLogined);
 
 			theModel.addAttribute("isAdmin", isAdmin);
-
+			
+			*/
+			
+			
+			LoginUserInfomation.addLoginUserInfoToModel(session, theModel);
+			
 			// userDonations table
 			Page<UserDonation> userDonations = userDonationService
 					.findByUserNameOrDonationCodeSortByStatusByCreatedDate(searchingValue, page, size);
@@ -390,6 +446,7 @@ public class AdminController {
 			}
 
 			theModel.addAttribute("userDonation", userDonation);
+			
 
 			return ViewConstants.V_ADMIN_USERDONATION;
 		} catch (Exception e) {
