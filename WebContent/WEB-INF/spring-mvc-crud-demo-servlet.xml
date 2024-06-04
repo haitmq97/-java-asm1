@@ -18,9 +18,19 @@
 		http://www.springframework.org/schema/task/spring-task.xsd">
 
 	<!-- Add support for component scanning -->
-	<context:component-scan
-		base-package="me.haitmq.spring.mvc.crud" />
+<context:component-scan
+		base-package="me.haitmq.spring.mvc.crud,
+		me.haitmq.spring.mvc.crud.controller, 
+		me.haitmq.spring.mvc.crud.validation, 
+		me.haitmq.spring.mvc.crud.service, 
+		me.haitmq.spring.mvc.crud.dao, 
+		me.haitmq.spring.mvc.crud.entity, 
+		me.haitmq.spring.mvc.crud.config" />
 
+
+	
+	 <context:annotation-config />
+	
 	<!-- Add support for conversion, formatting and validation support -->
 	<mvc:annotation-driven />
 
@@ -30,7 +40,7 @@
 		<property name="prefix" value="/WEB-INF/views/templates/" />
 		<property name="suffix" value=".jsp" />
 		<property name="contentType" value="text/html;charset=UTF-8" />
-		
+
 	</bean>
 
 	<!-- Step 1: Define Database DataSource / connection pool -->
@@ -60,6 +70,8 @@
 			<props>
 				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
 				<prop key="hibernate.show_sql">true</prop>
+
+
 			</props>
 		</property>
 	</bean>
@@ -79,14 +91,25 @@
 	<!-- Add support for reading web resources: css, images, js, etc ... -->
 	<mvc:resources location="/WEB-INF/views/static/"
 		mapping="/static/**"></mvc:resources>
+
 	
-	
-	<bean id="donationServiceImpl" class="me.haitmq.spring.mvc.crud.service.DonationServiceImpl" />
-	
+	<!-- 
+	<bean id="donationService"
+		class="me.haitmq.spring.mvc.crud.service.DonationServiceImpl" />
+ -->
 	<bean
-	class="org.springframework.scheduling.support.ScheduledMethodRunnable">
+		class="org.springframework.scheduling.support.ScheduledMethodRunnable">
 		<constructor-arg ref="donationServiceImpl" />
-		<constructor-arg value="autoUpdateStatusALL" />
+		<constructor-arg value="autoUpdateStatusAll" />
+	</bean>
+	
+	<mvc:annotation-driven validator="validator" />
+	
+	<bean id="validator"
+		class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+	<bean
+		class="org.springframework.validation.beanvalidation.MethodValidationPostProcessor">
+		<property name="validator" ref="validator" />
 	</bean>
 
 
@@ -94,8 +117,11 @@
 
 	<task:scheduled-tasks>
 		<task:scheduled ref="donationServiceImpl"
-			method="autoUpdateStatusALL" fixed-rate="300000" />
+			method="autoUpdateStatusAll" fixed-rate="300000" />
 	</task:scheduled-tasks>
+	
+	
+
 
 </beans>
 

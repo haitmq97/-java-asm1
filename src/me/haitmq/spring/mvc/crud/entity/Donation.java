@@ -19,6 +19,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 import me.haitmq.spring.mvc.crud.entity.status.DonationStatus;
+import me.haitmq.spring.mvc.crud.validation.UniquedDonationCode;
+import me.haitmq.spring.mvc.crud.validation.ValidStartDate;
 
 @Entity
 @Table(name = "donation")
@@ -32,18 +34,29 @@ public class Donation {
 	
 	
 	@Column(name = "code")
+	/*
 	@Pattern(regexp = "^[a-zA-Z]{2}[0-9]{3}$", message = "Mã phải gồm 2 kí tự chữ và 3 kí tự số")
+	
+	@NotBlank(message = "is required")
+	*/
 	private String code;
 	
 	@Column(name = "name")
+	/*
 	@NotBlank(message = "is required")
+	*/
 	private String name;
 	
 	@Column(name = "phone_number")
+	/*
 	@NotBlank(message = "is required")
+	*/
 	private String phoneNumber;
 	
 	@Column(name = "organization")
+	/*
+	@NotBlank(message = "is required")
+	*/
 	private String organization;
 
 	@Column(name = "created_date")
@@ -60,9 +73,17 @@ public class Donation {
 	private DonationStatus status;
 	
 	@Column(name = "start_date")
+	/*
+	@NotBlank(message = "is required")
+	@ValidStartDate
+	*/
 	private String startDate;
 	
 	@Column(name = "end_date")
+	/*
+	@NotBlank(message = "is required")
+	@ValidStartDate(message = "Ngày kết thúc không được trước hôm này")
+	*/
 	private String endDate;
 	
 	@Column(name="donation_quantity")
@@ -173,7 +194,7 @@ public class Donation {
 		return donationQuantity;
 	}
 
-	public void setDonationNumber(int donationQuantity) {
+	public void setDonationQuantity(int donationQuantity) {
 		this.donationQuantity = donationQuantity;
 	}
 

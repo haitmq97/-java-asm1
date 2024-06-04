@@ -105,13 +105,25 @@ function openSuccessDonateMgs() {
 }
 
 
+function ErrorFormShowing() {
+	if ($("#errorProcess").val() === 'true') {
+
+		openModal('#donation-addOrUpdate');
+
+	}
+}
+
+
+
+
 
 $(document).ready(function() {
 
 	loginErrorShowing();
 	
 	openSuccessDonateMgs();
-
+	
+	ErrorFormShowing();
 
 });
 

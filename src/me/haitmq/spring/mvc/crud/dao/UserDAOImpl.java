@@ -22,89 +22,92 @@ public class UserDAOImpl implements UserDAO {
 	@Autowired
 	private SessionFactory sessionFactory;
 
-	
-	public Page<User> findAll2(Pageable pageable) {
-		Session session = sessionFactory.getCurrentSession();
-
-		Query<User> theQuery = session.createQuery("from User", User.class);
-		theQuery.setFirstResult((int) pageable.getOffset());
-		theQuery.setMaxResults(pageable.getPageSize());
-
-		return new PageImpl<>(theQuery.getResultList(), pageable, countUsers());
-	}
-
-	private long countUsers() {
-		Session session = sessionFactory.getCurrentSession();
-		Query<Long> countQuery = session.createQuery("select count(u) from User u", Long.class);
-		return countQuery.uniqueResult();
-	}
-
-	@Override
-	public Page<User> findAllByEmailOrPhoneNumber(Pageable pageable, String searchingValue) {
-		Session session = sessionFactory.getCurrentSession();
-		Query<User> theQuery = session.createQuery("from User u where u.email like concat(:searchingValue, '%')"
-				+ " or u.phoneNumber like concat(:searchingValue, '%')", User.class);
-
-		theQuery.setParameter("searchingValue", searchingValue);
-
-		theQuery.setFirstResult((int) pageable.getOffset());
-		theQuery.setMaxResults(pageable.getPageSize());
-
-		Query<Long> countForSearchQuery = session
-				.createQuery("select count(u) from User u where u.email like concat(:searchingValue, '%')"
-						+ " or u.phoneNumber like concat(:searchingValue, '%')", Long.class);
-
-		countForSearchQuery.setParameter("searchingValue", searchingValue);
-
-		return new PageImpl<>(theQuery.getResultList(), pageable, countForSearchQuery.uniqueResult());
-	}
-
-	/// for login
-	
-
-	//////////////////////////////
-
-	@Override
-	public List<User> getUserList() {
-		Session session = sessionFactory.getCurrentSession();
-
-		Query<User> theQuery = session.createQuery("from User", User.class);
-		return theQuery.getResultList();
+	public Session getSession() {
+		return sessionFactory.getCurrentSession();
 	}
 
 	@Override
 	public void saveOrUpdate(User user) {
-		Session session = sessionFactory.getCurrentSession();
-		Role role = user.getRole();
-		System.out.println("==================================>>>>>>>>dao role: " + role);
-		System.out.println("==================================>>>>>>>> test here in dao");
-		System.out.println("==================================>>>>>>>>dao: " + user);
+
 		try {
-			
-			session.evict(session.get(User.class, user.getId()));
+			// ? không thể lưu trực tiếp ? phải tách rời trước
+			getSession().evict(getSession().get(User.class, user.getId()));
+
 		} catch (Exception e) {
-			// 
+
+		} finally {
+			getSession().saveOrUpdate(user);
 		}
-		
-		session.saveOrUpdate(user);
-
-//		session.merge(user);
-
-
 	}
 
 	@Override
 	public User getUser(int theId) {
-		Session session = sessionFactory.getCurrentSession();
-
-		return session.get(User.class, theId);
+		return getSession().get(User.class, theId);
 	}
 
 	@Override
-	public void deleteUser(int theId) {
+	public List<User> getUserList() {
 
-		Session session = sessionFactory.getCurrentSession();
-		Query theQuery = session.createQuery("delete from User where id=:userId");
+		Query<User> theQuery = getSession().createQuery("from User", User.class);
+		return theQuery.getResultList();
+	}
+
+	@Override
+	public Page<User> findByQuery(String theQueryString, String searchingValue, Pageable pageable) {
+
+		Query<User> theQuery = getSession().createQuery(theQueryString, User.class);
+
+		theQuery.setParameter("searchingValue", searchingValue);
+		theQuery.setFirstResult((int) pageable.getOffset());
+		theQuery.setMaxResults(pageable.getPageSize());
+
+		Query<Long> countQuery = getSession().createQuery("select count(u) " + theQueryString, Long.class);
+
+		countQuery.setParameter("searchingValue", searchingValue);
+
+		return new PageImpl<>(theQuery.getResultList(), pageable, countQuery.uniqueResult());
+	}
+
+	@Override
+	public Page<User> findAll(Pageable pageable) {
+		String theQueryString = "from User u where " + "u.showing = 1 and ("
+				+ " u.userName like concat(:searchingValue, '%') or" + " u.email like concat(:searchingValue, '%')"
+				+ " u.phoneNumber like concat(:searchingValue, '%'))";
+
+		return findByQuery(theQueryString, "", pageable);
+	}
+
+	// tìm theo username, email và số điện thoại (những user có showing =1)
+	@Override
+	public Page<User> findByEmailOrUserNameOrPhoneNumber(Pageable pageable, String searchingValue) {
+
+		String theQueryString = "from User u where " + "u.showing = 1 and ("
+				+ " u.userName like concat(:searchingValue, '%') or" + " u.email like concat(:searchingValue, '%')"
+				+ " u.phoneNumber like concat(:searchingValue, '%'))";
+
+		return findByQuery(theQueryString, "", pageable);
+	}
+
+	@Override
+	public Page<User> findByEmailOrUserNameOrPhoneNumberOrStatus(String searchingValue, Pageable pageable) {
+
+		String theQueryString = 
+				"from User u where " 
+				+ "u.showing = 1 and ("
+				+ " u.userName like concat(:searchingValue, '%') or" 
+				+ " u.email like concat(:searchingValue, '%') or"
+				+ " u.status like concat(:searchingValue, '%') or"
+				+ " u.phoneNumber like concat(:searchingValue, '%'))";
+
+		return findByQuery(theQueryString, searchingValue, pageable);
+
+	}
+
+	// delete
+	@Override
+	public void delete(int theId) {
+
+		Query theQuery = getSession().createQuery("delete from User where id=:userId");
 
 		theQuery.setParameter("userId", theId);
 
@@ -112,136 +115,35 @@ public class UserDAOImpl implements UserDAO {
 
 	}
 
-	//////////////////////////////
-
-	@Override
-	public Page<User> findAll(Pageable pageable) {
-		String theQueryString = "from User u";
-
-		Session session = sessionFactory.getCurrentSession();
-		Query<User> theQuery = session.createQuery(theQueryString, User.class);
-		theQuery.setFirstResult((int) pageable.getOffset());
-		theQuery.setMaxResults(pageable.getPageSize());
-
-		Query<Long> theCountQuery = session.createQuery("select count(u) " + theQueryString, Long.class);
-		return new PageImpl<>(theQuery.getResultList(), pageable, theCountQuery.uniqueResult());
-	}
-
-	
-	@Override
-	public Page<User> findByQuery(String theQueryString, String searchingValue, Pageable pageable) {
-		Session session = sessionFactory.getCurrentSession();
-		Query<User> theQuery = session.createQuery(theQueryString, User.class);
-		theQuery.setParameter("searchingValue", searchingValue);
-		theQuery.setFirstResult((int) pageable.getOffset());
-		theQuery.setMaxResults(pageable.getPageSize());
-		
-		Query<Long> countQuery = session.createQuery("select count(u) " + theQueryString, Long.class);
-		countQuery.setParameter("searchingValue", searchingValue);
-		return new PageImpl<>(theQuery.getResultList(), pageable, countQuery.uniqueResult());
-	}
-	
-	/*
-	@Override
-	public Page<User> findByEmailOrPhoneNumberOrStatus(String searchingValue, Pageable pageable) {
-
-		String theQueryString = 
-				"from User u where"
-				+ " d.showing = 1 and ("
-				+ " u.status like concat(:searchingValue, '%') or" 
-				+ " u.phoneNumber like concat(:searchingValue, '%') or"
-				+ " u.email like concat(:searchingValue, '%'))";
-
-		return findByQuery(theQueryString, searchingValue, pageable);
-	}
-
-	
-	*/
-	
-	
-	@Override
-	public Page<User> findByEmailOrPhoneNumberOrStatus(String searchingValue, Pageable pageable) {
-
-		String theQueryString = "from User u where "
-				+ "u.showing = 1 and ("
-				+ " u.status like concat(:searchingValue, '%') or" 
-				+ " u.phoneNumber like concat(:searchingValue, '%') or"
-				+ " u.email like concat(:searchingValue, '%'))";
-
-		Session session = sessionFactory.getCurrentSession();
-		Query<User> theQuery = session.createQuery(theQueryString, User.class);
-		theQuery.setFirstResult((int) pageable.getOffset());
-		theQuery.setMaxResults(pageable.getPageSize());
-		theQuery.setParameter("searchingValue", searchingValue);
-		
-		Query<Long> theCountQuery = session.createQuery("select count(u) " + theQueryString, Long.class);
-		theCountQuery.setParameter("searchingValue", searchingValue);
-		return new PageImpl<>(theQuery.getResultList(), pageable, theCountQuery.uniqueResult());
-	}
-	
-
-	
-	
 	// for login
+
 	@Override
 	public User getUserByUserName(String userName) {
-		Session session = sessionFactory.getCurrentSession();
-		User result = null;
-		Query<User> theQuery = session.createQuery("from User where userName=:userName", User.class);
-		result = theQuery.setParameter("userName", userName).uniqueResult();
+		Query<User> theQuery = getSession().createQuery("from User where userName=:userName", User.class);
+		User result = theQuery.setParameter("userName", userName).uniqueResult();
 		return result;
-		/*
-		 * try(Session session = sessionFactory.getCurrentSession()) { Query<User>
-		 * theQuery = session.createQuery("from User where userName=:userName",
-		 * User.class); return theQuery.setParameter("userName",
-		 * userName).uniqueResult(); } catch(Exception e) { e.printStackTrace(); return
-		 * null; }
-		 */
 	}
 
 	@Override
 	public User getUserByEmail(String email) {
-		Session session = sessionFactory.getCurrentSession();
+
 		User result = null;
-		Query<User> theQuery = session.createQuery("from User where email=:email", User.class);
+		Query<User> theQuery = getSession().createQuery("from User where email=:email", User.class);
 		result = theQuery.setParameter("email", email).uniqueResult();
 
 		return result;
 	}
-	
-	
-	@Override
-	public User getUserByUserNameOrEmail(String userName) {
-		String theQueryString = "from User u where "
-				+ " u.userName =:userName or" 
-				+ " u.email =:userName";
 
-		Session session = sessionFactory.getCurrentSession();
-		Query<User> theQuery = session.createQuery(theQueryString, User.class);
-		
-		theQuery.setParameter("userName", userName);
-		
-		
+	@Override
+	public User getUserByUserNameOrEmail(String userNameOrEmail) {
+		String theQueryString = "from User u where " + " u.userName =:userNameOrEmail or"
+				+ " u.email =:userNameOrEmail";
+
+		Query<User> theQuery = getSession().createQuery(theQueryString, User.class);
+
+		theQuery.setParameter("userNameOrEmail", userNameOrEmail);
+
 		return theQuery.uniqueResult();
-	}
-	
-	
-	@Override
-	public void showoff(User user) {
-		Session session = sessionFactory.getCurrentSession();
-		
-		System.out.println("................................ UDAOIMPL: user showing: " + user.getShowing() );
-		
-		System.out.println("................................ UDAOIMPL: user inf: " + user);
-		
-		session.saveOrUpdate(user);
-
-
-
 	}
 
 }
-
-
-
-

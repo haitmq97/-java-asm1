@@ -14,7 +14,7 @@ import org.springframework.data.domain.PageRequest;
 
 import org.springframework.stereotype.Service;
 
-
+import me.haitmq.spring.mvc.crud.dao.DonationDAO;
 import me.haitmq.spring.mvc.crud.dao.UserDonationDAO;
 import me.haitmq.spring.mvc.crud.entity.UserDonation;
 import me.haitmq.spring.mvc.crud.entity.Donation;
@@ -34,6 +34,9 @@ public class UserDonationServiceImpl implements UserDonationService {
 	
 	@Autowired
 	private DonationService donationService;
+	
+	@Autowired
+	private DonationDAO donationDAO;
 	
 	@Autowired
 	private UserService userService;
@@ -77,9 +80,9 @@ public class UserDonationServiceImpl implements UserDonationService {
 	@Transactional
 	public void update(UserDonation userDonation) {
 		if(isAbletoUserDonation(userDonation.getUser(), userDonation.getDonation())) {
-			Donation donation = donationService.getDonation(userDonation.getDonation().getId());
+			Donation donation = donationDAO.getDontaion(userDonation.getDonation().getId());
 			donation.setMoney(donation.getMoney()+userDonation.getMoney());
-			donationService.saveOrUpdate(donation);
+			donationDAO.saveOrUpdate(donation);
 			userDonationDAO.update(userDonation);
 			
 		}
@@ -264,7 +267,8 @@ public class UserDonationServiceImpl implements UserDonationService {
 			if(status == UserDonationStatus.CANCELED) {
 				userDonation.setShowing(false);
 			} else {
-				donationService.addMoneyToDonation(userDonation.getDonation().getId(),userDonation.getMoney());
+
+				donationService.addMoneyFromUserDonationToDonation(userDonation.getMoney(), userDonation.getDonation().getId());
 			}
 			userDonation.setStatus(status);
 			userDonationDAO.saveOrUpdate(userDonation);

@@ -24,70 +24,47 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserDAO userDAO;
-	
 
 	// save user (update)
-	
+
 	@Override
 	@Transactional
-	public void saveOrUpdate(User user, boolean isUpdateManager) {
+	public void add(User user, UserRole whoUpdate) {
 
-		// giu nguyen cac truong không cập nhật
+		// them ngay tao va status ban dau
+		if (user.getCreatedDate() == null) {
+			user.setCreatedDate(Time.getCurrentDateTime());
+			user.setStatus(UserStatus.ACTIVE);
+			user.setShowing(true);
+			if (whoUpdate == UserRole.USER) {
+				user.setRole(new Role(UserRole.USER));
+			}
+		}
+		userDAO.saveOrUpdate(user);
+	}
 
-		if(user.getId() != 0) {
+	// update user
+	@Override
+	@Transactional
+	public void update(User user, UserRole whoUpdate) {
+
+		if (user.getId() != 0) {
 			User existingUser = userDAO.getUser(user.getId());
-			/*
-			user.setRole(existingUser.getRole());
-			 */
-			user.setPassword(existingUser.getPassword());
+			// giu nguyen cac truong không cập nhật
+			if (whoUpdate == UserRole.ADMIN) {
+
+			} else {
+				user.setRole(existingUser.getRole());
+			}
 			user.setStatus(existingUser.getStatus());
 			user.setCreatedDate(existingUser.getCreatedDate());
 			user.setShowing(existingUser.getShowing());
-			
-			if(!isUpdateManager) {
-				user.setRole(existingUser.getRole());
-			}
-			System.out.println("==================================>>>>>>>>service existing user: " + existingUser);
+			user.setPassword(existingUser.getPassword());
+
 		}
-		
-		
-		
-		System.out.println("==================================>>>>>>>> test here in service");
 
-		System.out.println("==================================>>>>>>>>service user: " + user);
-
-		
-	//  them ngay tao va status ban dau
-			if(user.getCreatedDate()==null) {
-				user.setCreatedDate(Time.getCurrentDateTime());
-				user.setStatus(UserStatus.ACTIVE);
-				user.setShowing(true);
-			}
-		
 		userDAO.saveOrUpdate(user);
 	}
-	
-	
-	//register
-	@Override
-	@Transactional
-	public void register(User user) {
-		
-		//  them ngay tao va status ban dau
-		if(user.getCreatedDate()==null) {
-			user.setCreatedDate(Time.getCurrentDateTime());
-			user.setStatus(UserStatus.ACTIVE);
-			user.setRole(new Role(UserRole.USER));
-			user.setShowing(true);
-		}
-		
-		
-		
-		userDAO.saveOrUpdate(user);
-	}
-	
-	// update user
-	
 
 	@Override
 	@Transactional
@@ -95,7 +72,7 @@ public class UserServiceImpl implements UserService {
 		// get user by id
 		User user = userDAO.getUser(userId);
 		// set user status
-		user.setStatus(user.getStatus()== UserStatus.ACTIVE ? UserStatus.LOCKED: UserStatus.ACTIVE);
+		user.setStatus(user.getStatus() == UserStatus.ACTIVE ? UserStatus.LOCKED : UserStatus.ACTIVE);
 		userDAO.saveOrUpdate(user);
 	}
 
@@ -104,171 +81,11 @@ public class UserServiceImpl implements UserService {
 	public void changeUserShowingStatus(int userId) {
 		User user = userDAO.getUser(userId);
 		// set user showing status
-		user.setShowing(user.getShowing()== true ? false:  true);
-		
-		
-		System.out.println("................................ USIMPL: user showing: " + user.getShowing() );
-		
-		System.out.println("................................ USIMPL: user inf: " + user);
-		/*
+		user.setShowing(user.getShowing() == true ? false : true);
+
 		userDAO.saveOrUpdate(user);
-		*/
-		
-		userDAO.saveOrUpdate(user);
-		
-	}
-	
-	// delete user
-	
-	@Override
-	@Transactional
-	public void deleteUser(int theId) {
-		userDAO.deleteUser(theId);
-		
-	}
-	
-	// get singe user obj
-	
-	@Override
-	@Transactional
-	public User getUser(int theId) {
-		return userDAO.getUser(theId);
-	}
-	
-	@Override
-	@Transactional
-	public User getUserByUserName(String userName) {
-		return userDAO.getUserByUserName(userName);
-	}
-	
-	@Override
-	@Transactional
-	public User getUserByEmail(String email) {
-		return userDAO.getUserByEmail(email);
-	}
-	
-	@Override
-	@Transactional
-	public User getUserByUserNameOrEmail(String userName) {
-		User user = userDAO.getUserByUserName(userName);
-		if(user == null) {
-			user = userDAO.getUserByEmail(userName);
-		}
-		
-		return user;
-	}
-	
-	// get user list
-	@Override
-	@Transactional
-	public List<User> getUserList() {
-		return userDAO.getUserList();
 	}
 
-	
-	// get user list (pageable)
-
-
-	@Override
-	@Transactional
-	public Page<User> getPaginatedData(int page, int size) {
-        PageRequest pageRequest = PageRequest.of(page -1, size);
-        return userDAO.findAll(pageRequest);
-    }
-
-	@Override
-	@Transactional
-	public Page<User> findAllByEmailOrPhoneNumber(int page, int size, String searchingValue) {
-		PageRequest pageRequest = PageRequest.of(page -1, size);
-		return userDAO.findAllByEmailOrPhoneNumber(pageRequest, searchingValue);
-	}
-
-	@Override
-	@Transactional
-	public Page<User> findByEmailOrPhoneNumberOrStatus(String searchString, int page, int size) {
-		PageRequest pageRequest = PageRequest.of(page-1, size);
-		return userDAO.findByEmailOrPhoneNumberOrStatus(searchString, pageRequest);
-	}
-
-	@Override
-	@Transactional
-	public Page<User> findAll(int page, int size) {
-		PageRequest pageRequest = PageRequest.of(page -1, size);
-		return userDAO.findAll( pageRequest);
-	}
-
-	
-		
-	
-	//// for login
-
-	@Override
-	@Transactional
-	public boolean isPasswordMatched(String userName, String password) {
-		User user = userDAO.getUserByUserName(userName);
-		if(user.getPassword().equals(password)) {
-			return true;
-		}
-		return false;
-	}
-
-
-
-	
-	// user trong method nay chi co 2 thuoc tinh co gia tri la userName va password
-	@Override
-	@Transactional
-	public boolean isUserExisted(LoginUser loginUser) {
-		User dbUser = getUserByUserNameOrEmail(loginUser.getUserNameOrEmail());
-		if((dbUser!=null)&&(dbUser.getPassword().equals(loginUser.getPassword()))) {
-			return true;
-		}
-		return false;
-	}
-	
-	@Override
-	@Transactional
-	public int getIdIfUserExisted(LoginUser loginUser) {
-		User dbUser = getUserByUserNameOrEmail(loginUser.getUserNameOrEmail());
-		if((dbUser!=null)&&(dbUser.getPassword().equals(loginUser.getPassword()))) {
-			return dbUser.getId();
-		}
-		return -1;
-	}
-
-	@Override
-	@Transactional
-	public boolean isAdmin(User user) {
-		if(user.getRole().getRoleName()== UserRole.USER.ADMIN) {
-			return true;
-		}
-		return false;
-	}
-
-
-	@Override
-	@Transactional
-	public boolean isAdmin(int theId) {
-		if(userDAO.getUser(theId).getRole().getRoleName()== UserRole.ADMIN) {
-			return true;
-		}
-		return false;
-	}
-	
-	
-	@Override
-	@Transactional
-	public boolean isActive(int theId) {
-		boolean result =false;
-		User theUser = userDAO.getUser(theId);
-		if(theUser.getStatus() == UserStatus.ACTIVE) {
-			result = true;
-		}
-		
-		return result;
-		
-	}
-	
 	@Override
 	@Transactional
 	public void changeUserStatus(UserStatus status, int userId) {
@@ -278,10 +95,159 @@ public class UserServiceImpl implements UserService {
 			user.setStatus(status);
 			userDAO.saveOrUpdate(user);
 		} catch (Exception e) {
-			
+
 		}
-		
+
+	}
+
+	@Override
+	@Transactional
+	public User getUser(int theId) {
+		return userDAO.getUser(theId);
+	}
+
+	// get user list
+	@Override
+	@Transactional
+	public List<User> getUserList() {
+		return userDAO.getUserList();
+	}
+
+	// get user list (pageable)
+	
+	/*
+	@Override
+	@Transactional
+	public Page<User> getPaginatedData(int page, int size) {
+		PageRequest pageRequest = PageRequest.of(page - 1, size);
+		return userDAO.findAll(pageRequest);
+	}
+	 */
+	
+	@Override
+	@Transactional
+	public Page<User> findByEmailOrUserNameOrPhoneNumber(int page, int size, String searchingValue) {
+		PageRequest pageRequest = PageRequest.of(page - 1, size);
+		return userDAO.findByEmailOrUserNameOrPhoneNumber(pageRequest, searchingValue);
+	}
+
+	@Override
+	@Transactional
+	public Page<User> findByEmailOrUserNameOrPhoneNumberOrStatus(int page, int size, String searchString) {
+		PageRequest pageRequest = PageRequest.of(page - 1, size);
+		return userDAO.findByEmailOrUserNameOrPhoneNumberOrStatus(searchString, pageRequest);
+	}
+
+	@Override
+	@Transactional
+	public Page<User> findAll(int page, int size) {
+		PageRequest pageRequest = PageRequest.of(page - 1, size);
+		return userDAO.findAll(pageRequest);
+	}
+
+	@Override
+	@Transactional
+	public boolean isAdmin(int theId) {
+		if (userDAO.getUser(theId).getRole().getRoleName() == UserRole.ADMIN) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	@Transactional
+	public boolean isAdmin(User user) {
+		if (user.getRole().getRoleName() == UserRole.ADMIN) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	@Transactional
+	public boolean isActive(int theId) {
+		boolean result = false;
+		User theUser = userDAO.getUser(theId);
+		if (theUser.getStatus() == UserStatus.ACTIVE) {
+			result = true;
+		}
+		return result;
+	}
+
+	@Override
+	@Transactional
+	public boolean isUserExisted(LoginUser loginUser) {
+		User dbUser = getUserByUserNameOrEmail(loginUser.getUserNameOrEmail());
+		if ((dbUser != null) && (dbUser.getPassword().equals(loginUser.getPassword()))) {
+			return true;
+		}
+		return false;
+	}
+
+	// get singe user obj
+
+	@Override
+	@Transactional
+	public User getUserByUserName(String userName) {
+		return userDAO.getUserByUserName(userName);
+	}
+
+	@Override
+	@Transactional
+	public User getUserByEmail(String email) {
+		return userDAO.getUserByEmail(email);
+	}
+
+	@Override
+	@Transactional
+	public User getUserByUserNameOrEmail(String userNameOrEmail) {
+		User user = userDAO.getUserByUserNameOrEmail(userNameOrEmail);
+		return user;
+	}
+
+	@Override
+	@Transactional
+	public int getIdIfUserExisted(LoginUser loginUser) {
+		/*
+		 * User dbUser = getUserByUserNameOrEmail(loginUser.getUserNameOrEmail());
+		 * if((dbUser!=null)&&(dbUser.getPassword().equals(loginUser.getPassword()))) {
+		 * return dbUser.getId(); } return -1;
+		 */
+
+		User dbUser = getUserByUserNameOrEmail(loginUser.getUserNameOrEmail());
+		if ((dbUser == null) || !(dbUser.getPassword().equals(loginUser.getPassword()))) {
+			return -1;
+		}
+
+		return dbUser.getId();
+	}
+
+	@Override
+	@Transactional
+	public User getUserIfUserExisted(LoginUser loginUser) {
+		User dbUser = getUserByUserNameOrEmail(loginUser.getUserNameOrEmail());
+		if ((dbUser == null) || !(dbUser.getPassword().equals(loginUser.getPassword()))) {
+			return null;
+		}
+
+		return dbUser;
 	}
 	
-	
+	/// for login
+	@Override
+	@Transactional
+	public boolean isPasswordMatched(String userName, String password) {
+		User user = userDAO.getUserByUserName(userName);
+		if (user.getPassword().equals(password)) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	@Transactional
+	public void delete(int theId) {
+		userDAO.delete(theId);
+
+	}
 }

@@ -383,6 +383,9 @@
 			<div id="overlay" onclick="closeAllPopup()"></div>
 			<div class="popup col-12 col-sm-8 col-md-4">
 			
+			
+			<input type="hidden" id="errorProcess" value="${errorProcess}"/>
+			
 			<% Boolean isLogined = ((Boolean)request.getAttribute("isLogined")) != null ? (Boolean)request.getAttribute("isLogined") : false; %>
 			<% Boolean isAdmin = ((Boolean)request.getAttribute("isAdmin")) != null ? (Boolean)request.getAttribute("isAdmin") : false; %>
 		<%-- 
@@ -444,28 +447,34 @@
 			                  <label class="field-label" for="code-add">Mã đợt quyên góp</label>
 			                  <form:input type="text" class="form-control" id="code-add" path="code" />
 			                  
+			                  <form:errors cssClass="error" path="code"/>
 			                </div>
 			                <div class="form-group form-group-custom">
 			                  <label class="field-label" for="name-add">Tên đợt quyên góp:</label>
 			                  <form:input type="text" class="form-control" id="name-add" path="name" />
+			                  <form:errors cssClass="error" path="name"/>
 			                </div>
 			                
 			                <div class="form-group form-group-custom">
 			                  <label class="field-label" for="startDate-add">Ngày bất đầu:</label>
 			                  <form:input type="date" class="form-control" id="startDate-add" path="startDate" />
+			                  <form:errors cssClass="error" path="startDate"/>
 			                </div>
 			                <div class="form-group form-group-custom">
 			                  <label class="field-label" for="endDate-add">Ngày kết thúc:</label>
 			                  <form:input type="date" class="form-control" id="endDate-add" path="endDate" />
+			                  <form:errors cssClass="error" path="endDate"/>
 			                </div>
 			                <div class="form-group form-group-custom">
 			                  <label class="field-label" for="organization-add">Tổ chức:</label>
 			                  <form:input type="text" class="form-control" id="organization-add" path="organization" />
+			                  <form:errors cssClass="error" path="organization"/>
 			                </div>
 			                
 			                <div class="form-group form-group-custom">
 			                  <label class="field-label" for="phoneNumber-add">Số điện thoại:</label>
 			                  <form:input type="number" class="form-control" id="phoneNumber-add" path="phoneNumber" />
+			                  <form:errors cssClass="error" path="phoneNumber"/>
 			                </div>
 							
 							<div class="form-group form-group-custom">
@@ -473,7 +482,7 @@
 			                  
 			                  <form:textarea class="form-control" id="description-add" path="description" rows="3"></form:textarea>
 			                </div>
-							
+							<div><form:errors path="" cssClass="error" /></div>
 			                <div class="submit-p">
 			                    <button type="button" class="cancel-btn "
 			                        onclick="closeAllPopup()">Hủy</button>

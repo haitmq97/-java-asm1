@@ -4,13 +4,17 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.Validator;
+import org.springframework.validation.annotation.Validated;
 
 import me.haitmq.spring.mvc.crud.dao.DonationDAO;
 import me.haitmq.spring.mvc.crud.dao.UserDonationDAO;
@@ -21,6 +25,9 @@ import me.haitmq.spring.mvc.crud.entity.status.DonationStatus;
 
 @Service
 public class DonationServiceImpl implements DonationService {
+	
+	@Autowired
+	Validator validator;
 
 	private static final Logger log = LoggerFactory.getLogger(DonationService.class);
 
@@ -33,42 +40,85 @@ public class DonationServiceImpl implements DonationService {
 	@Autowired
 	private UserDonationDAO userDonationDAO;
 
-	// save/update donation obj
+	// get single donation obj
+
+	@Override
+	@Transactional
+	public Donation getDonation(int theId) {
+		return donationDAO.getDontaion(theId);
+	}
+
+	// get donation list
+
+	@Override
+	@Transactional
+	public List<Donation> getDonationList() {
+		return donationDAO.getDonationList();
+	}
+	
+	@Override
+	@Transactional
+	public void saveOrUpdate(Donation donation) {
+		donationDAO.saveOrUpdate(donation);
+	}
+	
+
+	// save donation obj
+	@Override
+	@Transactional
+	public void add(Donation donation) {
+		
+		//đặt các giá trị ban đầu (created date, status, showing status)
+		donation.setCreatedDate(Time.getCurrentDateTimeRaw());
+		donation.setStatus(DonationStatus.NEW);
+		donation.setShowing(true);
+		donationDAO.saveOrUpdate(donation);
+	}
+	
+	// update donaton obj
 	
 	@Override
 	public boolean isAbleToUpdate(Donation donation) {
-		if (donation.getStatus() != DonationStatus.END) {
+		if (donation.getStatus() != DonationStatus.CLOSED) {
 			return true;
 		}
 		return false;
 	}
-
+	
 	@Override
 	@Transactional
-	public void saveOrUpdate(Donation donation) {
-		
-		// nếu donation là đối tượng mới thì đặt các giá trị ban đầu (created date, status, showing status)
-		if (donation.getCreatedDate() == null) {
-			donation.setCreatedDate(Time.getCurrentDateTimeRaw());
-			donation.setStatus(DonationStatus.NEW);
-			donation.setShowing(true);
+	public void update(Donation donation) {
+		if(isAbleToUpdate(donation)) {
+			donationDAO.saveOrUpdate(donation);
 		}
-		
-		donationDAO.saveOrUpdate(donation);
-
 	}
 
-	// update donaton obj
+	
+	
 
+	////////////////////////////
 	@Override
 	@Transactional
-	public void addMoneyFromUserDonationToDonation(Long moneyAmount, int donationId) {
+	public void addMoneyFromUserDonationToDonation(long moneyAmount, int donationId) {
 		Donation donation = donationDAO.getDontaion(donationId);
+		// lấy tiền hiện tại cộng với lượng tiền mới
 		donation.setMoney(donation.getMoney() + moneyAmount);
 		donationDAO.saveOrUpdate(donation);
 
 	}
-
+	
+	/*
+	
+	@Override
+	@Transactional
+	public void addMoneyToDonation(int theId, long amount) {
+		Donation donation = donationDAO.getDontaion(theId);
+		donation.setMoney(donation.getMoney() + amount);
+		donationDAO.saveOrUpdate(donation);
+	}
+	*/
+	
+	
 	@Override
 	public boolean isAbleTochangeStatus(DonationStatus newStatus, int donationId) {
 
@@ -125,99 +175,8 @@ public class DonationServiceImpl implements DonationService {
 		}
 
 	}
-
-	@Override
-	@Transactional
-	public void updateAllMoneyUserDonationtoDonation(int donationId) {
-		try {
-			Donation donation = donationDAO.getDontaion(donationId);
-			donation.setMoney(userDonationService.getTotalMoneyByDonationId(donationId));
-		} catch (Exception e) {
-			// log.error("DonationService ERROR - updateAllMoneyUserDonationtoDonation(): ",
-			// e);
-		}
-
-	}
-
-	// delete donation obj
-
-	// kiem tra status truoc khi xoa
-
-	private boolean isAbleToDelete(int theId) {
-		Donation donation = getDonation(theId);
-		if (donation.getStatus() == DonationStatus.NEW) {
-			return true;
-		}
-		return false;
-	}
-
-	@Override
-	@Transactional
-	public void delete(int theId) {
-		if (isAbleToDelete(theId)) {
-			donationDAO.delete(theId);
-		}
-
-	}
-
-	// get single donation obj
-
-	@Override
-	@Transactional
-	public Donation getDonation(int theId) {
-		return donationDAO.getDontaion(theId);
-	}
-
-	// get donation list
-
-	@Override
-	@Transactional
-	public List<Donation> getDonationList() {
-		return donationDAO.getDonationList();
-	}
-	// get donation list (pageable)
-
-
-	@Override
-	@Transactional
-	public Page<Donation> findByPhoneNumberOrOrganizationOrCodeOrStatus(String searchingValue, int page, int size) {
-		PageRequest pageRequest = PageRequest.of(page - 1, size);
-		return donationDAO.findByPhoneNumberOrOrganizationOrCodeOrStatus(searchingValue, pageRequest);
-	}
-
-	@Override
-	@Transactional
-	public Page<Donation> findAll(int page, int size) {
-		PageRequest pageRequest = PageRequest.of(page - 1, size);
-		return donationDAO.findAll(pageRequest);
-	}
-
 	
-
-	////////////////////////////
-
-	@Override
-	@Transactional
-	public void addMoneyToDonation(int theId, long amount) {
-		Donation donation = donationDAO.getDontaion(theId);
-		donation.setMoney(donation.getMoney() + amount);
-		donationDAO.saveOrUpdate(donation);
-	}
-
-	public void updateDonationMoneyByUserDonation(int theId) {
-		Donation donation = donationDAO.getDontaion(theId);
-
-		donation.setMoney(userDonationDAO.getTotalMoneyByDonationId(theId));
-		donationDAO.saveOrUpdate(donation);
-	}
-
-	public void updateAllDonationMoney() {
-		List<Donation> donations = donationDAO.getDonationList();
-		for (Donation donation : donations) {
-			updateDonationMoneyByUserDonation(donation.getId());
-			donationDAO.saveOrUpdate(donation);
-		}
-	}
+	
 
 	@Override
 	public boolean isAbleToAutoDonatingStatus(Donation donation) {
@@ -243,16 +202,6 @@ public class DonationServiceImpl implements DonationService {
 		return false;
 	}
 
-	@Override
-	public void autoChangeToDonatingStatus(Donation donation) {
-
-	}
-
-	@Override
-	public void autoChangeToEndStatus(Donation donation) {
-		// TODO Auto-generated method stub
-
-	}
 
 	@Override
 	@Transactional
@@ -274,13 +223,92 @@ public class DonationServiceImpl implements DonationService {
 	@Override
 	@Scheduled(fixedRate = 300000)
 	@Transactional
-	public void autoUpdateStatusALL() {
+	public void autoUpdateStatusAll() {
 		List<Donation> dList = donationDAO.getDonationList();
-
+		System.out.println("//////////////////// scheduled");
 		for (Donation donation : dList) {
 			autoUpdateStatus(donation);
 		}
 
 	}
+	
+	@Override
+	@Transactional
+	public void updateAllMoneyUserDonationtoDonation(int theId) {
+		Donation donation = donationDAO.getDontaion(theId);
+
+		donation.setMoney(userDonationDAO.getTotalMoneyByDonationId(theId));
+		donationDAO.saveOrUpdate(donation);
+	}
+	
+	/*
+	@Override
+	@Transactional
+	public void updateAllMoneyUserDonationtoDonation(int donationId) {
+		try {
+			Donation donation = donationDAO.getDontaion(donationId);
+			donation.setMoney(userDonationService.getTotalMoneyByDonationId(donationId));
+			donationDAO.saveOrUpdate(donation);
+		} catch (Exception e) {
+			// log.error("DonationService ERROR - updateAllMoneyUserDonationtoDonation(): ",
+			// e);
+		}
+
+	}
+	*/
+	
+	@Override
+	@Transactional
+	public void updateAllDonationMoney() {
+		List<Donation> donations = donationDAO.getDonationList();
+		for (Donation donation : donations) {
+			updateAllMoneyUserDonationtoDonation(donation.getId());
+			donationDAO.saveOrUpdate(donation);
+		}
+	}
+
+	
+	
+	// get donation list (pageable)
+	@Override
+	@Transactional
+	public Page<Donation> findByPhoneNumberOrOrganizationOrCodeOrStatus(String searchingValue, int page, int size) {
+		// trừ 1 để page bắt đầu bằng 1
+		PageRequest pageRequest = PageRequest.of(page - 1, size);
+		return donationDAO.findByPhoneNumberOrOrganizationOrCodeOrStatus(searchingValue, pageRequest);
+	}
+
+	@Override
+	@Transactional
+	public Page<Donation> findAll(int page, int size) {
+		PageRequest pageRequest = PageRequest.of(page - 1, size);
+		return donationDAO.findAll(pageRequest);
+	}
+
+	
+	// delete donation obj
+
+	// kiem tra status truoc khi xoa
+
+	private boolean isAbleToDelete(int theId) {
+		Donation donation = getDonation(theId);
+		if (donation.getStatus() == DonationStatus.NEW) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	@Transactional
+	public void delete(int theId) {
+		if (isAbleToDelete(theId)) {
+			donationDAO.delete(theId);
+		}
+
+	}
+
+	
+	
+
 
 }

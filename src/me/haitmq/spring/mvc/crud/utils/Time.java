@@ -55,22 +55,30 @@ public class Time {
     }
     
     
-    public static boolean isAfterDate(String originalDateString, String checkDateString) {
-    	LocalDate originalDate = LocalDate.parse(originalDateString, dateTimeFormatterRaw);
-    	LocalDate checkDate = LocalDate.parse(checkDateString, dateTimeFormatterRaw);
-    	if(checkDate.isAfter(originalDate)) {
-    		return true;
+    public static boolean isAfterDate(String benMarkDate, String checkDateString) {
+    	
+    	if((benMarkDate.length() != 0) && (checkDateString.length() != 0)) {
+    		LocalDate originalDate = LocalDate.parse(benMarkDate, dateTimeFormatterRaw);
+        	LocalDate checkDate = LocalDate.parse(benMarkDate, dateTimeFormatterRaw);
+        	if(checkDate.isAfter(originalDate)) {
+        		return true;
+        	}
     	}
+    	
     	return false;
     	
     }
     
-    public static boolean isBeforeDate(String originalDateString, String checkDateString) {
-    	LocalDate originalDate = LocalDate.parse(originalDateString, dateTimeFormatterRaw);
-    	LocalDate checkDate = LocalDate.parse(checkDateString, dateTimeFormatterRaw);
-    	if(checkDate.isBefore(originalDate)) {
-    		return true;
+    public static boolean isBeforeDate(String benMarkDate, String checkDateString) {
+    	if((benMarkDate.length() != 0) && (checkDateString.length() != 0)) {
+    		LocalDate originalDate = LocalDate.parse(benMarkDate, dateTimeFormatterRaw);
+        	LocalDate checkDate = LocalDate.parse(checkDateString, dateTimeFormatterRaw);
+        	
+        	if(checkDate.isBefore(originalDate)) {
+        		return true;
+        	}
     	}
+    	
     	return false;
     	
     }

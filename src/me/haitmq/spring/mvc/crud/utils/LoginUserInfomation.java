@@ -22,6 +22,7 @@ public class LoginUserInfomation {
 		theModel.addAttribute("isLogined", session.getAttribute("isLogined"));
 		theModel.addAttribute("isActive", session.getAttribute("isActive"));
 		theModel.addAttribute("isAdmin", session.getAttribute("isAdmin"));
+		theModel.addAttribute("currentUserId", session.getAttribute("currentUserId"));
 	}
 	
 	public static void removeLoginUserInfoFromSesstion(HttpSession session) {

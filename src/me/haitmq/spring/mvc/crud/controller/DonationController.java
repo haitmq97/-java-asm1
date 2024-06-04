@@ -144,7 +144,7 @@ public class DonationController {
 	@PostMapping("/processAdd")
 	public String processAdd(@ModelAttribute("donation") Donation theDonation) {
 		
- 		donationService.saveOrUpdate(theDonation);
+ 		donationService.add(theDonation);
 		
 
 		return "redirect:/donation/listForAdmin";
@@ -164,7 +164,7 @@ public class DonationController {
 	@PostMapping("/processUpdate")
 	public String processUpdate(@ModelAttribute("donation") Donation theDonation) {
 		
- 		donationService.saveOrUpdate(theDonation);
+ 		donationService.update(theDonation);
 		
 
 		return "redirect:/donation/listForAdmin";

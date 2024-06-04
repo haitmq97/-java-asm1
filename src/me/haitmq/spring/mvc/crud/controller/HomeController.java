@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import me.haitmq.spring.mvc.crud.entity.UserDonation;
+import me.haitmq.spring.mvc.crud.entity.role.UserRole;
 import me.haitmq.spring.mvc.crud.common.LoginUser;
 import me.haitmq.spring.mvc.crud.content_path.ViewConstants;
 import me.haitmq.spring.mvc.crud.entity.Donation;
@@ -45,115 +46,95 @@ public class HomeController {
 	private DonationService donationService;
 
 	/*
-	 * trong phương thức home cần đưa ra view: + isLogined (kiểm tra đã đăng nhập
-	 * chưa) => donate form + isAdmin => manager
-	 * 
-	 * + các donation + current page (trang hiện tại mặc định là 1) + số entries mỗi
-	 * page (current size) + searchingValue
-	 * 
-	 * + donate form <= donationId tương ứng
-	 */
-	
-	/*
 	 * @RequestParam(name = "errorLoginOrRegister", defaultValue = "false", required
 	 * = false) boolean errorLoginOrRegister,
 	 */
+	
+	/*
+	 *	What home need to do? 
+	 * - request param:
+	 * 		+ HttpServletrequest
+	 * 		+ size 				\
+	 *  	+ page				 } -> to get donation list data
+	 *  	+ searching value	/
+	 *  	+ donation id (for donate function)
+	 * - handle:
+	 * 		+ showing donations table (by page, size, searchingValue) also showing page, size, searchingValue
+	 * 		+ check authority and add to model( for display content according authority)	 
+	 * 		+ showing login form 
+	 * 			+ receive attribute from login process
+	 * 				+ check if there are error from previous login -> add to model error
+	 * 		+ showing donate form for logined user by donationid request param
+	 * 			+ can login user donate? (is user locked or donation is able to donate?)
+	 * 				+ receive attribute from donate process
+	 * 					+ is donate success? -> add messenge
+	 * 	
+	 * - return view
+	 * 
+	 * 
+	 */
+	
 	@GetMapping("/home")
-	public String donationlist4(HttpServletRequest request, @RequestParam(defaultValue = "1") int page,
+	public String homePage(HttpServletRequest request, @RequestParam(defaultValue = "1") int page,
 			@RequestParam(name = "size", defaultValue = "5") int size,
 			@RequestParam(name = "searchingValue", defaultValue = "", required = false) String searchingValue,
 			@RequestParam(name = "donationId", defaultValue = "1") int donationId,
-			
 			Model theModel) {
 
-		// chỉnh lại default
-		// donationid????????????????????????????????????????????????????????????
-
-		// kiểm tra quyền (isLogined, isAdmin) (bao gồm phần header)
+		// check authority (isLogined, isAdmin) (bao gồm phần header)
 
 		HttpSession session = request.getSession();
-		Integer currentUserId = LoginUserInfomation.getCurrentUserId(session);
+		Integer currentUserId = SessionUtils.getCurrentUserId(session);
 		
-		SessionUtils.setCurrentEndpoint(request);
+		
 		System.out.println("currrent User Id ..........................: " + currentUserId);
-		/*
-
-		Boolean isLogined = false;
-
-		Boolean isAdmin = false;
-
-		if (currentUserId != null) {
-			isLogined = true;
-			isAdmin = userService.isAdmin(currentUserId);
-		}
 		
-		theModel.addAttribute("isLogined", isLogined);
-
-		theModel.addAttribute("isAdmin", isAdmin);
+		// add to model loginUser information
+		SessionUtils.addLoginUserInfoToModel(session, theModel);
 		
-		*/
-		
-		LoginUserInfomation.addLoginUserInfoToModel(session, theModel);
-
-		Page<Donation> donations = donationService.findByPhoneNumberOrOrganizationOrCodeOrStatus(searchingValue, page,
-				size);
-
-		theModel.addAttribute("searchingValue", searchingValue);
-		
+		// showing donations table
+		// 		+ get donations list table
+		Page<Donation> donations = 
+				donationService.findByPhoneNumberOrOrganizationOrCodeOrStatus(searchingValue, page, size);
+		// 		+ add to model
 		theModel.addAttribute("donations", donations);
 
 		theModel.addAttribute("currentPage", page);
-
-		theModel.addAttribute("totalPage", donations.getTotalPages());
-
+		
 		theModel.addAttribute("currentSize", size);
+		
+		theModel.addAttribute("searchingValue", searchingValue);
+		
+		theModel.addAttribute("totalPage", donations.getTotalPages());
+		
+		theModel.addAttribute("totalElements", donations.getTotalElements());
+
+		// login form (import showLoginForm function on jsp page)
 
 		// donate form model attributes
-
-		theModel.addAttribute("userDonation", new UserDonation());
-
-		theModel.addAttribute("process", "processDonating");
-
-		// add donationId to the model (for process form)
+		
+		// to showing infomation of donation donating
 		Donation donation = donationService.getDonation(donationId);
 
-		// ??????????????????????????????????????????????????????
 		theModel.addAttribute("donation", donation);
-		/*
-		 * theModel.addAttribute("donationId", donationId);
-		 */
-
-		theModel.addAttribute("totalElements", donations.getTotalElements());
 		
-		Boolean errorLogin = false;
-		/*
+		// add donate obj for donate form
+		theModel.addAttribute("userDonation", new UserDonation());
 		
-		if (theModel.containsAttribute("errorLoginOrRegister")) {
-            errorLogin = (Boolean) theModel.getAttribute("errorLoginOrRegister");
-            // Xử lý logic với errorLoginOrRegister ở đây
-        }
+		theModel.addAttribute("processDonating", "processDonating");
 		
-		theModel.addAttribute("errorLoginOrRegister", errorLogin);
+		// check if there are errors from last login then add to model the logined user with error, if not add new login user
+		theModel.addAttribute("loginUser", theModel.containsAttribute("loginUser")? theModel.getAttribute("loginUser"): new LoginUser());
 		
-		*/
-		if (theModel.containsAttribute("loginUser")) {
-            theModel.addAttribute("loginUser", theModel.getAttribute("loginUser"));
-        } else {
-            theModel.addAttribute("loginUser", new LoginUser());
-        }
+		// check if privious donate is success then add to model to showing message
+		theModel.addAttribute("successDonate", theModel.containsAttribute("successDonate")? true: false);
+		
+		// for direct update donation status
+		donationService.autoUpdateStatusAll();
 		
 		
-		if (theModel.containsAttribute("successDonate")) {
-            theModel.addAttribute("successDonate", true);
-        } else {
-            theModel.addAttribute("successDonate", false);
-        }
-		
-		donationService.autoUpdateStatusALL();
-		
-		
-		// set endpoint hiện tại vào session
-		
+		// set current endpoint to session (user for process method return last url)
+		SessionUtils.setCurrentEndpoint(request);
 		
 		
 
@@ -170,52 +151,44 @@ public class HomeController {
 		return ViewConstants.V_HOME;
 	}
 
+	
+	/*
+	 *	What donation-detail need to do? 
+	 * - request param:
+	 * 		+ HttpServletRequest
+	 * 		+ Donation id
+	 * - handle:
+	 * 		+ display donation info
+	 * 		+ check authority and add to model( for display content according authority)	 
+	 * 		+ showing login form (like home)
+	 * 		+ showing donate form (like home)
+	 * 	
+	 * - return view
+	 * 
+	 */
 	@GetMapping("donation-detail")
 	public String donationDetails(HttpServletRequest request, @RequestParam("id") int theId, Model theModel) {
 
-		// kiểm tra quyền (isLogined, isAdmin) (bao gồm phần header)
-
-		HttpSession session = request.getSession();
-		Integer currentUserId = (Integer) session.getAttribute("currentUserId");
-
-		Boolean isLogined = false;
-
-		Boolean isAdmin = false;
-
-		if (currentUserId != null) {
-			isLogined = true;
-			isAdmin = userService.isAdmin(currentUserId);
-		}
-
-		theModel.addAttribute("isLogined", isLogined);
-
-		theModel.addAttribute("isAdmin", isAdmin);
-
-		// donation model attribute
-
+		// add donation info to the model
 		Donation donation = donationService.getDonation(theId);
 
 		theModel.addAttribute("donation", donation);
 
 		// donate form model attributes
-
 		theModel.addAttribute("userDonation", new UserDonation());
 
 		theModel.addAttribute("process", "processDonating");
 
 		theModel.addAttribute("donationId", theId);
-		
-		// set endpoint hiện tại vào session
-		SessionUtils.setCurrentEndpoint(request);
-		
-		
-		if (theModel.containsAttribute("successDonate")) {
-            theModel.addAttribute("successDonate", true);
-        } else {
-            theModel.addAttribute("successDonate", false);
-        }
-		
 
+		// check if there are errors from last login then add to model the logined user
+		// with error, if not add new login user
+		theModel.addAttribute("loginUser",
+				theModel.containsAttribute("loginUser") ? theModel.getAttribute("loginUser") : new LoginUser());
+
+		// check if privious donate is success then add to model to showing message
+		theModel.addAttribute("successDonate", theModel.containsAttribute("successDonate") ? true : false);
+		
 		System.out.println("current page...................detail: " + request.getRequestURL().toString());
 		System.out.println("context path..................detail:" + request.getContextPath());
 		System.out.println("request uri......................detail: " + request.getRequestURI());
@@ -228,7 +201,15 @@ public class HomeController {
 	}
 
 	// register
-
+	/*
+	 *	What register need to do? 
+	 * - request param:
+	 * - handle:
+	 * 		+ showing register form
+	 * 	
+	 * - return view
+	 * 
+	 */
 	@GetMapping(value = { "/registerForm", "/register" })
 	public String showFormForAdd(Model theModel) {
 		User newUser = new User();
@@ -237,39 +218,84 @@ public class HomeController {
 
 		return ViewConstants.V_REGISTER;
 	}
-
+	
+	/*
+	 *	What register need to do? 
+	 * - request param:
+	 * 		+ HttpServletRequest
+	 * 		+ user obj
+	 * 		+ BindingResult
+	 * 		+ RedirectAttributes (to add success messenge)
+	 * - handle:
+	 * 		+ handle user register info
+	 * 			+ if it has error return register form 
+	 * 			+ sucess -> add user info to session and messenge success to model and return home
+	 * 	
+	 * - return view
+	 * 
+	 */
 	@PostMapping("/processRegister")
-	public String processRegister(@Valid @ModelAttribute("user") User theUser, 
+	public String processRegister(HttpServletRequest request, 
+			@Valid @ModelAttribute("user") User theUser, 
 			BindingResult theBindingResult,
 			RedirectAttributes redirectAttributes) {
 		
+		HttpSession session = request.getSession();
 
 		if(theBindingResult.hasErrors()) {
 
 			return ViewConstants.V_REGISTER;
-		} else {
-			
-			userService.register(theUser);
-			
-			return ViewConstants.V_REDIRECT_HOME;
 		}
+		
+		userService.add(theUser, UserRole.USER);
+		// get id user from database
+		int userId = userService.getIdIfUserExisted(new LoginUser(theUser.getUserName(), theUser.getPassword()));
+		
+		if (userId != -1) {
+			
+			boolean isActive = false;
+			boolean isAdmin = false;
+			
+			// if user is locked, consider role = user (avoid user performing admin function)
+			if(userService.isActive(userId)) {
+				isActive = true;
+				isAdmin = userService.isAdmin(userId);
+			}
+			
+			// set loign user info to sesion
+			SessionUtils.setLoginUserInfoToSesstion(session, true, isActive, isAdmin, userId);
+		}
+		
+		redirectAttributes.addFlashAttribute("sucessRegister", true);
+
+		return ViewConstants.V_REDIRECT_HOME;
 	}
 
 	// login
-	@GetMapping("login")
+	/*(embed it on other jsp)
+	 *	What login form need to do? 
+	 * - request param:
+	 * 		+ HttpServletRequest
+	 * - handle:
+	 * 		+ display login form
+	 * 			+ if there are errors from last login then add it to model
+	 * 	
+	 * - return view
+	 * 
+	 * 
+	 * ................................may i addFlash the errror from login process?...........................
+	 */ 
+	@GetMapping(value = {"login", "login-form"})
 	public String showLoginForm(HttpServletRequest request,
-			
-			
 			Model theModel) {
 		
 		
 		LoginUser theLoginUser = new LoginUser();
 		
 		Boolean errorLogin= false;
-
+		
+		// check if have errror
 		if (theModel.containsAttribute("loginUser")) {
-			
-			// trả về dữ liệu lỗi nếu có
 			theLoginUser = (LoginUser) theModel.getAttribute("loginUser");
 			errorLogin = true;
         }
@@ -285,34 +311,34 @@ public class HomeController {
 		System.out.println("totalLink...........................:" + request.getContextPath() + request.getRequestURI());
 		
 		return ViewConstants.V_LOGIN;
-		
-		
-		
 	}
-
+	
+	/*
+	 *	What loginprocess need to do? 
+	 * - request param:
+	 * 		+ HttpServletRequest
+	 * 		+ BindingResult (check error)
+	 * 		+ RedirectAttributes (add error attribute 
+	 * - handle:
+	 * 		+ process login data
+	 * 			+ if has error add the error to model
+	 * 	
+	 * - return view 
+	 * 		+ return the privious page
+	 * 		
+	 * 
+	 */ 
 	@PostMapping("processLogin")
 	public String processLogin(HttpServletRequest request,
 								@Valid @ModelAttribute("loginUser") LoginUser loginUser, 
 								BindingResult theBindingResult,
 								RedirectAttributes redirectAttributes
-								/*
-								,
-								@RequestParam("currentUrl") String currentUrl
-								*/
 			) {
 		
 		HttpSession session = request.getSession();
 		
-		Boolean isLogined = false;
-		
-		Boolean isActive = false;
-		
-		Boolean isAdmin = false;
-		
-		Integer currentUserId = null;
-		
 		if (theBindingResult.hasErrors()) {
-			// truyền dữ liệu lỗi mà người dùng đăng nhập về lại trang đăng nhập
+			// pass error data back login form
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.loginUser", theBindingResult);
 			redirectAttributes.addFlashAttribute("loginUser", loginUser);
 			/* redirectAttributes.addFlashAttribute("errorLoginOrRegister", true); */
@@ -322,28 +348,19 @@ public class HomeController {
 	    	int userId = userService.getIdIfUserExisted(loginUser);
 			
 			if (userId != -1) {
+				boolean isActive = false;
+				boolean isAdmin = false;
 				
-				currentUserId = userId;
-				session.setAttribute("currentUserId", userId);
-				
-				isLogined = true;
-				
+				// if user is locked, consider role = user (avoid user performing admin function)
 				if(userService.isActive(userId)) {
 					isActive = true;
 					isAdmin = userService.isAdmin(userId);
-					
 				}
+				
+				SessionUtils.setLoginUserInfoToSesstion(session, true, isActive, isAdmin, userId);
 			} 
 	    }
 		
-		session.setAttribute("isLogined", isLogined);
-		session.setAttribute("isActive", isActive);
-		session.setAttribute("isAdmin", isAdmin);
-		session.setAttribute("currentUserId", currentUserId);
-		
-		/*
-		System.out.println("////////////////////////////////// currentId: " + currentUrl);
-		*/
 		
 		String currentUrl = request.getParameter("currentUrl");
 		
@@ -359,7 +376,7 @@ public class HomeController {
 		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
 	}
 	
-	
+	// clear error for click login or donate button again
 	@PostMapping("/clearErrors")
     @ResponseBody
     public String clearErrors(HttpSession session) {
@@ -368,7 +385,8 @@ public class HomeController {
         session.removeAttribute("errorLogin");
         return "success";
     }
-
+	
+	
 	@GetMapping("donateForm")
 	public String userDonationForm(HttpServletRequest request, @RequestParam("id") int donationId, Model theModel) {
 		try {
@@ -399,25 +417,59 @@ public class HomeController {
 			return "common/error-page";
 		}
 	}
-
+	
+	/*
+	 *	What donateForm need to do? 
+	 * - request param:
+	 * 		+ HttpServletRequest
+	 * 		+ userDonation obj
+	 * 		+ donation id
+	 * 		+ BindingResult
+	 * 		+ RedirectAttributes (add error attribute or success messenge) 
+	 * - handle:
+	 * 		+ process login data
+	 * 			+ if has error add the error to model
+	 * 	
+	 * - return view 
+	 * 		+ return the privious page
+	 * 		
+	 * 
+	 */ 
 	@PostMapping("/processDonating")
 	public String processDonating(HttpServletRequest request, 
 			@ModelAttribute("userDonation") UserDonation userDonation,
 			@RequestParam("donationId") int donationId,
+			BindingResult theBindingResult,
 			RedirectAttributes redirectAttributes) {
 		try {
-			HttpSession session = request.getSession();
-			Integer currentUserId = (Integer) session.getAttribute("currentUserId");
+			
+			if (theBindingResult.hasErrors()) {
+				// pass error data back donate form
+				redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.userDonation", theBindingResult);
+				
+				redirectAttributes.addFlashAttribute("loginUser", userDonation);
+				
+				redirectAttributes.addFlashAttribute("errorDonate", true);
+		    } else {
+		    	HttpSession session = request.getSession();
+		    	
+		    	// get current user and donation obj to set attribute for userDonation
+				Integer currentUserId = (Integer) session.getAttribute("currentUserId");
+				
+				User user = userService.getUser(currentUserId);
+				
+				Donation donation = donationService.getDonation(donationId);
+				
+				userDonation.setUser(user);
+				
+				userDonation.setDonation(donation);
+				
+				userDonationService.save(userDonation);
+
+				redirectAttributes.addFlashAttribute("successDonate", true);
+		    }
 			
 			
-			User user = userService.getUser(currentUserId);
-			Donation donation = donationService.getDonation(donationId);
-			userDonation.setUser(user);
-			userDonation.setDonation(donation);
-			userDonationService.save(userDonation);
-			
-			
-			redirectAttributes.addFlashAttribute("successDonate", true);
 	
 			
 			/*
@@ -434,13 +486,22 @@ public class HomeController {
 	}
 
 	// logout
+	/*
+	 *	What logout need to do? 
+	 * - request param:
+	 * 		+ HttpServletRequest
+	 * - handle:
+	 * 		+ remove all login user from session
+	 * 	
+	 * - return view 
+	 * 		
+	 * 
+	 */ 
 	@GetMapping(value = { "processLogout", "/logout" })
-	public String processLogout(HttpServletRequest request, @ModelAttribute("user") User loginUser) {
+	public String processLogout(HttpServletRequest request) {
 
 		HttpSession session = request.getSession();
 
-		/* session.removeAttribute("currentUserId"); */
-		
 		LoginUserInfomation.removeLoginUserInfoFromSesstion(session);
 
 		return ViewConstants.V_REDIRECT_HOME;

@@ -28,6 +28,7 @@ import me.haitmq.spring.mvc.crud.entity.Donation;
 import me.haitmq.spring.mvc.crud.entity.Role;
 import me.haitmq.spring.mvc.crud.entity.User;
 import me.haitmq.spring.mvc.crud.entity.UserDonation;
+import me.haitmq.spring.mvc.crud.entity.role.UserRole;
 import me.haitmq.spring.mvc.crud.service.UserDonationService;
 import me.haitmq.spring.mvc.crud.service.UserService;
 import me.haitmq.spring.mvc.crud.utils.LoginUserInfomation;
@@ -47,12 +48,13 @@ public class UserController {
 
 	
 	////////////////////////
+	/*
 	@GetMapping("/list")
 	public String userList(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "5") int size,
 			@RequestParam(name = "searchingValue", defaultValue = "", required = false) String searchingValue,
 			Model theModel) {
 
-		Page<User> users = userService.findByEmailOrPhoneNumberOrStatus(searchingValue, page, size);
+		Page<User> users = userService.findByEmailOrUserNameOrPhoneNumber(page, size, searchingValue);
 		theModel.addAttribute("searchingValue", searchingValue);
 
 		theModel.addAttribute("users", users);
@@ -81,6 +83,8 @@ public class UserController {
 
 		return "admin/user-list";
 	}
+	
+	*/
 
 	@GetMapping("/registerForm")
 	public String showFormForAdd(Model theModel) {
@@ -129,7 +133,7 @@ public class UserController {
 
 	@GetMapping("/delete")
 	public String delete(@RequestParam("userId") int theId) {
-		userService.deleteUser(theId);
+		userService.delete(theId);
 
 		return "redirect:/user/list";
 	}
@@ -281,7 +285,7 @@ public class UserController {
 	@PostMapping("/processUpdateUser")
 	public String processUpdate(HttpServletRequest request, @ModelAttribute("user") User theUser) {
 
-		userService.saveOrUpdate(theUser, false);
+		userService.update(theUser, UserRole.USER);
 
 		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
 	}

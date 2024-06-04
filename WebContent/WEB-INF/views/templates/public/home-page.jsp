@@ -89,14 +89,7 @@
 
 
 <!-- customer js -->
-<%-- 
-<script
-	src="<c:url value='https://code.jquery.com/jquery-3.6.4.min.js'/>"> </script>
-<script src="<c:url value='/static/common/assets/js/form.js' />"></script>
 
-<script src="<c:url value='/static/common/assets/js/data-list.js' />"></script>
-
- --%>
 <script src="<c:url value='/static/common/assets/js/script.js' />"></script>
 <script src="<c:url value='/static/common/assets/js/layout-script.js' />"></script>
 </head>
@@ -147,6 +140,7 @@
 									name="searching-input" id="searchingValue"
 									class="searching-input rounded p-2 form-control"
 									placeholder="by Code or by status ..."
+									title ="Tìm theo tên, mã hoặc trạng thái"
 									value="${searchingValue}" />
 							</div>
 
@@ -190,13 +184,13 @@
 										<th scope="row" class="d-ns-cell">
 											<p class="d-name">${tempDonation.name}</p>
 											<p class="d-status">
-											
+												${JSPDataFormat.donationStatusFormat(tempDonation.status)}
 											</p>
 									
 										</th>
 										<td><p>${tempDonation.code}</p></td>
-										<td><p>${tempDonation.startDate}</p></td>
-										<td><p>${tempDonation.endDate}</p></td>
+										<td><p>${JSPDataFormat.dateFormat(tempDonation.startDate)}</p></td>
+										<td><p>${JSPDataFormat.dateFormat(tempDonation.endDate)}</p></td>
 										<td><p>${tempDonation.phoneNumber}</p></td>
 										
 		
@@ -233,7 +227,15 @@
 						</table>
 						<div>
 							<div>
-								<p>showing ${donations.number*donations.size +1} to ${donations.number*donations.size +donations.numberOfElements} of ${donations.totalElements}</p>
+								<c:if test="${donations.totalElements != 0}">
+									<p>Showing ${donations.number*donations.size +1} to ${donations.number*donations.size +donations.numberOfElements} of ${donations.totalElements} entries</p>
+								</c:if>
+								
+								<c:if test="${donations.totalElements == 0}">
+									<p>There are no entries to show</p>
+								</c:if>
+								
+								
 							</div>
 							<div>
 								<div>
@@ -258,7 +260,11 @@
 
 
 							</div>
-							<div id="pagination-container"></div>
+								<c:if test="${donations.totalElements != 0}">
+									<div id="pagination-container"></div>
+								</c:if>
+							
+							
 							</div>
 							
 
@@ -302,10 +308,11 @@
 						</div>
 					</div>
 					<div class="container form-main">
-						<form:form modelAttribute="userDonation" action="${process}"
+						<form:form modelAttribute="userDonation" action="${processDonating}"
 							method="POST">
-							<input type="hidden" name="donationId" value="${donation.id}" />
 					
+							<input type="hidden" name="donationId" value="${donation.id}" />
+
 							<div class="form-group form-group-custom">
 								<label class="field-label" for="fullName">Họ và Tên:</label>
 								<form:input type="text" class="form-control" id="fullName"

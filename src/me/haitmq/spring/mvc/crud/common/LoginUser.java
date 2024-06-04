@@ -2,7 +2,7 @@ package me.haitmq.spring.mvc.crud.common;
 
 import javax.validation.constraints.NotBlank;
 
-import me.haitmq.spring.mvc.crud.validation.IsExistedUserNameOrEmail;
+
 import me.haitmq.spring.mvc.crud.validation.ValidUser;
 
 @ValidUser

@@ -109,7 +109,7 @@ public class TestController {
 			@RequestParam(name = "searchingValue", defaultValue = "", required = false) String searchingValue,
 			Model theModel) {
 
-		Page<User> users = userService.findByEmailOrPhoneNumberOrStatus(searchingValue, page, size);
+		Page<User> users = userService.findByEmailOrUserNameOrPhoneNumber(page, size, searchingValue);
 		theModel.addAttribute("searchingValue", searchingValue);
 
 		theModel.addAttribute("users", users);
