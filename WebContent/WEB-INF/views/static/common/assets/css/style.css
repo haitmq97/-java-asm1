@@ -137,7 +137,7 @@ li.nav-item button:focus {
 .footer {
   background-color: var(--pry-color-2-dark-background);
   color: #d0d3d3;
-  padding: 50px 70px 70px;
+  padding-top: 50px;
   margin-top: 100px;
 }
 
@@ -163,7 +163,7 @@ li.nav-item button:focus {
   padding: 20px;
 }
 
-.footer-item > h4 {
+.footer-item h4, .footer-item li {
   text-align: center;
   margin-bottom: 15px;
 }
@@ -175,6 +175,9 @@ li.nav-item button:focus {
 .conecction-icon-list {
   color: var(--pry-leaf) !important;
   font-size: 25px;
+  display: flex;
+  justify-content: center;
+  gap: 5px;
 }
 
 .conecction-icon-list > li {
@@ -196,12 +199,31 @@ li.nav-item button:focus {
   justify-content: center;
 }
 
-/* @media (min-width: 850px) {
+@media (min-width: 576px) {
     .container {
-        max-width: 820px;
+        max-width: 570px;
     }
 }
- */
+
+@media (min-width: 768px) {
+    .container {
+        max-width: 760px;
+    }
+}
+
+
+ @media (min-width: 960px) {
+    .container {
+        max-width: 960px;
+    }
+}
+
+ @media (min-width: 1200px) {
+    .container {
+        max-width: 1200px;
+    }
+}
+
 
 
 .register-form {
@@ -236,6 +258,7 @@ button {
 }
 
 .entries-select {
+	width: 50px;
   padding: 0.375rem 0.75rem;
   font-size: 1rem;
   font-weight: 400;
@@ -296,25 +319,25 @@ button {
 	flex-wrap: wrap;
 	margin: 0;
 	padding: 0;
-	justify-content: space-between;
+	justify-content: start;
 
 }
 
 
 
 .row-custom > button {
-	flex: 0 0 40%;
+	flex: 1;
 	margin: 5px;
 }
 
-@media (max-width: 1000px) {
-  .row-custom > button {
-	flex: 1;
+
+
+
+@media (min-width: 1200px) {
+    .row-custom > button {
+	flex: 0 0 45%;
 	}
 }
-
-
-
 
 
 .d-name {
@@ -339,8 +362,20 @@ button {
   vertical-align: middle;
 }
 
-.table-content th:not(:first-child),
-td:not(:last-child) {
+
+.text-align-center {
+	text-align: center;
+}
+
+.text-align-left {
+	text-align: left;
+}
+
+.text-align-right {
+	text-align: right;
+}
+
+.table-content th,td {
   text-align: center;
 }
 
@@ -354,6 +389,24 @@ td:not(:last-child) {
   display: flex;
   flex-wrap: wrap;
 
+}
+
+.custom-display-none {
+	display:none;
+}
+
+.custom-display-block {
+	display:block;
+}
+
+
+@media ( min-width : 768px) {
+	.custom-display-none {
+		display: table-cell;
+	}
+	.custom-display-block {
+		display: none;
+	}
 }
 
 .action-c > button {
@@ -519,7 +572,7 @@ td:not(:last-child) {
 
 
 .user-l-btn  div{
-  display: inline-block;
+  display: flex;
 }
 
 
@@ -547,6 +600,7 @@ td:not(:last-child) {
 #pagination-container ul{
 	display: flex;
 	justify-content: end;
+	flex-wrap: wrap;
 }
 
 #pagination-container li{
@@ -618,9 +672,8 @@ td:not(:last-child) {
   position: relative;
   transition: all 0.5s ease;
   min-width: 250px;
-
   max-height: calc(100vh - 40px); 
-      overflow-y: auto;
+  overflow-y: auto;
 }
 
 
@@ -718,6 +771,10 @@ td:not(:last-child) {
   }
 }
 
+
+.login-form {
+	
+}
 
 
 
@@ -839,8 +896,15 @@ td:not(:last-child) {
   border-radius: 5px;
   right: 0;
   top: 0;
-  bottom: 0;
 }
+
+.toggle-pass-icon {
+	display: block;
+	position: absolute;
+	
+	right: 0;
+	top: 0;
+	transform: translate(-50%, 70%);}
 
 
 .toggle-pass-btn i {
@@ -1007,6 +1071,7 @@ td:not(:last-child) {
 	scroll-behavior: smooth;
 }
 
+
 .error {
 	color: red;
 	font-size: 0.8rem;
@@ -1015,4 +1080,16 @@ td:not(:last-child) {
 .error-msg {
 	position: absolute;
 	right: 0;
+}
+
+
+ .scrollable-col  {
+	
+	overflow-x: auto;
+	}
+	
+.scrollable-row {
+	    display: block;
+    width: 100%;
+    overflow-x: auto;
 }

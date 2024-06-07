@@ -26,7 +26,7 @@ public class ValidStartDateContraintValidator implements ConstraintValidator<Val
 			return true;
 		}
 		
-		if(Time.isBeforeDate(Time.getCurrentDateTimeRaw(), startDate)) {
+		if(Time.isBeforeDate(startDate, Time.getCurrentDateTimeRaw())) {
 			return false;
 		}
 		return true;

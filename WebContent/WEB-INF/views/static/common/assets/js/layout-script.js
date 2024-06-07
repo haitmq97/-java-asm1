@@ -27,22 +27,37 @@ function openModal(popupId) {
 	document.querySelector(popupId).style.display = "block";
 }
 
-function closePopup() {
+function closeModal(popupId) {
 	document.getElementById("overlay").style.display = "none";
-	var formContainers = document.getElementsByClassName("form-container");
-	for (var i = 0; i < formContainers.length; i++) {
-		formContainers[i].style.display = "none";
-	}
-}
-
-
-function closeAllPopup() {
-	document.getElementById("overlay").style.display = "none";
+	document.querySelector(popupId).style.display = "none";
 	var formContainers = document.getElementsByClassName("form-container");
 	for (var i = 0; i < formContainers.length; i++) {
 		formContainers[i].style.display = "none";
 	}
 	
+	$.ajax({
+			type: "GET",
+			url: window.location.href,
+			data: {
+
+			},
+			success: function(data) {
+				$('#donate').html(
+					$(data).find('#donate').html());
+				$('#login').html(
+					$(data).find('#login').html());
+			}
+		});
+}
+
+
+function closeAllModal() {
+	document.getElementById("overlay").style.display = "none";
+	var formContainers = document.getElementsByClassName("form-container");
+	for (var i = 0; i < formContainers.length; i++) {
+		formContainers[i].style.display = "none";
+	}
+	/*
 	$.ajax({
 		url: "/PRJ321x_Project1_haitmqfx22585/v1/clearErrors",  // URL của endpoint để xóa lỗi
 		type: 'POST',
@@ -53,6 +68,7 @@ function closeAllPopup() {
 			location.reload();
 		}
 	});
+	*/
 
 
 }
@@ -64,11 +80,13 @@ function togglePassword() {
 
 	if (passwordInput.type === "password") {
 		passwordInput.type = "text";
-		eyeIcon.className = "fa-regular fa-eye-slash";
+		eyeIcon.classList.add("fa-eye-slash");
+		eyeIcon.classList.remove("fa-eye");
 		document.querySelector(".toggle-pass-btn").title = "Ẩn mật khẩu";
 	} else {
 		passwordInput.type = "password";
-		eyeIcon.className = "fa-regular fa-eye";
+		eyeIcon.classList.add("fa-eye");
+		eyeIcon.classList.remove("fa-eye-slash");
 		document.querySelector(".toggle-pass-btn").title = "Hiện mật khẩu";
 	}
 }
@@ -109,8 +127,29 @@ function ErrorFormShowing() {
 	if ($("#errorProcess").val() === 'true') {
 
 		openModal('#donation-addOrUpdate');
+		
+		openModal('#user-addOrUpdate');
 
 	}
+}
+
+function changeColorText() {
+	document.querySelectorAll(".color-text").forEach(function(p) {
+		switch (p.textContent.trim().toLowerCase()) {
+			case "mới tạo":
+				p.classList.add("text-primary");
+				break;
+			case 'đang quyên góp':
+				p.classList.add("text-success");
+				break;
+			case 'đã kết thúc':
+				p.classList.add("text-danger");
+				break;
+			case 'đã đóng':
+				p.classList.add("text-danger");
+				break;
+		}
+	});
 }
 
 
@@ -124,6 +163,8 @@ $(document).ready(function() {
 	openSuccessDonateMgs();
 	
 	ErrorFormShowing();
+	
+	changeColorText();
 
 });
 

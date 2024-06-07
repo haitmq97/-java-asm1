@@ -196,6 +196,7 @@ public class InitDonation {
 		donation.setEndDate(this.getEndDate());
 		donation.setOrganization(this.getOrganization());
 		donation.setPhoneNumber(this.getPhoneNumber());
+		donation.setStatus(this.getStatus());
 		
 		return donation;
 	}
@@ -208,6 +209,7 @@ public class InitDonation {
 		this.setEndDate(donation.getEndDate());
 		this.setOrganization(donation.getOrganization());
 		this.setPhoneNumber(donation.getPhoneNumber());
+		this.setStatus(donation.getStatus());
 	}
 	
 

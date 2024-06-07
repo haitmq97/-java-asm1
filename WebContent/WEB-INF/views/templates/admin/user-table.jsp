@@ -117,7 +117,7 @@
 			</div>
 
 
-			<div class="container">
+			<div class="">
 				<div class="main-content">
 					<div class="h-content">
 						<div class="add-div">
@@ -347,6 +347,7 @@
 			<div id="overlay" onclick="closeAllPopup()"></div>
 			<div class="popup col-12 col-sm-8 col-md-4">
 		
+		<input type="hidden" id="errorProcess" value="${errorProcess}"/>
 		
 		<% Boolean isLogined = ((Boolean)request.getAttribute("isLogined")) != null ? (Boolean)request.getAttribute("isLogined") : false; %>
 			<% Boolean isAdmin = ((Boolean)request.getAttribute("isAdmin")) != null ? (Boolean)request.getAttribute("isAdmin") : false; %>

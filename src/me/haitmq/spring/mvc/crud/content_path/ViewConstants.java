@@ -5,7 +5,7 @@ public final class ViewConstants {
 	
 	//public
     public static final String V_HOME = "public/home-page";
-    public static final String V_PUBLIC_DONATION_DETAILS = "public/donation-detail";
+    public static final String V_PUBLIC_DONATION_DETAILS = "public/donationDetail";
     
     public static final String V_LOGIN = "common/login-form";
     public static final String V_REGISTER = "common/register-form";

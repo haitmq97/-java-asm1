@@ -227,7 +227,7 @@ function addButton(pageNumber, currentPage, size, searchingValue, parentElement,
 	const listItem = document.createElement('li');
 	const button = document.createElement('button');
 	button.className = 'page-btn';
-	console.log(pageNumber);
+	console.log("page number: "+pageNumber);
 	button.textContent = buttonContent;
 	button.addEventListener('click', () => onPageButtonClick(pageNumber, size, searchingValue, tableContent));
 
@@ -310,7 +310,43 @@ function onPageButtonClick(pageNumber, size, searchingValue, tableContent) {
 }
 */
 
+function onPageButtonClick(pageNumber, size, searchingValue, tableContent) {
+    console.log('Navigating to page ', pageNumber);
+    console.log('Navigating to page (type of) ', typeof pageNumber);
+    console.log('Navigating to link ', window.location.href);
+	 var currentUrl = new URL(window.location.href);
+    
+    // Cập nhật hoặc thêm các tham số query mới
+    currentUrl.searchParams.set('size', size);
+    currentUrl.searchParams.set('page', pageNumber);
+    currentUrl.searchParams.set('searchingValue', searchingValue);
 
+    // Chuyển URL mới với các tham số đã cập nhật
+    var newUrl = currentUrl.toString();
+    $.ajax({
+        type: "GET",
+        url: newUrl,
+        success: function(data) {
+            $(tableContent).html($(data).find(tableContent).html());
+            
+            // Cập nhật lại các nút chuyển trang sau khi thay đổi nội dung bảng
+            var currentPage = parseInt(document.getElementById("currentPage1").value, 10);
+            var totalPages = parseInt(document.getElementById("totalPages1").value, 10);
+            generatePaginationButtons(currentPage, totalPages, $('#pageSize').val(), $('#searchingValue').val(), tableContent);
+            
+            // Đảm bảo rằng div "pagination-container" không bị mất đi sau khi thay đổi nội dung
+            var paginationContainer = document.getElementById('pagination-container');
+            if (!paginationContainer) {
+                paginationContainer = document.createElement('div');
+                paginationContainer.id = 'pagination-container';
+                document.body.appendChild(paginationContainer);
+            }
+        }
+    });
+}
+
+
+/*
 
 function onPageButtonClick(pageNumber, size, searchingValue, tableContent) {
     console.log('Navigating to page ', pageNumber);
@@ -339,7 +375,7 @@ function onPageButtonClick(pageNumber, size, searchingValue, tableContent) {
         }
     });
 }
-
+*/
 
 
 // update table cho searching value và số entries mỗi trang
@@ -388,7 +424,7 @@ function updateShowingTable(size, searchingValue, tableContent) {
 }
 */
 
-function updateShowingTable(size, searchingValue, tableContent) {
+/*function updateShowingTable(size, searchingValue, tableContent) {
     // Kiểm tra xem searchingValue có thay đổi so với lần trước không
     if ((searchingValue !== previousSearchValue)|| (size !== previousSize)) {
 		 var newUrl = window.location.pathname + "?size=" + size + "&page=1" + "&searchingValue=" + encodeURIComponent(searchingValue);
@@ -418,8 +454,45 @@ function updateShowingTable(size, searchingValue, tableContent) {
         previousSearchValue = searchingValue;
         previousSize = size;
     }
-}
+}*/
+function updateShowingTable(size, searchingValue, tableContent) {
+	// Kiểm tra xem searchingValue có thay đổi so với lần trước không
+	if ((searchingValue !== previousSearchValue) || (size !== previousSize)) {
+		var currentUrl = new URL(window.location.href);
 
+		// Cập nhật hoặc thêm các tham số query mới
+		currentUrl.searchParams.set('size', size);
+		currentUrl.searchParams.set('page', 1);
+		currentUrl.searchParams.set('searchingValue', searchingValue);
+
+		// Chuyển URL mới với các tham số đã cập nhật
+		var newUrl = currentUrl.toString();
+		$.ajax({
+			type: "GET",
+			url: newUrl,
+
+            success: function(data) {
+                $(tableContent).html($(data).find(tableContent).html());
+                
+                var currentPage = parseInt(document.getElementById("currentPage1").value, 10);
+            var totalPages = parseInt(document.getElementById("totalPages1").value, 10);
+            generatePaginationButtons(currentPage, totalPages, $('#pageSize').val(), $('#searchingValue').val(), tableContent);
+            
+            // Đảm bảo rằng div "pagination-container" không bị mất đi sau khi thay đổi nội dung
+            var paginationContainer = document.getElementById('pagination-container');
+            if (!paginationContainer) {
+                paginationContainer = document.createElement('div');
+                paginationContainer.id = 'pagination-container';
+                document.body.appendChild(paginationContainer);
+            }
+            
+            }
+        });
+        // Cập nhật giá trị của previousSearchValue
+        previousSearchValue = searchingValue;
+        previousSize = size;
+    }
+}
 
 /*
 // cập nhật lại bảng khi user thay đổi size(entries) và searchingValue
@@ -457,6 +530,7 @@ $(document).ready(function() {
 
 
 	});
+	
 
 /*
 	var currentPage = parseInt(document.getElementById("currentPage1").value, 10);
@@ -478,6 +552,8 @@ $(document).ready(function() {
 */	
 	 var currentPageElement = document.getElementById("currentPage1");
     var totalPagesElement = document.getElementById("totalPages1");
+    console.log("current page123: " + parseInt(currentPageElement.value, 10));
+    console.log("total page123: " + parseInt(totalPagesElement.value, 10));
 
     if (currentPageElement && totalPagesElement) {
         var currentPage = parseInt(currentPageElement.value, 10);
@@ -492,7 +568,6 @@ $(document).ready(function() {
             }
         });
     }
-
 
 
 

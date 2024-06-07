@@ -8,7 +8,7 @@ import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.cglib.core.TinyBitSet;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -19,7 +19,7 @@ import org.springframework.validation.annotation.Validated;
 import me.haitmq.spring.mvc.crud.dao.DonationDAO;
 import me.haitmq.spring.mvc.crud.dao.UserDonationDAO;
 import me.haitmq.spring.mvc.crud.entity.Donation;
-
+import me.haitmq.spring.mvc.crud.entity.UserDonation;
 import me.haitmq.spring.mvc.crud.utils.*;
 import me.haitmq.spring.mvc.crud.entity.status.DonationStatus;
 
@@ -139,6 +139,11 @@ public class DonationServiceImpl implements DonationService {
 
 				Donation donation = donationDAO.getDontaion(donationId);
 				donation.setStatus(newStatus);
+				if(newStatus == DonationStatus.DONATING) {
+					donation.setStartDate(Time.getCurrentDateTimeRaw());
+				} else if(newStatus == DonationStatus.END) {
+					donation.setEndDate(Time.getPreviousDayRaw(Time.getCurrentDateTimeRaw()));
+				}
 				donationDAO.saveOrUpdate(donation);
 			}
 
@@ -164,11 +169,11 @@ public class DonationServiceImpl implements DonationService {
 		try {
 
 			Donation donation = donationDAO.getDontaion(donationId);
-
 			if (isAbleToShowOff(donation)) {
-				donation.setShowing(donation.getShowing() == true ? false : true);
+				donation.setShowing(false);
 				donationDAO.saveOrUpdate(donation);
 			}
+			
 
 		} catch (Exception e) {
 			// log.error("DonationService ERROR - changeDonationShowingStatus(): ", e);
@@ -181,7 +186,7 @@ public class DonationServiceImpl implements DonationService {
 	@Override
 	public boolean isAbleToAutoDonatingStatus(Donation donation) {
 
-		boolean condition1 = !Time.isBeforeDate(donation.getStartDate(), Time.getCurrentDateTimeRaw());
+		boolean condition1 = !Time.isBeforeDate( Time.getCurrentDateTimeRaw(), donation.getStartDate());
 		boolean condition2 = donation.getStatus() == DonationStatus.NEW;
 
 		if (condition1 && condition2) {
@@ -193,9 +198,11 @@ public class DonationServiceImpl implements DonationService {
 
 	@Override
 	public boolean isAbleToAutoEndStatus(Donation donation) {
-		boolean condition1 = Time.isAfterDate(donation.getEndDate(), Time.getCurrentDateTimeRaw());
+		boolean condition1 = Time.isAfterDate(Time.getCurrentDateTimeRaw(), donation.getEndDate());
 		boolean condition2 = donation.getStatus() == DonationStatus.DONATING;
+		System.out.println(".............."+ donation.getId()+" is current after endate: " + condition1);
 		
+		System.out.println(".............."+ donation.getId()+" status is donating: " + condition2);
 		if (condition1 && condition2) {
 			return true;
 		}
@@ -206,6 +213,7 @@ public class DonationServiceImpl implements DonationService {
 	@Override
 	@Transactional
 	public void autoUpdateStatus(Donation donation) {
+		System.out.println("................autouopdateStatus: "+ donation.getStatus() );
 		if (isAbleToAutoDonatingStatus(donation)) {
 			donation.setStatus(DonationStatus.DONATING);
 
@@ -306,7 +314,24 @@ public class DonationServiceImpl implements DonationService {
 		}
 
 	}
-
+	
+	@Override
+	@Transactional
+	public void setTotalConfirmedDonate(int donationId) {
+		Donation donation = donationDAO.getDontaion(donationId);
+		List<UserDonation> userDonations= userDonationDAO.getAllUserDonations()
+				.stream()
+				.filter(userDonation -> 
+					(userDonation.getDonation().getCode().equals(donation.getCode())&&
+							(userDonation.getShowing()==true))).toList();
+		
+		if(!userDonations.isEmpty()) {
+			long total = userDonations.stream().count();
+			
+			donation.setDonationQuantity((int) total);
+		}
+		
+	}
 	
 	
 

@@ -1,5 +1,6 @@
 package me.haitmq.spring.mvc.crud.dao;
 
+import java.util.Comparator;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import me.haitmq.spring.mvc.crud.entity.Donation;
 import me.haitmq.spring.mvc.crud.entity.User;
 import me.haitmq.spring.mvc.crud.entity.UserDonation;
 import me.haitmq.spring.mvc.crud.entity.status.UserDonationStatus;
@@ -27,8 +29,10 @@ public class UserDonationDAOImpl implements UserDonationDAO {
 	
 	@Autowired
 	private SessionFactory sessionFactory;
-	
-	
+
+	public Session getSession() {
+		return sessionFactory.getCurrentSession();
+	}
 	
 	
 
@@ -301,6 +305,80 @@ public class UserDonationDAOImpl implements UserDonationDAO {
 		Query<Long> theCountQuery = session.createQuery("select count(ud) " + theQueryString, Long.class);
 		theCountQuery.setParameter("searchingValue", searchingValue);
 		return new PageImpl<>(theQuery.getResultList(), pageable, theCountQuery.uniqueResult());
+	}
+	
+	
+	
+	
+	@Override
+	public Page<UserDonation> findByDonationCodeSortByCreatedDate(String donationCode, String searchingValue,
+			Pageable pageable) {
+
+		String theQueryString = "from UserDonation ud where " 
+				+ "ud.showing = 1 and " 
+				+ " ud.donation.code =:donationCode and ("
+				+ " ud.status like concat(:searchingValue, '%') or" 
+				+ " ud.name like concat(:searchingValue, '%') or"
+				+ " ud.user.userName like concat(:searchingValue, '%') or"
+				+ " ud.user.email like concat(:searchingValue, '%'))"
+				+ " order by ud.createdDate desc ,ud.status desc";
+
+		Query<UserDonation> theQuery = getSession().createQuery(theQueryString, UserDonation.class);
+
+		// Đặt giá trị tham số
+		theQuery.setParameter("searchingValue", searchingValue);
+		theQuery.setParameter("donationCode", donationCode);
+		theQuery.setFirstResult((int) pageable.getOffset());
+		theQuery.setMaxResults(pageable.getPageSize());
+
+		Query<Long> countQuery = getSession().createQuery("select count(ud) " + theQueryString, Long.class);
+
+		countQuery.setParameter("searchingValue", searchingValue);
+		countQuery.setParameter("donationCode", donationCode);
+		Long total = countQuery.uniqueResult();
+
+		return new PageImpl<>(theQuery.getResultList(), pageable, total);
+	}
+	
+
+	
+
+	public Page<UserDonation> findByDonationCodeSortByCreatedDate2(String donationCode, String searchingValue,
+			Pageable pageable) {
+
+		String theQueryString = "from UserDonation ud where " 
+				+ "ud.showing = 1 and " 
+				+ " ud.donation.code =:donationCode and ("
+				+ " ud.status like concat(:searchingValue, '%') or" 
+				+ " ud.name like concat(:searchingValue, '%') or"
+				+ " ud.user.userName like concat(:searchingValue, '%') or"
+				+ " ud.user.email like concat(:searchingValue, '%'))";
+
+		Query<UserDonation> theQuery = getSession().createQuery(theQueryString, UserDonation.class);
+
+		// Đặt giá trị tham số
+		theQuery.setParameter("searchingValue", searchingValue);
+		theQuery.setParameter("donationCode", donationCode);
+		theQuery.setFirstResult((int) pageable.getOffset());
+		theQuery.setMaxResults(pageable.getPageSize());
+
+		Query<Long> countQuery = getSession().createQuery("select count(ud) " + theQueryString, Long.class);
+
+		countQuery.setParameter("searchingValue", searchingValue);
+		countQuery.setParameter("donationCode", donationCode);
+		Long total = countQuery.uniqueResult();
+
+		return new PageImpl<>(theQuery.getResultList()
+				.stream()
+				.sorted((userDonation1,userDonation2) 
+						-> userDonation1.getCreatedDate().compareTo(userDonation1.getCreatedDate())).toList(), pageable, total);
+	}
+	
+
+	
+	public List<UserDonation> getUserDonationListByDonationCode(String donationCode) {
+		
+		return null;
 	}
 	
 }

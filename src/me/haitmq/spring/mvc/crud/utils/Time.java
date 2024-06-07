@@ -54,13 +54,26 @@ public class Time {
         return nextDay.format(dateTimeFormatterRaw);
     }
     
+    public static String getPreviousDayRaw(String dateString) {
+
+        LocalDate date = LocalDate.parse(dateString, dateTimeFormatterRaw);
+       
+        LocalDate previousDay = date.minusDays(1);
     
-    public static boolean isAfterDate(String benMarkDate, String checkDateString) {
+        return previousDay.format(dateTimeFormatterRaw);
+    }
+    
+    
+    public static boolean isAfterDate(String benMarkDateString, String checkDateString) {
     	
-    	if((benMarkDate.length() != 0) && (checkDateString.length() != 0)) {
-    		LocalDate originalDate = LocalDate.parse(benMarkDate, dateTimeFormatterRaw);
-        	LocalDate checkDate = LocalDate.parse(benMarkDate, dateTimeFormatterRaw);
-        	if(checkDate.isAfter(originalDate)) {
+    	if((benMarkDateString.length() != 0) && (checkDateString.length() != 0)) {
+    		System.out.println("check");
+    		LocalDate benMarkDate = LocalDate.parse(benMarkDateString, dateTimeFormatterRaw);
+    		System.out.println("In isAfterDate method ......original Date:" + benMarkDate);
+    		
+        	LocalDate checkDate = LocalDate.parse(checkDateString, dateTimeFormatterRaw);
+        	System.out.println("In isAfterDate method ......check Date:" + checkDate);
+        	if(benMarkDate.isAfter(checkDate)) {
         		return true;
         	}
     	}
@@ -69,12 +82,15 @@ public class Time {
     	
     }
     
-    public static boolean isBeforeDate(String benMarkDate, String checkDateString) {
-    	if((benMarkDate.length() != 0) && (checkDateString.length() != 0)) {
-    		LocalDate originalDate = LocalDate.parse(benMarkDate, dateTimeFormatterRaw);
+    public static boolean isBeforeDate(String benMarkDateString, String checkDateString) {
+    	if((benMarkDateString.length() != 0) && (checkDateString.length() != 0)) {
+    		LocalDate benMarkDate = LocalDate.parse(benMarkDateString, dateTimeFormatterRaw);
         	LocalDate checkDate = LocalDate.parse(checkDateString, dateTimeFormatterRaw);
         	
-        	if(checkDate.isBefore(originalDate)) {
+        	System.out.println("In isBefore method ......original Date:" + benMarkDate);
+        	System.out.println("In isBefore method ......check Date:" + checkDate);
+        	
+        	if(benMarkDate.isBefore(checkDate)) {
         		return true;
         	}
     	}

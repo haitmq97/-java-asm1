@@ -33,7 +33,7 @@
 	href="<c:url value='/static/user/assets/css/owl.carousel.min.css' />">
 <link rel="stylesheet"
 	href="<c:url value='/static/user/assets/css/animate.min.css' />">
-<%-- 
+
 
 <script src="<c:url value='/static/user/assets/js/jquery.min.js' />"></script>
 <script
@@ -75,7 +75,7 @@
 	href="<c:url value='/static/common/assets/css/donation-table-home-style.css'/>" />
 <link rel="stylesheet"
 	href="<c:url value='/static/common/assets/css/footer-style.css' />">
-	 --%>
+
 
 
 <script src="<c:url value='/static/common/assets/js/form.js' />"></script>
@@ -108,46 +108,9 @@
 	</jsp:include>
 
 
-<div id="overlayer"></div>
-	<!-- 
-	<div class="loader">
-		<div class="spinner-border text-primary" role="status">
-			<span class="sr-only">Loading...</span>
-		</div>
-	</div>
-	 -->
-	<div th:if="${msg}" class="toast" data-delay="1000"
-		style="position: fixed; top: 100PX; left: 40PX; z-index: 2000; width: 300px">
 
-		<script>
-		
-		/* 
-			swal({
-			title: 'Donate Successfully!',
-			//text: 'Redirecting...', 
-			icon: 'success',
-			timer: 3000,
-			buttons: true,
-			type: 'success'
-			})
-			
-			 */
-			
-		</script>
-	</div>
 
 	<div class="site-wrap">
-
-		<!-- <div class="site-mobile-menu site-navbar-target">
-			<div class="site-mobile-menu-header">
-				<div class="site-mobile-menu-close mt-3">
-					<span class="icon-close2 js-menu-toggle"></span>
-				</div>
-			</div>
-			<div class="site-mobile-menu-body"></div>
-		</div> -->
-		<!-- .site-mobile-menu -->
-
 
 
 
@@ -176,12 +139,12 @@
 								<span class="icon-align-left mr-3"></span>Nội dung của đợt quyên
 								góp
 							</h3>
-							<span th:utext="${donation.description}"></span>
+						<%-- 	<span th:utext="${donation.description}"></span> --%>
 						</div>
 
 						<div class="pt-5">
 							<h4 class="mb-5">Danh sách quyên góp</h4>
-							<!--            <h3 class="mb-5" th:text="${userDonationList.size()}+${'  donation'}"> </h3>-->
+						
 
 
 							<ul class="user-list">
@@ -230,7 +193,7 @@
 						</div>
 					</div>
 					<div class="col-lg-6">
-						<div class="bg-light p-3 border rounded mb-4">
+	 <div class="bg-light p-3 border rounded mb-4">
 							<h3 class="text-primary  mt-3 h5 pl-3 mb-3 ">Thông tin</h3>
 							<ul class="list-unstyled pl-3 mb-0">
 								<li class="mb-2"><strong class="text-black">Mã đợt
@@ -251,7 +214,7 @@
 										thái:</strong> ${JSPDataFormat.donationStatusFormat(donation.status)}</li>
 
 							</ul>
-						</div>
+						</div> 
 						
 					
 
@@ -266,10 +229,6 @@
 					</div>
 				</div>
 			</div>
-			<!-- Button trigger modal -->
-
-
-			<!-- Modal -->
 
 		</section>
 
@@ -326,41 +285,46 @@
 	</div>
 
 
-
 <div class="overlay-container">
 		<div class="row">
-			<div id="overlay" onclick="closeAllPopup()"></div>
+			<div id="overlay" onclick="closeAllModal()"></div>
 			<div class="popup col-12 col-sm-8 col-md-4">
-		
-		
-			<% boolean isLogined = (Boolean)request.getAttribute("isLogined"); %>
-			
-			
-		    <% if (isLogined) { %>
-				<div class="form-container donate-form " id="donate">
+
+
+				<%
+				Boolean isLogined = ((Boolean) request.getAttribute("isLogined")) != null ? (Boolean) request.getAttribute("isLogined")
+						: false;
+				%>
+				<%
+				Boolean isActive = ((Boolean) request.getAttribute("isActive")) != null ? (Boolean) request.getAttribute("isActive")
+						: false;
+				%>
+
+				<%
+				if (isLogined) {
+				%>
+				<%
+				if (isActive) {
+				%>
+				<jsp:include page="../common/form-modal/donate-form.jsp" />
+
+				<%-- <div class="form-container donate-form " id="donate" >
 					<div class="container form-head">
 						<div class="form-title">
 							<div class="d-flex justify-content-between">
 								<p>Quyên góp:</p>
-								<%-- 
-                    <p>${donationCode}</p>
-                     --%>
-
+					
 								<p>${donation.code}</p>
 							</div>
-							<%-- 
-                <h4 class="d-inline-block mx-auto">${donationName}</h4>
- --%>
-							<h4 class="d-inline-block mx-auto">${donation.name}</h4>
+											<h4 class="d-inline-block mx-auto">${donation.name}</h4>
 						</div>
 					</div>
 					<div class="container form-main">
-						<form:form modelAttribute="userDonation" action="${process}"
+						<form:form modelAttribute="userDonation" action="${processDonating}"
 							method="POST">
+					
 							<input type="hidden" name="donationId" value="${donation.id}" />
-							<%-- 
-                <input type="hidden" name="donationId" value="${donationId}" />
- --%>
+
 							<div class="form-group form-group-custom">
 								<label class="field-label" for="fullName">Họ và Tên:</label>
 								<form:input type="text" class="form-control" id="fullName"
@@ -379,143 +343,48 @@
 									rows="3"></form:textarea>
 							</div>
 
-							<!-- 
-                <div class="f-field">
-
-                    <div class="label-d">
-                        <label class="field-label"> <span class="label-text">Họ
-                                tên:</span>
-                        </label>
-                    </div>
-                    <div class="input-d">
-                        <div class="field-input">
-                            <input type="text" class="input-p form-control"
-                                path="name" />
-                        </div>
-                        <div class=""></div>
-                    </div>
-                </div>
-
-                <div class="f-field">
-                    <div class="label-d">
-                        <label class="field-label"> <span class="label-text">Số
-                                tiền quyên góp:</span>
-                        </label>
-                    </div>
-                    <div class="input-d">
-                        <div class="field-input">
-                            <input type="number" class="input-p form-control"
-                                path="money" />
-                        </div>
-
-                    </div>
-
-                </div>
-                <div class="f-field">
-                    <div class="label-d">
-                        <label class="field-label"> <span class="label-text">Lời
-                                nhắn:</span>
-                        </label>
-                    </div>
-                    <div class="input-d">
-                        <div class="field-input">
-                            <input type="text" class="input-p form-control"
-                                path="note" /> 
-
-                                <textarea class="input-p form-control"
-                                path="note" rows="3"></textarea>
-                        </div>
-
-                    </div>
-
-                </div> 
-              -->
-
+				
 
 							<div class="submit-p">
 								<button type="button" class="cancel-btn "
-									onclick="closeAllPopup()">Hủy</button>
+									onclick="closeModal('#donate')">Hủy</button>
 								<button type="submit" class="submit-btn">Quyên góp</button>
 							</div>
 						</form:form>
 					</div>
 
-				</div>
+				</div> --%>
+				<%
+				} else {
+				%>
+				<jsp:include page="../common/form-modal/no-permission-modal.jsp" />
 
-
-				<!-- 
-		        <div class="form-container donate-form" id="donate">
-				<div class="form-head">
-					<div class="form-title">
-						<h3>Quyên góp</h3>
-						<p>donation id: ${donationId}</p>
+				<!-- <div class="form-container donate-form " id="donate">
+					<div class="container form-head">
+						<div class="form-title">
+							<p>Tài khoản của bạn hiện bị khóa. Không thể thực hiện chức năng quyên góp</p>
+						</div>
 					</div>
-				</div>
-				<div class="form-main">
-					<form:form modelAttribute="userDonation" action="${process}"
-						method="POST">
-						<input type="hidden" name="donationId" value="${donationId}" />
-						<div class="f-field">
-							<div class="label-d">
-								<label class="field-label"> <span class="label-text">Họ
-										tên:</span>
-								</label>
-							</div>
-							<div class="input-d">
-								<div class="field-input">
-									<form:input type="text" class="input-p form-control"
-										path="name" />
-								</div>
-								<div class=""></div>
-							</div>
-						</div>
+					<div class="container form-main">
+						<div class="container form-main d-flex justify-content-end">
+						<button type="button" class="btn btn-secondary cancel-btn "
+                        onclick="closeModal('#donate')">Đóng</button>
+					</div>
+					</div>
 
-						<div class="f-field">
-							<div class="label-d">
-								<label class="field-label"> <span class="label-text">Số
-										tiền quyên góp:</span>
-								</label>
-							</div>
-							<div class="input-d">
-								<div class="field-input">
-									<form:input type="number" class="input-p form-control"
-										path="money" />
-								</div>
-
-							</div>
-
-						</div>
-						<div class="f-field">
-							<div class="label-d">
-								<label class="field-label"> <span class="label-text">Lời
-										nhắn:</span>
-								</label>
-							</div>
-							<div class="input-d">
-								<div class="field-input">
-									<form:input type="text" class="input-p form-control"
-										path="note" />
-								</div>
-
-							</div>
-
-						</div>
+				</div> -->
+				<%
+				}
+				%>
 
 
-						<div class="submit-p">
-							<button type="button" class="cancel-btn "
-								onclick="closePopup('login')">Hủy</button>
-							<button type="submit" class="submit-btn">Quyên góp</button>
-						</div>
-					</form:form>
-				</div>
 
-			</div>
-		        
-		         -->
-		        
-		    <% } else { %>
-		        <div class="form-container loginWarning-form" id="donate">
+				<%
+				} else {
+				%>
+
+				<jsp:include page="../common/form-modal/login-error-modal.jsp" />
+				<!-- <div class="form-container loginWarning-form" id="donate">
 		        	<div class="container form-head">
 		        		<p>Bạn phải đăng nhập trước</p>
 		        	</div>
@@ -523,17 +392,22 @@
 					
 					<div class="container form-main d-flex justify-content-end">
 						<button type="button" class="btn btn-secondary cancel-btn "
-                        onclick="closeAllPopup()">Hủy</button>
+                        onclick="closeModal('#donate')">Đóng</button>
 					
 					</div>
 					
 					
-				</div>
-		    <% } %>
-		
-		<c:if test="${successDonate}">
-				<input type = "hidden" id="successDonate" value="${successDonate}">
-				<div class="form-container donate-form " id="success-donate">
+				</div> -->
+				<%
+				}
+				%>
+
+
+				<c:if test="${successDonate}">
+					<jsp:include page="../common/form-modal/donate-success-modal.jsp" />
+
+					<%--  <input type = "hidden" id="successDonate" value="${successDonate}">
+				<div class="form-container donate-form" id="success-donate" style="display:block;">
 					<div class="container form-head">
 						<div class="form-title">
 							<p>quyên góp thành công. Vui lòng chờ Quản trị viên xác nhận</p>
@@ -542,24 +416,22 @@
 					<div class="container form-main">
 						<div class="container form-main d-flex justify-content-end">
 						<button type="button" class="btn btn-secondary cancel-btn "
-                        onclick="closeAllPopup()">Đóng</button>
+                        onclick="closeModal('#success-donate')">Đóng</button>
 					</div>
 					</div>
 
-				</div>
-			</c:if>
-				
-		
+				</div> --%>
+				</c:if>
 
-			
+
+
+			</div>
+
 
 		</div>
-		
-		
-		</div>
-	
-		
-		
+
+
+
 	</div>
 
 
@@ -573,8 +445,8 @@
 		integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
 		crossorigin="anonymous"></script>
 	
-	
-	<script src="<c:url value='/static/common/assets/js/form.js' />"></script>
+<%-- 	
+	<script src="<c:url value='/static/common/assets/js/form.js' />"></script> --%>
 	
 	<script src="<c:url value='/static/common/assets/js/script.js' />"></script>
 	

@@ -118,16 +118,21 @@ public class HomeController {
 
 		theModel.addAttribute("donation", donation);
 		
+		
+		// donate handle
 		// add donate obj for donate form
 		theModel.addAttribute("userDonation", new UserDonation());
-		
+
 		theModel.addAttribute("processDonating", "processDonating");
-		
+
+		// check if privious donate is success then add to model to showing message
+		theModel.addAttribute("successDonate", theModel.containsAttribute("successDonate") ? true : false);
+
+				/*
 		// check if there are errors from last login then add to model the logined user with error, if not add new login user
 		theModel.addAttribute("loginUser", theModel.containsAttribute("loginUser")? theModel.getAttribute("loginUser"): new LoginUser());
+		*/
 		
-		// check if privious donate is success then add to model to showing message
-		theModel.addAttribute("successDonate", theModel.containsAttribute("successDonate")? true: false);
 		
 		// for direct update donation status
 		donationService.autoUpdateStatusAll();
@@ -168,26 +173,34 @@ public class HomeController {
 	 */
 	@GetMapping("donation-detail")
 	public String donationDetails(HttpServletRequest request, @RequestParam("id") int theId, Model theModel) {
-
+		
+		HttpSession session = request.getSession();
+		
+		// add to model loginUser information
+		SessionUtils.addLoginUserInfoToModel(session, theModel);
+		
 		// add donation info to the model
 		Donation donation = donationService.getDonation(theId);
 
 		theModel.addAttribute("donation", donation);
 
-		// donate form model attributes
+		// donate handle
+		// add donate obj for donate form
 		theModel.addAttribute("userDonation", new UserDonation());
 
-		theModel.addAttribute("process", "processDonating");
+		theModel.addAttribute("processDonating", "processDonating");
 
-		theModel.addAttribute("donationId", theId);
-
+		// check if privious donate is success then add to model to showing message
+		theModel.addAttribute("successDonate", theModel.containsAttribute("successDonate") ? true : false);
+		/*
+		 * 
+		 * theModel.addAttribute("donationId", theId);
+		 */
 		// check if there are errors from last login then add to model the logined user
 		// with error, if not add new login user
 		theModel.addAttribute("loginUser",
 				theModel.containsAttribute("loginUser") ? theModel.getAttribute("loginUser") : new LoginUser());
 
-		// check if privious donate is success then add to model to showing message
-		theModel.addAttribute("successDonate", theModel.containsAttribute("successDonate") ? true : false);
 		
 		System.out.println("current page...................detail: " + request.getRequestURL().toString());
 		System.out.println("context path..................detail:" + request.getContextPath());
@@ -506,5 +519,6 @@ public class HomeController {
 
 		return ViewConstants.V_REDIRECT_HOME;
 	}
+	
 
 }

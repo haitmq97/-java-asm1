@@ -74,5 +74,6 @@ public interface DonationService {
 	public void delete(int theId);
 	
 	public void saveOrUpdate(Donation donation);
-
+	
+	public void setTotalConfirmedDonate(int donationId);
 }

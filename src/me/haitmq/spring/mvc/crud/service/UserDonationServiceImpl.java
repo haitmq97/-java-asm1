@@ -125,7 +125,11 @@ public class UserDonationServiceImpl implements UserDonationService {
 	@Override
 	@Transactional
 	public List<UserDonation> getUserDonationByDonationId(int theId) {
-		return userDonationDAO.getUserDonationByDonationId(theId);
+		//return userDonationDAO.getUserDonationByDonationId(theId);
+		return userDonationDAO.getAllUserDonations()
+				.stream().filter(userDonation 
+						->(userDonation.getStatus() != UserDonationStatus.CANCELED)
+						&&(userDonation.getDonation().getId() == theId)).toList();
 	}
 
 	@Override
@@ -269,6 +273,7 @@ public class UserDonationServiceImpl implements UserDonationService {
 			} else {
 
 				donationService.addMoneyFromUserDonationToDonation(userDonation.getMoney(), userDonation.getDonation().getId());
+				donationService.getDonation(userDonation.getDonation().getId());
 			}
 			userDonation.setStatus(status);
 			userDonationDAO.saveOrUpdate(userDonation);
@@ -277,6 +282,26 @@ public class UserDonationServiceImpl implements UserDonationService {
 		}
 	}
 	
+	@Override
+	@Transactional
+	public Page<UserDonation> findByDonationCodeSortByCreatedDate(String donationCode, String searchingValue,int page,int size) {
+		PageRequest pageRequest = PageRequest.of(page-1, size);
+		return userDonationDAO.findByDonationCodeSortByCreatedDate(donationCode, searchingValue, pageRequest);
+	}
+	
+	@Override
+	@Transactional
+	public Donation getDonation(int userDonationId) {
+		UserDonation theUserDonation = userDonationDAO.getUserDonation(userDonationId);
+		return theUserDonation.getDonation();
+	}
+	
+	@Override
+	@Transactional
+	public User getUser(int userDonationId) {
+		UserDonation theUserDonation = userDonationDAO.getUserDonation(userDonationId);
+		return theUserDonation.getUser();
+	}
 
 
 }

@@ -82,7 +82,8 @@ public class UserDAOImpl implements UserDAO {
 	public Page<User> findByEmailOrUserNameOrPhoneNumber(Pageable pageable, String searchingValue) {
 
 		String theQueryString = "from User u where " + "u.showing = 1 and ("
-				+ " u.userName like concat(:searchingValue, '%') or" + " u.email like concat(:searchingValue, '%')"
+				+ " u.userName like concat(:searchingValue, '%') or" 
+				+ " u.email like concat(:searchingValue, '%') or"
 				+ " u.phoneNumber like concat(:searchingValue, '%'))";
 
 		return findByQuery(theQueryString, "", pageable);

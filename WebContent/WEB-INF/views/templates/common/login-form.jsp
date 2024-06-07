@@ -11,11 +11,11 @@
 	href="<c:url value='/static/common/assets/css/login-style.css' />"> --%>
 </head>
 <body>
-	<input id="errorLogin" type="hidden" value="${errorLogin}"/>
-	
-	
+	<input id="errorLogin" type="hidden" value="${errorLogin}" />
+
+
 	<div class="overlay-container">
-		<div id="overlay" onclick="closeAllPopup()"></div>
+		<div id="overlay" onclick="closeAllModal()"></div>
 		<div class="popup">
 
 			<div class="form-container login-form" id="login">
@@ -25,89 +25,86 @@
 					</div>
 				</div>
 				<div class="form-main">
-					<form:form  modelAttribute="loginUser"
-				action="${process}"
-				method="POST">
-						
+					<form:form modelAttribute="loginUser" action="${process}"
+						method="POST">
+
 						<div class="f-field">
-							<div class="label-d">
-								<label class="field-label"> <span class="label-text">Tài
+						
+							<div>
+								<label class="field-label"> <span class="label-text font-weight-bold">Tài
 										khoản:</span>
 								</label>
-							</div>
-							<div class="input-d">
-								<div class="field-input">
-									<form:input id="userNameOrEmail" type="text" class="input-p form-control" path="userNameOrEmail"/>
-							
 
-								</div>
-							
+								<form:input id="userNameOrEmail" type="text"
+									class="input-p form-control" path="userNameOrEmail" />
+
+
 							</div>
-							
+
 							<div class="error-msg">
-								 <form:errors path="userNameOrEmail" cssClass="error"/>
+								<form:errors path="userNameOrEmail" cssClass="error" />
 							</div>
 						</div>
 
 						<div class="f-field">
-							<div class="label-d">
-								<label class="field-label"> <span class="label-text">Mật
+
+							<div>
+								<label class="field-label"> <span class="label-text font-weight-bold">Mật
 										khẩu:</span>
 								</label>
-							</div>
-							<div class="input-d">
-								<div class="field-input">
+								<div class="password-input position-relative">
+
 									<form:input type="password" id="password"
-										class="input-p form-control pw-field-custom-fix" path="password" />
-									<button type="button" class="button no-b-btn toggle-pass-btn"
-										onclick="togglePassword()" title="Hiện mật khẩu">
-										<i id="eyeIcon" class="fa-regular fa-eye"></i>
-									</button>
-									
-								
+										class="input-p form-control pw-field-custom-fix"
+										path="password" />
+
+									<i id="eyeIcon" class="fa-regular fa-eye toggle-pass-icon"
+										onclick="togglePassword()"></i>
+
 								</div>
 
-							</div>
-							
-							
-							<div class="error-msg">
-								 <form:errors path="password" cssClass="error"/>
-							</div>
-							
-							<div id="global-error" class="error-msg">
-								 <form:errors path="*" cssClass="error" />
-							</div>
-							<div>
 
 							</div>
+
+
+
+							<div class="error-msg">
+								<form:errors path="password" cssClass="error" />
+							</div>
+
+							<div id="global-error" class="error-msg">
+								<form:errors path="*" cssClass="error" />
+							</div>
+							<div></div>
 						</div>
 						<div class="mt-4">
-						<p>
-					Don't have a account yet, <a
-						href="${pageContext.request.contextPath}/user/registerForm">register
-						now</a>
-				</p>
+							<p>
+								Don't have a account yet, <a
+									href="${pageContext.request.contextPath}/user/registerForm">register
+									now</a>
+							</p>
 						</div>
-						
+
 						<div class="submit-p">
 							<button type="button" class="cancel-btn "
-								onclick="closePopup('login')">Hủy</button>
+								onclick="closeModal('#login')">Hủy</button>
 							<button type="submit" class="submit-btn">Đăng nhập</button>
 						</div>
 					</form:form>
 				</div>
 
 			</div>
-			
+
 		</div>
 	</div>
-	
+
 	<script type="text/javascript">
-	
+		
 	</script>
 
-<script src="<c:url value='/static/common/assets/js/script.js' />"></script>
-<script src="<c:url value='/static/common/assets/js/layout-script.js' />"></script>
+	<script src="<c:url value='/static/common/assets/js/script.js' />"></script>
+	<script
+		src="<c:url value='/static/common/assets/js/layout-script.js' />"></script>
 
 </body>
 </html>

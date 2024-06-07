@@ -5,6 +5,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ page import="me.haitmq.spring.mvc.crud.content_path.ViewConstants" %>
 <%@ page import="me.haitmq.spring.mvc.crud.utils.JSPDataFormat" %>
+<%@ page import="me.haitmq.spring.mvc.crud.utils.Time" %>
 <%@ page import="me.haitmq.spring.mvc.crud.entity.status.DonationStatus" %>
 <!DOCTYPE html>
 <html>
@@ -17,7 +18,8 @@
 <meta name="keywords" content="" />
 <meta name="author" content="Free-Template.co" />
 
-
+<link rel="icon" type="image/x-icon"
+	href="<c:url value='/static/common/assets/img/icon/heart.ico' />">
 
 <link rel="stylesheet"
 	href="<c:url value='/static/common/assets/css/content-style.css' />">
@@ -72,28 +74,20 @@
 	href="<c:url value='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css'/>"
 	integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
 	crossorigin="anonymous" referrerpolicy="no-referrer" />
-	
 
- <!-- customer style -->
- <link rel="stylesheet"
-	href="<c:url value='/static/common/assets/css/style.css'/>" />
-	
+
+<!-- customer style -->
+
 <link rel="stylesheet"
-	href="<c:url value='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css'/>"
-	integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
-	crossorigin="anonymous" referrerpolicy="no-referrer" />
+	href="<c:url value='/static/common/assets/css/style.css'/>" />
 
 
 
+<!-- customer js -->
 
-<!-- customer js -->	
-
-<script src="<c:url value='https://code.jquery.com/jquery-3.6.4.min.js'/>"> </script>
-<script src="<c:url value='/static/common/assets/js/form.js' />"></script>
-<script src="<c:url value='/static/common/assets/js/script.js' />"></script> 
-<script src="<c:url value='/static/common/assets/js/data-list.js' />"></script> 
-<script src="<c:url value='/static/common/assets/js/layout-script.js' />"></script>
-
+<script src="<c:url value='/static/common/assets/js/script.js' />"></script>
+<script
+	src="<c:url value='/static/common/assets/js/layout-script.js' />"></script>
 
 </head>
 <body>
@@ -121,7 +115,7 @@
 
 
 
-			<div class="container">
+			<div class="">
 				<div class="main-content">
 					<div class="h-content">
 					<div class="add-div">
@@ -171,21 +165,24 @@
 					
 					
 					<div class="m-content list" id="data-list">
-						<div class="table-div">
+						<div class="table-div table-responsive">
 							<table class="table table-striped table-content">
 							<thead class="tb-head-title">
 								<tr>
 				
-									<th scope="col" class="th-custom"><p>Code</p></th>
-									<th scope="col" class="th-custom"><p>Name</p></th>
+									<th scope="col" class="th-custom col-1 custom-display-none"><p>Mã</p></th>
+									<th scope="col" class="th-custom col-2 col-lg-3">
+										<p>Tên</p>
+										
+									</th>
 									
-									<th scope="col" class="th-custom"><p>Date</p></th>
+									<th scope="col" class="th-custom col-2"><p>Ngày</p></th>
 									
-									<th scope="col" class="th-custom"><p>Organization</p></th>
-									<th scope="col" class="th-custom"><p>Phone number</p></th>
-									<th scope="col" class="th-custom"><p>Total money</p></th>
-									<th scope="col" class="th-custom"><p>status</p></th>
-									<th scope="col" class="th-custom"><p>Action</p></th>
+									<th scope="col" class="th-custom col-2"><p>Tổ chức</p></th>
+									<th scope="col" class="th-custom"><p>Số điện thoại</p></th>
+									<th scope="col" class="th-custom"><p>Tổng tiền</p></th>
+									<th scope="col" class="th-custom col-1 col-lg-2"><p>Trạng thái</p></th>
+									<th scope="col" class="th-custom"><p>Hành động</p></th>
 								</tr>
 							</thead>
 							
@@ -234,21 +231,32 @@
 
 
 
-									<tr>
+									<tr ondblclick="window.location.href='${detailLink}'">
 
-										<td><p>${tempDonation.code}</p></td>
-										<td><p>${tempDonation.name}</p></td>
+										<td class="custom-display-none"><p class="font-weight-bold">${tempDonation.code}</p></td>
 										<td>
-											<p>Start date:</p>
-											<p>${tempDonation.startDate}</p>
-											<p>End date: </p>
-											<p>${tempDonation.endDate}</p>
+											<p class="text-align-left font-weight-bold">${tempDonation.name}</p>
+											<p class="font-weight-bold custom-display-block">${tempDonation.code}</p>
+										</td>
+										<td>
+											<p class="mb-1 font-italic">Bắt đầu:</p>
+											<p class="mb-2">${JSPDataFormat.dateFormat(tempDonation.startDate)}</p>
+											<p class="mb-1 font-italic">Kết thúc:</p>
+											<p class="mb-2">${JSPDataFormat.dateFormat(tempDonation.endDate)}</p>
 										</td>
 										
 										<td><p>${tempDonation.organization}</p></td>
 										<td><p>${tempDonation.phoneNumber}</p></td>
 										<td><p>${tempDonation.money}</p></td>
-										<td><p class="d-status">${JSPDataFormat.donationStatusFormat(tempDonation.status)}</p></td>
+										<td>
+										
+											<p class="d-status font-weight-bold color-text ">${JSPDataFormat.donationStatusFormat(tempDonation.status)}</p>
+											<script>
+											changeColorText();
+											
+											</script>
+										
+										</td>
 										<td class="action-c">
 											
 											<c:if test="${tempDonation.status != DonationStatus.CLOSED}">
@@ -275,7 +283,7 @@
 												
 													<button class="btn btn-success donation-btn d-delete-btn"
 														title="Xóa"
-														onclick="toDelete('${tempDonation.id}', '#delete')"
+														onclick="toDelete('${tempDonation.id}', '#closedOrDelete')"
 														data-url="${deleteLink}">
 														<span class="content-btn-text">Xóa</span><span
 															class="content-btn-icon"></span>
@@ -283,7 +291,10 @@
 													
 													<button class="btn btn-success donation-btn"
 															title="Quyên góp"
-															onclick="window.location.href='${donatingStatusLink}'">
+															<%-- onclick="window.location.href='${donatingStatusLink}'" --%>
+															onclick="toDelete('${tempDonation.id}', '#update-status')"
+															
+															>
 														<span class="content-btn-text">Quyên góp</span>
 													</button>
 												</c:when>
@@ -292,7 +303,9 @@
             										
             										<button class="btn btn-success donation-btn"
 															title="Quyên góp"
-															onclick="window.location.href='${endStatusLink}'">
+															<%-- onclick="window.location.href='${endStatusLink}'" --%>
+															onclick="toDelete('${tempDonation.id}', '#update-status')"
+															>
 														<span class="content-btn-text">Kết thúc</span><span
 															class="content-btn-icon"></span>
 													</button>
@@ -302,7 +315,7 @@
 												<c:when test="${tempDonation.status == DonationStatus.END}">
             										<button class="btn btn-success donation-btn" 
 															title="Chi tiết"
-															onclick="window.location.href='${closedStatusLink}'">
+															onclick="toDelete('${tempDonation.id}', '#closedOrDelete')">
 													<span class="content-btn-text">Đóng</span>
 													</button>
          										</c:when>
@@ -380,20 +393,69 @@
 
 	<div class="overlay-container">
 		<div class="row">
-			<div id="overlay" onclick="closeAllPopup()"></div>
+			<div id="overlay" onclick="closeAllModal()"></div>
 			<div class="popup col-12 col-sm-8 col-md-4">
-			
-			
-			<input type="hidden" id="errorProcess" value="${errorProcess}"/>
-			
-			<% Boolean isLogined = ((Boolean)request.getAttribute("isLogined")) != null ? (Boolean)request.getAttribute("isLogined") : false; %>
-			<% Boolean isAdmin = ((Boolean)request.getAttribute("isAdmin")) != null ? (Boolean)request.getAttribute("isAdmin") : false; %>
-		<%-- 
+
+
+				<input type="hidden" id="errorProcess" value="${errorProcess}" />
+
+				<% Boolean isLogined = ((Boolean)request.getAttribute("isLogined")) != null ? (Boolean)request.getAttribute("isLogined") : false; %>
+				<% Boolean isAdmin = ((Boolean)request.getAttribute("isAdmin")) != null ? (Boolean)request.getAttribute("isAdmin") : false; %>
+				<%-- 
 			<% boolean isLogined = (Boolean)request.getAttribute("isLogined"); %>
 			<% boolean isAdmin = (Boolean)request.getAttribute("isAdmin"); %>
     		 --%>
-    		<% if (isAdmin) { %>
-    			<div class="form-container donate-form" id="delete">
+				<% if (isAdmin) { %>
+				
+				<jsp:include page="../common/form-modal/closed-or-delete-donation-modal.jsp" />
+				
+				<%-- <div class="form-container donate-form" id="closedOrDelete">
+					<c:if test="${donation.status == DonationStatus.NEW}">
+		
+		 <c:set var = "output1" value = "xóa"/>
+		
+		
+		<c:url var="closedOrDeleteLink" value="/admin/updateDonationStatus">
+			<c:param name="id" value="${donation.id}" />
+			<c:param name="status" value="${DonationStatus.CLOSED}" />
+		</c:url>
+	</c:if>
+
+	<c:if test="${donation.status == DonationStatus.END}">
+
+		<c:set var="output1" value="đóng" />
+		
+
+		<c:url var="closedOrDeleteLink" value="/admin/deleteDonation">
+			<c:param name="id" value="${donation.id}" />
+			
+		</c:url>
+
+
+	</c:if>
+					
+				
+					<div class="container form-head">
+						<h3>Bạn có chắc chắn <c:out value = "${output1}"/>?</h3>
+					</div>
+					<div class="container form-main">
+						<p>
+							Đợt quyên góp: <span>${donation.name}</span>
+						</p>
+						<p>
+							Mã quyên góp: <span>${donation.code}</span>
+						</p>
+						<div class="submit-p">
+							<button type="button" class="cancel-btn "
+								onclick="closeAllModal()">Hủy</button>
+							<button type="submit" class="submit-btn" id="confirm-delete-btn"
+								onclick="window.location.href='${closedOrDeleteLink}'">Xác nhận</button>
+						</div>
+
+					</div>
+				</div> --%>
+				
+				<%-- <div class="form-container donate-form" id="delete">
 					<div class="container form-head">
 						<h3>Bạn có chắc chắn xóa?</h3>
 					</div>
@@ -406,22 +468,22 @@
 						</p>
 						<div class="submit-p">
 							<button type="button" class="cancel-btn "
-								onclick="closeAllPopup()">Hủy</button>
+								onclick="closeAllModal()">Hủy</button>
 							<button type="submit" class="submit-btn" id="confirm-delete-btn"
 								onclick="window.location.href='${pageContext.request.contextPath}/admin/deleteDonation?id=${donation.id}'">Xóa</button>
 						</div>
 
 					</div>
 				</div>
-				
-				
-				
-				
-				
+ --%>
+
+
+
+
 				<div class="form-container donate-form " id="donation-addOrUpdate">
-			        <div class="container form-head">
-			            <div class="form-title">
-			                <div class="d-flex justify-content-between">
+					<div class="container form-head">
+						<div class="form-title">
+							<div class="d-flex justify-content-between">
 
 
 								<c:choose>
@@ -432,83 +494,181 @@
 										<h4 class="d-inline-block mx-auto">Thêm mới</h4>
 									</c:otherwise>
 								</c:choose>
-			                     
-			                </div>
-			
-			            </div>
-			        </div>
-			        <div class="container form-main">
-			            <form:form modelAttribute="donation" action="${process}"
-			                method="POST">
-			  		
-			 				<form:input type="hidden"  id="donationId" path="id" />
-			 				
-			                <div class="form-group form-group-custom">
-			                  <label class="field-label" for="code-add">Mã đợt quyên góp</label>
-			                  <form:input type="text" class="form-control" id="code-add" path="code" />
-			                  
-			                  <form:errors cssClass="error" path="code"/>
-			                </div>
-			                <div class="form-group form-group-custom">
-			                  <label class="field-label" for="name-add">Tên đợt quyên góp:</label>
-			                  <form:input type="text" class="form-control" id="name-add" path="name" />
-			                  <form:errors cssClass="error" path="name"/>
-			                </div>
-			                
-			                <div class="form-group form-group-custom">
-			                  <label class="field-label" for="startDate-add">Ngày bất đầu:</label>
-			                  <form:input type="date" class="form-control" id="startDate-add" path="startDate" />
-			                  <form:errors cssClass="error" path="startDate"/>
-			                </div>
-			                <div class="form-group form-group-custom">
-			                  <label class="field-label" for="endDate-add">Ngày kết thúc:</label>
-			                  <form:input type="date" class="form-control" id="endDate-add" path="endDate" />
-			                  <form:errors cssClass="error" path="endDate"/>
-			                </div>
-			                <div class="form-group form-group-custom">
-			                  <label class="field-label" for="organization-add">Tổ chức:</label>
-			                  <form:input type="text" class="form-control" id="organization-add" path="organization" />
-			                  <form:errors cssClass="error" path="organization"/>
-			                </div>
-			                
-			                <div class="form-group form-group-custom">
-			                  <label class="field-label" for="phoneNumber-add">Số điện thoại:</label>
-			                  <form:input type="number" class="form-control" id="phoneNumber-add" path="phoneNumber" />
-			                  <form:errors cssClass="error" path="phoneNumber"/>
-			                </div>
-							
+
+							</div>
+
+						</div>
+					</div>
+					<div class="container form-main">
+						<form:form modelAttribute="donation" action="${process}"
+							method="POST">
+
+							<form:input type="hidden" id="donationId" path="id" />
+
 							<div class="form-group form-group-custom">
-			                  <label class="field-label" for="description-add">Nội dung:</label>
-			                  
-			                  <form:textarea class="form-control" id="description-add" path="description" rows="3"></form:textarea>
-			                </div>
-							<div><form:errors path="" cssClass="error" /></div>
-			                <div class="submit-p">
-			                    <button type="button" class="cancel-btn "
-			                        onclick="closeAllPopup()">Hủy</button>
-			                    <button type="submit" class="submit-btn">Thêm</button>
-			                </div>
-			            </form:form>
-			        </div>
+								<label class="field-label" for="code-add">Mã đợt quyên
+									góp</label>
+								<form:input type="text" class="form-control" id="code-add"
+									path="code" />
 
-    		</div>
-				
-    		
-    		 <% } else { %>
-    		 
-    		 <% } %>
-    		
-    		
+								<form:errors cssClass="error" path="code" />
+							</div>
+							<div class="form-group form-group-custom">
+								<label class="field-label" for="name-add">Tên đợt quyên
+									góp:</label>
+								<form:input type="text" class="form-control" id="name-add"
+									path="name" />
+								<form:errors cssClass="error" path="name" />
+							</div>
 
-		
-    		
-    		
+							<div class="form-group form-group-custom">
+								<label class="field-label" for="startDate-add">Ngày bất
+									đầu:</label>
+								<form:input type="date" class="form-control" id="startDate-add"
+									path="startDate" />
+								<form:errors cssClass="error" path="startDate" />
+							</div>
+							<div class="form-group form-group-custom">
+								<label class="field-label" for="endDate-add">Ngày kết
+									thúc:</label>
+								<form:input type="date" class="form-control" id="endDate-add"
+									path="endDate" />
+								<form:errors cssClass="error" path="endDate" />
+							</div>
+							<div class="form-group form-group-custom">
+								<label class="field-label" for="organization-add">Tổ
+									chức:</label>
+								<form:input type="text" class="form-control"
+									id="organization-add" path="organization" />
+								<form:errors cssClass="error" path="organization" />
+							</div>
 
-			
+							<div class="form-group form-group-custom">
+								<label class="field-label" for="phoneNumber-add">Số điện
+									thoại:</label>
+								<form:input type="number" class="form-control"
+									id="phoneNumber-add" path="phoneNumber" />
+								<form:errors cssClass="error" path="phoneNumber" />
+							</div>
 
-		</div>
-		
-		
+							<div class="form-group form-group-custom">
+								<label class="field-label" for="description-add">Nội
+									dung:</label>
+
+								<form:textarea class="form-control" id="description-add"
+									path="description" rows="3"></form:textarea>
+							</div>
+							<div>
+								<form:errors path="" cssClass="error" />
+							</div>
+							<div class="submit-p">
+								<button type="button" class="cancel-btn "
+									onclick="closeAllModal()">Hủy</button>
+								<button type="submit" class="submit-btn">Thêm</button>
+							</div>
+						</form:form>
+					</div>
+
+				</div>
+
+
+				<% } else { %>
+
+				<% } %>
+
+
+				<c:if test="${successAdd}">
+					<jsp:include page="../common/form-modal/donation-add-success-modal.jsp" />  
+  
+<%-- 
+					<input type="hidden" id="successDonate" value="${successDonate}">
+					<div class="form-container donate-form" id="success-donate"
+						style="display: block;">
+						<div class="container form-head">
+							<div class="form-title">
+								<p>Đã thêm 1 đợt quyên góp thành công</p>
+							</div>
+						</div>
+						<div class="container form-main">
+							<div class="container form-main d-flex justify-content-end">
+								<button type="button" class="btn btn-secondary cancel-btn "
+									onclick="closeModal('#success-donate')"></button>
+							</div>
+						</div>
+
+					</div> --%>
+				</c:if>
+
+				<jsp:include page="../common/form-modal/update-donation-status-modal.jsp" />  
+  
+				<%-- <div class="form-container donate-form" id="update-status">
+					
+					<c:if test="${donation.status == DonationStatus.NEW}">
+						
+						 <c:set var = "output1" value = "quyên góp"/>
+						 <c:set var = "output2" value = "Ngày bắt đầu sẽ chuyển thành hôm nay ${Time.getCurrentDateTimeRaw()}"/>
+						
+						<c:url var="updateStatusLink" value="/admin/updateDonationStatus">
+							<c:param name="id" value="${donation.id}" />
+							<c:param name="status" value="${DonationStatus.DONATING}" />
+						</c:url>
+					</c:if>
+
+					<c:if test="${donation.status == DonationStatus.DONATING}">
+
+						<c:set var="output1" value="kết thúc" />
+						<c:set var="output2" value="Ngày kêt thúc sẽ chuyển thành hôm nay ${Time.getCurrentDateTimeRaw()}" />
+
+						<c:url var="updateStatusLink" value="/admin/updateDonationStatus">
+							<c:param name="id" value="${donation.id}" />
+							<c:param name="status" value="${DonationStatus.END}" />
+						</c:url>
+
+
+					</c:if>
+
+
+					<div class="container form-head">
+						<c:if test="${donation.status.equals(DonationStatus.NEW)}">
+						
+						 <p>hello</p>
+					</c:if>
+
+					<c:if test="${donation.status.equals(DonationStatus.DONATING)}">
+
+						<p>kello</p>
+
+					</c:if>
+						<h3>
+							status: ${donation.status}
+						</h3>
+						<h3>
+							Bạn có chắc chắn muốn chuyển sang trạng thái <c:out value = "${output1}"/>
+						</h3>
+					</div>
+					<div class="container form-main">
+						<p>
+							Đợt quyên góp: <span>${donation.name}</span>
+						</p>
+						<p>
+							Mã quyên góp: <span>${donation.code}</span>
+						</p>
+
+						<p><c:out value = "${output2}"/></p>
+
+						<div class="submit-p">
+							<button type="button" class="cancel-btn "
+								onclick="closeAllModal()">Hủy</button>
+							<button type="submit" class="submit-btn" id="confirm-delete-btn"
+								onclick="window.location.href='${updateStatusLink}'">Xác nhận</button>
+						</div>
+
+					</div>
+				</div> --%>
+
+			</div>
+
+
 		</div>
 	
 	</div>

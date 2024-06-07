@@ -20,7 +20,7 @@ public class ValidDonationPeriodConstraintValidator implements ConstraintValidat
 			return true;
 		}
 		
-		if(Time.isBeforeDate(donation.getStartDate(), donation.getEndDate())) {
+		if(Time.isBeforeDate(donation.getEndDate(), donation.getStartDate())) {
 			return false;
 		}
 		

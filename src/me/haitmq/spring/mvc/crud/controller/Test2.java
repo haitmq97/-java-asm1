@@ -61,6 +61,7 @@ public class Test2 {
 		
 
 		Page<Donation> donations = donationService.findByPhoneNumberOrOrganizationOrCodeOrStatus(searchingValue, page, size);
+		
 		System.out.println(donations.getClass());
 		theModel.addAttribute("donations", donations);
 		/* theModel.addAttribute("class", donations.getClass()); */
