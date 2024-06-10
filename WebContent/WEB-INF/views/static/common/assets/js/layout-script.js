@@ -34,13 +34,16 @@ function closeModal(popupId) {
 	for (var i = 0; i < formContainers.length; i++) {
 		formContainers[i].style.display = "none";
 	}
+	var currentUrl = new URL(window.location.href);
+    
+    // Cập nhật hoặc thêm các tham số query mới
+    currentUrl.searchParams.set('size', $('#pageSize').val());
+    currentUrl.searchParams.set('page', 1);
+    currentUrl.searchParams.set('searchingValue', $('#searchingValue').val());
 	
 	$.ajax({
 			type: "GET",
-			url: window.location.href,
-			data: {
-
-			},
+			url: currentUrl,
 			success: function(data) {
 				$('#donate').html(
 					$(data).find('#donate').html());
@@ -140,23 +143,54 @@ function changeColorText() {
 				p.classList.add("text-primary");
 				break;
 			case 'đang quyên góp':
+			case 'đang hoạt động':
+			case 'đã xác nhận':
 				p.classList.add("text-success");
 				break;
 			case 'đã kết thúc':
-				p.classList.add("text-danger");
-				break;
 			case 'đã đóng':
+			case 'admin':
+			case 'bị khóa':
+			case 'chờ xác nhận':
 				p.classList.add("text-danger");
 				break;
+			
 		}
 	});
 }
 
 
+function checkUrl() {
+	var pathName = window.location.pathname;
+	
+	console.log("....................current url: " + window.location.href);
+	console.log("....................current pathname: " + window.location.pathname);
+	
+	var homeBtn = document.getElementById("nav-home-btn");
+	var managerBtn= document.getElementById("nav-manager-btn");
+	var userBtn = document.getElementById("nav-user-btn");
+	
+	const buttons = document.querySelectorAll('.nav-item .btn');
+	
+	buttons.forEach(button => {
+		button.classList.remove("active-b");
+	});
+	
+	if(pathName.includes("admin")) {
+			managerBtn.classList.add("active-b");
+	} else if(pathName.includes("home")) {
+		homeBtn.classList.add("active-b");
+	} else if(pathName.includes("profile")) {
+		userBtn.classList.add("active-b");
+	}
 
+	
+	
+}
 
 
 $(document).ready(function() {
+	checkUrl();
 
 	loginErrorShowing();
 	

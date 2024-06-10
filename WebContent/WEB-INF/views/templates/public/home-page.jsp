@@ -118,8 +118,7 @@
 							class="sp-tool d-flex flex-column flex-sm-row justify-content-between mt-3">
 							<div class="page-selector">
 
-								<input id="currentPage" type="hidden" name="currentPage"
-									value="${currentPage}" /> <label for="pageSize">Số mục
+								 <label for="pageSize">Số mục
 									trên mỗi trang:</label> <select id="pageSize" name="size"
 									class="entries-select rounded form-control">
 									<option value="3" ${donations.size == 3 ? 'selected' : ''}>3</option>
@@ -184,8 +183,8 @@
 										<tr class="" ondblclick="window.location.href='${detailLink}'">
 
 											<th scope="row" class="d-ns-cell col-12 scrollable-col">
-												<p class="d-name">${tempDonation.name}</p>
-												<p class="d-status">
+												<p class="d-name text-align-left">${tempDonation.name}</p>
+												<p class="d-status color-text">
 													${JSPDataFormat.donationStatusFormat(tempDonation.status)}
 												</p>
 
@@ -244,7 +243,7 @@
 						<div>
 							<div>
 								<c:if test="${donations.totalElements != 0}">
-									<p>Showing ${donations.number*donations.size +1} to
+									<p class="font-weight-light font-italic">Showing ${donations.number*donations.size +1} to
 										${donations.number*donations.size +donations.numberOfElements}
 										of ${donations.totalElements} entries</p>
 								</c:if>
@@ -270,7 +269,8 @@
 
 									<c:set var="testValue1" value="<c:url value='/v1/donations'/>" />
 
-
+<input id="currentPage" type="hidden" name="currentPage"
+										value="${donations.pageable.pageNumber+1}" /> 
 
 								</div>
 								<c:if test="${donations.totalElements != 0}">

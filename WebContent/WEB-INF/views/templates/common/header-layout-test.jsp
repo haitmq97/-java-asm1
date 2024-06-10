@@ -28,7 +28,7 @@
 
 						<ul class="nav-list">
 							<li class="nav-item">
-								<button class="btn active-b"
+								<button class="btn active-b" id="nav-home-btn"
 									onclick="window.location.href='${pageContext.request.contextPath}${ViewConstants.E_HOME}'">
 									<span class="txt-nav-i">Home</span><span class="icon-nav-i"><i
 										class="fa fa-home" aria-hidden="true"></i></span>
@@ -41,7 +41,7 @@
 								<div class="user-l-btn d-inline-block">
 									<div class="btn-group" id="mng-btn">
 										
-										<button type="button"
+										<button type="button" id="nav-manager-btn"
 											class="btn dropdown-toggle none-outline-btn-custom"
 											data-bs-toggle="dropdown" data-bs-display="static"
 											aria-expanded="false">
@@ -77,8 +77,8 @@
 							<li class="nav-item">
 								<div class="user-l-btn">
 									<% if (isLogined) { %>
-									<div class="btn-group" id="user-btn">
-										<button type="button"
+									<div class="btn-group" >
+										<button type="button" id="nav-user-btn"
 											class="btn dropdown-toggle none-outline-btn-custom"
 											data-bs-toggle="dropdown" data-bs-display="static"
 											aria-expanded="false">

@@ -5,13 +5,13 @@ public final class ViewConstants {
 	
 	//public
     public static final String V_HOME = "public/home-page";
-    public static final String V_PUBLIC_DONATION_DETAILS = "public/donationDetail";
+    public static final String V_PUBLIC_DONATION_DETAILS = "public/donation-detail";
     
     public static final String V_LOGIN = "common/login-form";
     public static final String V_REGISTER = "common/register-form";
     public static final String V_ERROR = "common/error-page";
     public static final String V_USER_PROFILE = "user/user-profile";
-    public static final String V_PRODUCT_DETAIL = "productDetail";
+    
     
     //user 
 
@@ -55,7 +55,7 @@ public final class ViewConstants {
     public static final String E_ADMIN_DONATIONS = "/admin/donations";
     public static final String E_ADMIN_DONATION_DETAIL = "/admin/donation-detail";
     
-    
+    public static final String E_ADMIN_USER_DONATION_CANCEL = "/admin/deleteUserDonation";
     public static final String E_ADMIN_USERS = "/admin/users";
     public static final String E_ADMIN_USER_DETAIL = "/admin/user-detail";
     

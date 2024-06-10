@@ -95,10 +95,11 @@ public class UserDAOImpl implements UserDAO {
 		String theQueryString = 
 				"from User u where " 
 				+ "u.showing = 1 and ("
-				+ " u.userName like concat(:searchingValue, '%') or" 
-				+ " u.email like concat(:searchingValue, '%') or"
-				+ " u.status like concat(:searchingValue, '%') or"
-				+ " u.phoneNumber like concat(:searchingValue, '%'))";
+				+ " lower(u.userName) like lower(concat(:searchingValue, '%')) or" 
+				+ " lower(u.email) like lower(concat(:searchingValue, '%') ) or"
+				+ " lower(u.status) like lower(concat(:searchingValue, '%')) or"
+				+ " lower(u.role.roleName) like lower(concat(:searchingValue, '%')) or"
+				+ " lower(u.phoneNumber) like lower(concat(:searchingValue, '%')))";
 
 		return findByQuery(theQueryString, searchingValue, pageable);
 

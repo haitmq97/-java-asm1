@@ -96,12 +96,13 @@
 		<jsp:param name="includePart" value="headerSection" />
 	</jsp:include>
 	
-	<input type="hidden" id="isLogined" value="${isLogined}" />
+	
 
 
 
 
 	<section class="site-section content">
+	<input type="hidden" id="isLogined" value="${isLogined}" />
 		<div class="container" id="content-table">
 			<div class="row mb-5 justify-content-center">
 				<div class="col-md-7 text-center">
@@ -127,8 +128,7 @@
 						<div class="sp-tool d-flex flex-column flex-sm-row justify-content-between mt-3">
 							<div class="page-selector">
 
-								<input id="currentPage" type="hidden" name="currentPage"
-									value="${currentPage}" /> 
+							
 								<label for="size">Rows per page:</label> 
 								<select id="pageSize" name="size"
 									
@@ -301,7 +301,7 @@
 												
 												<c:when test="${tempDonation.status == DonationStatus.DONATING}">
             										
-            										<button class="btn btn-success donation-btn"
+            										<button class="btn btn-danger donation-btn"
 															title="Quyên góp"
 															<%-- onclick="window.location.href='${endStatusLink}'" --%>
 															onclick="toDelete('${tempDonation.id}', '#update-status')"
@@ -313,7 +313,7 @@
          										</c:when>
 
 												<c:when test="${tempDonation.status == DonationStatus.END}">
-            										<button class="btn btn-success donation-btn" 
+            										<button class="btn btn-danger donation-btn" 
 															title="Chi tiết"
 															onclick="toDelete('${tempDonation.id}', '#closedOrDelete')">
 													<span class="content-btn-text">Đóng</span>
@@ -339,7 +339,17 @@
 							</tbody>
 						</table>
 						</div>
-						
+						<div>
+							<c:if test="${donations.totalElements != 0}">
+									<p class="font-weight-light font-italic">Showing ${donations.number*donations.size +1} to
+										${donations.number*donations.size +donations.numberOfElements}
+										of ${donations.totalElements} entries</p>
+								</c:if>
+
+								<c:if test="${donations.totalElements == 0}">
+									<p>There are no entries to show</p>
+								</c:if>
+						</div>
 						
 						<div>
 							<div>
@@ -360,7 +370,8 @@
 
 
 								<c:set var="testValue1" value="<c:url value='/v1/donations'/>" />
-
+<input id="currentPage" type="hidden" name="currentPage"
+										value="${donations.pageable.pageNumber+1}" /> 
 
 
 							</div>
@@ -558,6 +569,8 @@
 								<form:textarea class="form-control" id="description-add"
 									path="description" rows="3"></form:textarea>
 							</div>
+							<form:input type="hidden" class="form-control"
+									 path="status" />
 							<div>
 								<form:errors path="" cssClass="error" />
 							</div>

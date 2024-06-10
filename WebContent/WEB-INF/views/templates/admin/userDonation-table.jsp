@@ -19,7 +19,8 @@
 <meta name="keywords" content="" />
 <meta name="author" content="Free-Template.co" />
 
-
+<link rel="icon" type="image/x-icon"
+	href="<c:url value='/static/common/assets/img/icon/heart.ico' />">
 
 <link rel="stylesheet"
 	href="<c:url value='/static/common/assets/css/content-style.css' />">
@@ -74,28 +75,20 @@
 	href="<c:url value='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css'/>"
 	integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
 	crossorigin="anonymous" referrerpolicy="no-referrer" />
-	
 
- <!-- customer style -->
- <link rel="stylesheet"
-	href="<c:url value='/static/common/assets/css/style.css'/>" />
-	
+
+<!-- customer style -->
+
 <link rel="stylesheet"
-	href="<c:url value='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css'/>"
-	integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
-	crossorigin="anonymous" referrerpolicy="no-referrer" />
+	href="<c:url value='/static/common/assets/css/style.css'/>" />
 
 
 
+<!-- customer js -->
 
-<!-- customer js -->	
-
-<script src="<c:url value='https://code.jquery.com/jquery-3.6.4.min.js'/>"> </script>
-<script src="<c:url value='/static/common/assets/js/form.js' />"></script>
-<script src="<c:url value='/static/common/assets/js/script.js' />"></script> 
-<script src="<c:url value='/static/common/assets/js/data-list.js' />"></script> 
-<script src="<c:url value='/static/common/assets/js/layout-script.js' />"></script>
-
+<script src="<c:url value='/static/common/assets/js/script.js' />"></script>
+<script
+	src="<c:url value='/static/common/assets/js/layout-script.js' />"></script>
 
 </head>
 <body>
@@ -104,13 +97,14 @@
 		<jsp:param name="includePart" value="headerSection" />
 	</jsp:include>
 	
-	<input type="hidden" id="isLogined" value="${isLogined}" />
+	
 
 
 
 
 	
 	<section class="site-section content">
+	<input type="hidden" id="isLogined" value="${isLogined}" />
 		<div class="container" id="content-table">
 			<div class="row mb-5 justify-content-center">
 				<div class="col-md-7 text-center">
@@ -131,18 +125,17 @@
 						<div class="sp-tool d-flex flex-column flex-sm-row justify-content-between mt-3">
 							<div class="page-selector">
 
-								<input id="currentPage" type="hidden" name="currentPage"
-									value="${currentPage}" /> 
+							
 								<label for="size">Rows per page:</label> 
 								<select id="pageSize" name="size"
 									
 									class="entries-select rounded form-control">
-									<option value="3" ${donations.size == 3 ? 'selected' : ''}>3</option>
-									<option value="4" ${donations.size == 4 ? 'selected' : ''}>4</option>
-									<option value="5" ${donations.size == 5 ? 'selected' : ''}>5</option>
-									<option value="10" ${donations.size == 10 ? 'selected' : ''}>10</option>
-									<option value="15" ${donations.size == 15 ? 'selected' : ''}>15</option>
-									<option value="20" ${donations.size == 20 ? 'selected' : ''}>20</option>
+									<option value="3" ${userDonations.size == 3 ? 'selected' : ''}>3</option>
+									<option value="4" ${userDonations.size == 4 ? 'selected' : ''}>4</option>
+									<option value="5" ${userDonations.size == 5 ? 'selected' : ''}>5</option>
+									<option value="10" ${userDonations.size == 10 ? 'selected' : ''}>10</option>
+									<option value="15" ${userDonations.size == 15 ? 'selected' : ''}>15</option>
+									<option value="20" ${userDonations.size == 20 ? 'selected' : ''}>20</option>
 									
 								</select>
 							
@@ -168,16 +161,16 @@
 							<table class="table table-striped table-content">
 							<thead class="tb-head-title">
 								<tr>
-									<th scope="col" class="th-custom"><p>id</p></th>
-									<th scope="col" class="th-custom"><p>Created Date</p></th>
-									<th scope="col" class="th-custom"><p>Name</p></th>
+									<th scope="col" class="th-custom"><p >Ngày tạo</p></th>
+									<th scope="col" class="th-custom col-2 col-md-3"><p class="">Họ và tên</p></th>
 									
-									<th scope="col" class="th-custom"><p>Money</p></th>
-									<th scope="col" class="th-custom"><p>Note</p></th>
-									<th scope="col" class="th-custom"><p>UserName</p></th>
-									<th scope="col" class="th-custom"><p>Donation Code</p></th>
-									<th scope="col" class="th-custom"><p>Status</p></th>
-									<th scope="col" class="th-custom"><p>Action</p></th>
+									<th scope="col" class="th-custom col-2"><p class="">Số tiền</p></th>
+									<th scope="col" class="th-custom col-2 col-md-3"><p class="">Ghi chú</p></th>
+									<th scope="col" class="th-custom"><p class="">UserName</p></th>
+									<th scope="col" class="th-custom col-1 col-md-2"><p class="">Mã đợt</p></th>
+									<th scope="col" class="th-custom "><p class="font-weight-bold color-text">Trạng thái đợt</p></th>
+									<th scope="col" class="th-custom col-2 col-md-3"><p class="">Trạng thái</p></th>
+									<th scope="col" class="th-custom col-2 col-md-3"><p class ="">Hành động</p></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -209,14 +202,14 @@
 								
 
 									<tr>
-										<td><p>${tempUserDonation.id}</p></td>
 										<td><p>${tempUserDonation.createdDate}</p></td>
 										<td><p>${tempUserDonation.name}</p></td>
-										<td><p>${tempUserDonation.money}</p></td>
+										<td><p class="font-weight-bold">${JSPDataFormat.moneyFormat(tempUserDonation.money)}</p></td>
 										<td><p>${tempUserDonation.note}</p></td>
-										<td><p>${tempUserDonation.user.userName}</p></td>
-										<td><p>${tempUserDonation.donation.code}</p></td>
-										<td><p>${tempUserDonation.status}</p></td>
+										<td><p class="font-weight-bold">${tempUserDonation.user.userName}</p></td>
+										<td><p class="font-weight-bold">${tempUserDonation.donation.code}</p></td>
+										<td><p class="font-weight-bold color-text">${JSPDataFormat.donationStatusFormat(tempUserDonation.donation.status)}</p></td>
+										<td><p class="font-weight-bold color-text">${JSPDataFormat.userDonationStatusFormat(tempUserDonation.status)}</p></td>
 										<td class="action-c">
 											<c:if test="${tempUserDonation.status == UserDonationStatus.WAITING}">
 												<button class="btn btn-success donate-btn" title="Chi tiết" onclick="window.location.href='${confirmStatusLink}'">
@@ -224,7 +217,7 @@
 													class="content-btn-icon"></span>
 											</button>
 											
-											<button class="btn btn-success donate-btn" title="Chi tiết" onclick="toDelete('${tempUserDonation.id}', '#delete')">
+											<button class="btn btn-danger donate-btn" title="Chi tiết" onclick="toDelete('${tempUserDonation.id}', '#delete')">
 												<span class="content-btn-text">Xóa</span><span
 													class="content-btn-icon"></span>
 											</button>
@@ -262,7 +255,8 @@
 
 								<c:set var="testValue1" value="<c:url value='/v1/donations'/>" />
 
-
+	<input id="currentPage" type="hidden" name="currentPage"
+										value="${userDonations.pageable.pageNumber+1}" />
 
 							</div>
 							<div id="pagination-container"></div>
@@ -362,7 +356,22 @@
 	
 	
 	
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
+	<script src="https://code.jquery.com/jquery-3.6.4.min.js"
+		crossorigin="anonymous"></script>
+
+
+
+	<script src="<c:url value='/static/common/assets/js/form.js' />"></script>
+
+	<script src="<c:url value='/static/common/assets/js/script.js' />"></script>
+
+	<script
+		src="<c:url value='/static/common/assets/js/layout-script.js' />"></script>
+
+
+
 
 <script>
 $(document).ready(function() {

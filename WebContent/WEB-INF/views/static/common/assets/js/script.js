@@ -104,15 +104,19 @@ function isAbleToDonate(authorities) {
 function toDonateForm(donationId, isLogined) {
 	
 	console.log("donation id is: " + donationId);
-	
+	var currentUrl = new URL(window.location.href);
+    
+    // Cập nhật hoặc thêm các tham số query mới
+    currentUrl.searchParams.set('size', $('#pageSize').val());
+    currentUrl.searchParams.set('page', $('#currentPage').val());
+    currentUrl.searchParams.set('searchingValue', $('#searchingValue').val());
+    currentUrl.searchParams.set('donationId', donationId);
+    console.log("current urllll: " + currentUrl);
 	if (isLogined) {
 		$.ajax({
 			type: "GET",
-			url: window.location.href,
-			data: {
-
-				donationId: donationId
-			},
+			url: currentUrl,
+			
 			success: function(data) {
 				$("#donate").html(
 					$(data).find("#donate").html());
@@ -132,14 +136,20 @@ function toDonateForm(donationId, isLogined) {
 function toDeletePopup(donationId, authorities) {
 	console.log("donation id:" + donationId);
 	console.log("authorities:" + authorities);
+	var currentUrl = new URL(window.location.href);
+    
+    // Cập nhật hoặc thêm các tham số query mới
+    currentUrl.searchParams.set('size', $('#pageSize').val());
+    currentUrl.searchParams.set('page', $('#currentPage').val());
+    currentUrl.searchParams.set('searchingValue', $('#searchingValue').val());
+    currentUrl.searchParams.set('donationId', donationId);
+    console.log("current urllll: " + currentUrl);
+	
 	if (isAbleToDonate(authorities)) {
 		$.ajax({
 			type: "GET",
-			url: window.location.href,
-			data: {
-
-				donationId: donationId
-			},
+			url: currentUrl,
+			
 			success: function(data) {
 				$('#delete').html(
 					$(data).find('#delete').html());
@@ -521,8 +531,9 @@ $(document).ready(function() {
 	$('#pageSize').change(function() {
 		updateShowingTable($('#pageSize').val(), $('#searchingValue').val(), "#data-list");
 	});
-
+	
 	$('#searchingValue').on('input', function() {
+		console.log("searching value: " +  $('#searchingValue').val());
 		clearTimeout(timer);
 		timer = setTimeout(function() {
 			updateShowingTable($('#pageSize').val(), $('#searchingValue').val(), "#data-list")
@@ -550,7 +561,7 @@ $(document).ready(function() {
 
 
 */	
-	 var currentPageElement = document.getElementById("currentPage1");
+	 var currentPageElement = document.getElementById("currentPage");
     var totalPagesElement = document.getElementById("totalPages1");
     console.log("current page123: " + parseInt(currentPageElement.value, 10));
     console.log("total page123: " + parseInt(totalPagesElement.value, 10));
@@ -578,13 +589,35 @@ $(document).ready(function() {
 // donation delete popup
 
 function toDelete(id, divId) {
+	var currentUrl = new URL(window.location.href);
+	
+	var size = document.getElementById("pageSize").value;
+	var page = document.getElementById("currentPage").value;
+	var searchingValue = document.getElementById("searchingValue").value;
+	
+	console.log("...................... pageSize: " +size);
+	console.log("...................... currentPage: " +page);
+	console.log("...................... searchingValue: " +searchingValue);
+	// Cập nhật hoặc thêm các tham số query mới
+	currentUrl.searchParams.set('size', size);
+	currentUrl.searchParams.set('page', page);
+	currentUrl.searchParams.set('searchingValue', searchingValue);
+	if(currentUrl.searchParams.get('id')) {
+		
+	}
+	if(currentUrl.pathname.includes("/admin/donation-detail")) {
+		console.log("..................................test url donation-details");
+		currentUrl.searchParams.set('userDonationId', id);
+	} else if(currentUrl.pathname.includes("/admin/user-detail")) {
+		console.log("..................................test url user-details");
+		currentUrl.searchParams.set('userDonationId', id);
+	}
+		
+		console.log("..................................test url: " + currentUrl);
 		$.ajax({
 			type: "GET",
-			url: window.location.href,
-			data: {
-
-				id: id
-			},
+			url: currentUrl,
+			
 			success: function(data) {
 				$(divId).html(
 					$(data).find(divId).html());
@@ -597,22 +630,36 @@ function toDelete(id, divId) {
 	
 // donation add or update modal
 
-	function toAddOrUpdate(id, divId) {
-		$.ajax({
-			type: "GET",
-			url: window.location.href,
-			data: {
+function toAddOrUpdate(id, divId) {
+	var currentUrl = new URL(window.location.href);
+	
+	var size = document.getElementById("pageSize").value;
+	var page = document.getElementById("currentPage").value;
+	var searchingValue = document.getElementById("searchingValue").value;
+	
+	console.log("...................... pageSize: " +size);
+	console.log("...................... currentPage: " +page);
+	console.log("...................... searchingValue: " +searchingValue);
+	// Cập nhật hoặc thêm các tham số query mới
+	currentUrl.searchParams.set('size', size);
+	currentUrl.searchParams.set('page', page);
+	currentUrl.searchParams.set('searchingValue', searchingValue);
+	
+	$.ajax({
+		type: "GET",
+		url: currentUrl,
+		data: {
 
-				id: id
-			},
-			success: function(data) {
-				$(divId).html(
-					$(data).find(divId).html());
-			}
-		});
-		
-		openModal(divId);
+			id: id
+		},
+		success: function(data) {
+			$(divId).html(
+				$(data).find(divId).html());
+		}
+	});
 
-	}
+	openModal(divId);
+
+}
 
 

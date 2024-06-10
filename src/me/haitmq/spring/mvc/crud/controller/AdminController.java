@@ -248,74 +248,73 @@ public class AdminController {
 
 	
 	/*
-	 *	What donations need to do? 
-	 * - request param:
-	 * 		+ HttpServletRequest
-	 *  	+ donation id (for display detail)
-	 *  	+ page
-	 *  	+ size
-	 *  	+ searchingValue
-	 * - handle:
-	 * 		+ check authority
-	 * 		+ show donation detail
-	 * 		+ show userDonatoin List (pageable with confirm btn) -------------------------------------
-	 * 			+ 
-	 * 	
+	 * What donations need to do? - request param: + HttpServletRequest + donation
+	 * id (for display detail) + page + size + searchingValue - handle: + check
+	 * authority + show donation detail + show userDonatoin List (pageable with
+	 * confirm btn) ------------------------------------- +
+	 * 
 	 * - return view
 	 * 
 	 * 
 	 */
 	@GetMapping("donation-detail")
-	public String donationDetails(HttpServletRequest request, 
-			@RequestParam("id") int theId, 
-			@RequestParam(defaultValue = "1") int page,
-			@RequestParam(name = "size", defaultValue = "5") int size,
+	public String donationDetails(HttpServletRequest request, @RequestParam("id") int theId,
+			@RequestParam(defaultValue = "1") int page, @RequestParam(name = "size", defaultValue = "5") int size,
 			@RequestParam(name = "searchingValue", defaultValue = "", required = false) String searchingValue,
+			@RequestParam(name = "userDonationId", defaultValue = "0") int userDonationId,
 			Model theModel) {
-		
+
 		/*
-		try {
+		 * try {
+		 * 
+		 * 
+		 * 
+		 * } catch (Exception e) { return ViewConstants.V_ERROR; }
+		 */
 
-			
-			
-		} catch (Exception e) {
-			return ViewConstants.V_ERROR;
-		}
-		*/
-		
 		// check authority (isLogined, isAdmin) (bao gồm phần header)
-					HttpSession session = request.getSession();
+		HttpSession session = request.getSession();
 
-					// check current user is admin
-					if (!userService.isAdmin(SessionUtils.getCurrentUserId(session))) {
-						throw new IllegalStateException("AdminController-donationDetail: User is not an admin.");
-					}
-					// use for nav bar and modals
-					SessionUtils.addLoginUserInfoToModel(session, theModel);
-					
-					// get the donation for display detail
-					Donation theDonation = donationService.getDonation(theId);
-					
-					Page<UserDonation> userDonations = userDonationService.findByDonationCodeSortByCreatedDate(theDonation.getCode(), searchingValue, page, size);
-					
-					
-					
-					
-					// add to model
-					theModel.addAttribute("donation", theDonation);
-					
-					theModel.addAttribute("userDonations", userDonations);
+		// check current user is admin
+		if (!userService.isAdmin(SessionUtils.getCurrentUserId(session))) {
+			throw new IllegalStateException("AdminController-donationDetail: User is not an admin.");
+		}
+		// use for nav bar and modals
+		SessionUtils.addLoginUserInfoToModel(session, theModel);
 
-					theModel.addAttribute("currentPage", page);
-					
-					theModel.addAttribute("currentSize", size);
-					
-					theModel.addAttribute("searchingValue", searchingValue);
-					
-					
-					SessionUtils.setCurrentEndpoint(request);
-					return ViewConstants.V_ADMIN_DONATION_DETAIL;
+		// get the donation for display detail
+		Donation theDonation = donationService.getDonation(theId);
+
+		Page<UserDonation> userDonations = userDonationService
+				.findByDonationCodeSortByCreatedDate(theDonation.getCode(), searchingValue, page, size);
+
+		donationService.setTotalConfirmedDonate(theId);
 		
+		// add to model
+		theModel.addAttribute("donation", theDonation);
+
+		theModel.addAttribute("userDonations", userDonations);
+
+		theModel.addAttribute("currentPage", page);
+
+		theModel.addAttribute("currentSize", size);
+
+		theModel.addAttribute("searchingValue", searchingValue);
+		
+		// for cancel userDonation model
+		UserDonation userDonation = new UserDonation();
+		
+		// if donation id !=0 then it is update
+		if (userDonationId != 0) {
+			userDonation = userDonationService.getUserDonation(userDonationId);
+			
+		} 
+
+		theModel.addAttribute("userDonation", userDonation);
+
+		SessionUtils.setCurrentEndpoint(request);
+		return ViewConstants.V_ADMIN_DONATION_DETAIL;
+
 	}
 	
 	
@@ -334,12 +333,14 @@ public class AdminController {
 	
 	// ? -------------------------------------------------------------------
 	@GetMapping("/updateDonationStatus")
-	public String updateDonationStatus(@RequestParam("id") int donationId,
+	public String updateDonationStatus(HttpServletRequest request,
+			@RequestParam("id") int donationId,
 			@RequestParam(name = "status") DonationStatus status, Model theModel) {
 
 		donationService.changeDonationStatus(status, donationId);
 
-		return ViewConstants.V_REDIRECT_ADMIN_DONATIONS;
+		//return ViewConstants.V_REDIRECT_ADMIN_DONATIONS;
+		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
 	}
 	
 	
@@ -373,7 +374,8 @@ public class AdminController {
 			redirectAttributes.addFlashAttribute("successProcess", true);
 	    }
 
-		return ViewConstants.V_REDIRECT_ADMIN_DONATIONS;
+		//return ViewConstants.V_REDIRECT_ADMIN_DONATIONS;
+		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
 	}
 	
 	
@@ -387,8 +389,8 @@ public class AdminController {
 	public String delete(HttpServletRequest request, @RequestParam("id") int donationId) {
 
 		donationService.changeDonationShowingStatus(donationId);
-		//return "redirect:" + SessionUtils.getCurrentEndpoint(request);
-		return ViewConstants.V_REDIRECT_ADMIN_DONATIONS;
+		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
+		//return ViewConstants.V_REDIRECT_ADMIN_DONATIONS;
 
 	}
 
@@ -454,10 +456,14 @@ public class AdminController {
 		/*
 		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
 		*/
-		return ViewConstants.V_REDIRECT_ADMIN_DONATIONS;
+		//return ViewConstants.V_REDIRECT_ADMIN_DONATIONS;
+		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
 	}
 
 	// user manager
+	
+	
+	
 
 	@GetMapping("/users")
 	public String userList(HttpServletRequest request, @RequestParam(defaultValue = "1") int page,
@@ -465,99 +471,80 @@ public class AdminController {
 			@RequestParam(name = "searchingValue", defaultValue = "", required = false) String searchingValue,
 			@RequestParam(name = "id", defaultValue = "0") int userId, Model theModel) {
 		
-		/*
 		try {
-			// kiểm tra quyền (isLogined, isAdmin) (bao gồm phần header)
+			
+			HttpSession session = request.getSession();
+			
+			// check current user is admin
+			if(!userService.isAdmin(SessionUtils.getCurrentUserId(session))) {
+				throw new IllegalStateException("AdminController-donationList: User is not an admin.");
+			}
+			// use for nav bar and modals
+			SessionUtils.addLoginUserInfoToModel(session, theModel);
+			
+			// user list
 
+			Page<User> users = userService.findByEmailOrUserNameOrPhoneNumberOrStatus(page, size,searchingValue);
+
+			theModel.addAttribute("searchingValue", searchingValue);
+
+			theModel.addAttribute("users", users);
+
+			theModel.addAttribute("currentPage", page);
+
+			theModel.addAttribute("totalPage", users.getTotalPages());
+
+			theModel.addAttribute("currentSize", size);
+
+			// user model attribute
+
+			// add or update
+			
+			String userProcess = "processAddUser";
+
+			InitUser user = new InitUser();
+			
+			boolean errorProcess=false;
+			boolean successAdd = false;
+			
+			// if donation id !=0 then it is update
+			if (userId != 0) {
+				
+				user.getPropertiesFromDonationObj(userService.getUser(userId));
+				userProcess = "processUpdateUser";
+			} 
+			
+			// if there are donaion error then get donation obj and add to model 
+			if (theModel.containsAttribute("errorUser")) {
+				user = (InitUser) theModel.getAttribute("errorUser");
+	            errorProcess = true;
+	        } else if(theModel.containsAttribute("successAdd")) {
+	        	successAdd = true;
+	        }
+			
+			// check if the last add donation is success
+			 theModel.addAttribute("successAdd", successAdd);
+			
+			theModel.addAttribute("errorProcess",errorProcess);
+			theModel.addAttribute("user", user);
+
+			theModel.addAttribute("process", userProcess);
+			
+			
+			
+			// set current endpoint for view return in process function
+			SessionUtils.setCurrentEndpoint(request);
+			
+			System.out.println("test test test test test test");
+
+			return ViewConstants.V_ADMIN_USERS;
 			
 		} catch (Exception e) {
+			
+			log.error("NO PERMISSION: {}", e);
 			return ViewConstants.V_ERROR;
 		}
 		
-		*/
-		
-		
-		HttpSession session = request.getSession();
-		
-		SessionUtils.setCurrentEndpoint(request);
-		
-		/*
-		Integer currentUserId = (Integer) session.getAttribute("currentUserId");
-
-		Boolean isLogined = false;
-
-		Boolean isAdmin = false;
-
-		if (currentUserId != null) {
-			isLogined = true;
-			isAdmin = userService.isAdmin(currentUserId);
-		}
-
-		theModel.addAttribute("isLogined", isLogined);
-
-		theModel.addAttribute("isAdmin", isAdmin);
-		*/
-		
-		Integer currentUserId = LoginUserInfomation.getCurrentUserId(session);
-		
-		LoginUserInfomation.addLoginUserInfoToModel(session, theModel);
-		
-		// user list
-
-		Page<User> users = userService.findByEmailOrUserNameOrPhoneNumber(page, size,searchingValue);
-
-		theModel.addAttribute("searchingValue", searchingValue);
-
-		theModel.addAttribute("users", users);
-
-		theModel.addAttribute("currentPage", page);
-
-		theModel.addAttribute("totalPage", users.getTotalPages());
-
-		theModel.addAttribute("currentSize", size);
-
-		// user model attribute
-
-		// add or update
-		
-		String userProcess = "processAddUser";
-
-		InitUser user = new InitUser();
-		
-		boolean errorProcess=false;
-		boolean successAdd = false;
-		
-		// if donation id !=0 then it is update
-		if (userId != 0) {
-			
-			user.getPropertiesFromDonationObj(userService.getUser(userId));
-			userProcess = "processUpdateUser";
-		} 
-		
-		// if there are donaion error then get donation obj and add to model 
-		if (theModel.containsAttribute("errorUser")) {
-			user = (InitUser) theModel.getAttribute("errorUser");
-            errorProcess = true;
-        } else if(theModel.containsAttribute("successAdd")) {
-        	successAdd = true;
-        }
-		
-		// check if the last add donation is success
-		 theModel.addAttribute("successAdd", successAdd);
-		
-		theModel.addAttribute("errorProcess",errorProcess);
-		theModel.addAttribute("user", user);
-
-		theModel.addAttribute("process", userProcess);
-		
-		
-		
-		// set current endpoint for view return in process function
-		SessionUtils.setCurrentEndpoint(request);
-		
-		System.out.println("test test test test test test");
-
-		return ViewConstants.V_ADMIN_USERS;
 		
 
 	}
@@ -597,7 +584,7 @@ public class AdminController {
 		/*
 		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
 		*/
-		return ViewConstants.V_REDIRECT_ADMIN_DONATIONS;
+		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
 	}
 	
 
@@ -636,16 +623,17 @@ public class AdminController {
 			redirectAttributes.addFlashAttribute("successProcess", true);
 	    }
 
-		return ViewConstants.V_REDIRECT_ADMIN_DONATIONS;
+		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
 	}
 
 	@GetMapping("/updateUserStatus")
-	public String updateUserStatus(@RequestParam("id") int userId, @RequestParam(name = "status") UserStatus status,
+	public String updateUserStatus(HttpServletRequest request,
+			@RequestParam("id") int userId, @RequestParam(name = "status") UserStatus status,
 			Model theModel) {
 
 		userService.changeUserStatus(status, userId);
 
-		return ViewConstants.V_REDIRECT_ADMIN_USERS;
+		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
 	}
 	
 
@@ -663,32 +651,57 @@ public class AdminController {
 		/*
 		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
 */		
-		return "redirect:" + currentUrl;
+		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
 	}
+	
+	
 
 	@GetMapping("/user-detail")
-	public String userDetail(HttpServletRequest request, @RequestParam("id") int theId, Model theModel) {
+	public String userDetail(HttpServletRequest request, @RequestParam("id") int theId,
+			@RequestParam(defaultValue = "1") int page, @RequestParam(name = "size", defaultValue = "5") int size,
+			@RequestParam(name = "searchingValue", defaultValue = "", required = false) String searchingValue,
+			@RequestParam(name = "userDonationId", defaultValue = "0") int userDonationId,
+			Model theModel) {
 
 		HttpSession session = request.getSession();
-		Integer currentUserId = (Integer) session.getAttribute("currentUserId");
 
-		Boolean isLogined = false;
-
-		Boolean isAdmin = false;
-
-		if (currentUserId != null) {
-			isLogined = true;
-			isAdmin = userService.isAdmin(currentUserId);
+		// check current user is admin
+		if (!userService.isAdmin(SessionUtils.getCurrentUserId(session))) {
+			throw new IllegalStateException("AdminController-donationDetail: User is not an admin.");
 		}
 
-		theModel.addAttribute("isLogined", isLogined);
+		SessionUtils.addLoginUserInfoToModel(session, theModel);
 
-		theModel.addAttribute("isAdmin", isAdmin);
+		// get the user for display detail
+		User theUser = userService.getUser(theId);
 
-		User user = userService.getUser(theId);
+		Page<UserDonation> userDonations = userDonationService.findByUserNameSortByCreatedDate(theUser.getUserName(),
+				searchingValue, page, size);
 
-		theModel.addAttribute("user", user);
+
+		// add to model
+		theModel.addAttribute("user", theUser);
+
+		theModel.addAttribute("userDonations", userDonations);
+
+		theModel.addAttribute("currentPage", page);
+
+		theModel.addAttribute("currentSize", size);
+
+		theModel.addAttribute("searchingValue", searchingValue);
+
+		UserDonation userDonation = new UserDonation();
+
+		// if donation id !=0 then it is update
+		if (userDonationId != 0) {
+			userDonation = userDonationService.getUserDonation(userDonationId);
+
+		}
+
+		theModel.addAttribute("userDonation", userDonation);
 		
+		System.out.println(".............dsfdsf.................. test(userDonatitonId): " + userDonationId );
+
 		SessionUtils.setCurrentEndpoint(request);
 
 		return ViewConstants.V_ADMIN_USER_DETAIL;
@@ -707,27 +720,6 @@ public class AdminController {
 			// kiểm tra quyền (isLogined, isAdmin) (bao gồm phần header)
 
 			HttpSession session = request.getSession();
-			
-			/*
-			Integer currentUserId = (Integer) session.getAttribute("currentUserId");
-
-			Boolean isLogined = false;
-
-			Boolean isAdmin = false;
-
-			if (currentUserId != null) {
-				isLogined = true;
-				isAdmin = userService.isAdmin(currentUserId);
-			} else {
-				throw new RuntimeException("the error: not admin");
-			}
-
-			theModel.addAttribute("isLogined", isLogined);
-
-			theModel.addAttribute("isAdmin", isAdmin);
-			
-			*/
-			
 			
 			LoginUserInfomation.addLoginUserInfoToModel(session, theModel);
 			
@@ -777,11 +769,13 @@ public class AdminController {
 
 
 	@GetMapping("/deleteUserDonation")
-	public String deleteUserDonation(@RequestParam("id") int userDonationId,
-			@RequestParam(name = "currentUrl", defaultValue = "/admin/user_donations") String currentUrl) {
+	public String deleteUserDonation(HttpServletRequest request,
+			@RequestParam("userDonationId") int userDonationId) {
 
 		userDonationService.changeUserDonationStatus(userDonationId, UserDonationStatus.CANCELED);
-		return "redirect:" + currentUrl;
+		
+		System.out.println("//////////////////////in deleteUserDonation url: " + SessionUtils.getCurrentEndpoint(request));
+		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
 
 	}
 

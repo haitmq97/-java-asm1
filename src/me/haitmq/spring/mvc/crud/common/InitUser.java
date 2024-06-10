@@ -165,7 +165,7 @@ public class InitUser {
 		user.setEmail(this.getEmail());
 		user.setAddress(this.getAddress());
 		user.setPhoneNumber(this.getPhoneNumber());
-		user.setRole(this.getRole());
+		user.getRole().setRoleName(this.getRole().getRoleName());;
 		
 		
 		return user;

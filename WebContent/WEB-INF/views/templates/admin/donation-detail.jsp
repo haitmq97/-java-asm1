@@ -275,8 +275,9 @@
 							<div class="d-flex justify-content-between flex-wrap mb-3">
 								<div class="page-selector">
 									
-									<input id="currentPage" type="hidden" name="currentPage"
-										value="${currentPage}" /> <label for="size">Rows per
+								
+										
+									<label for="size">Rows per
 										page:</label> 
 									<select id="pageSize" name="size"
 										class="entries-select rounded form-control">
@@ -360,9 +361,9 @@
 														<span class="content-btn-text">Xác nhận</span>
 													</button>
 													
-													<button class="btn btn-success donation-btn"
+													<button class="btn btn-danger donation-btn"
 													title="Chi tiết"
-													onclick="toAddOrUpdate('${tempUserDonation.id}','#change-user-donation')"  >
+													onclick="toDelete('${tempUserDonation.id}','#user-donation-cancel')"  >
 													<span class="content-btn-text">Hủy</span>
 												</button>
 												</c:if>
@@ -393,7 +394,8 @@
 								<input id="importUrl1" type="hidden"
 									value="${searchingValue}" />
 
-
+										<input id="currentPage" type="hidden" name="currentPage"
+										value="${userDonations.pageable.pageNumber+1}" /> 
 				
 
 
@@ -457,18 +459,25 @@
 
 
 	</section>
+	
+	
+	<div class="overlay-container">
+		<div class="row">
+			<div id="overlay" onclick="closeAllModal()"></div>
+			<div class="popup col-12 col-sm-8 col-md-4">
+
+				<jsp:include page="../common/form-modal/user-donation-cancel-modal.jsp" />
+				
 
 
-	<script>
+			</div>
 
-	console.log("current url: " + window.location.href);
-	console.log("current url query: " + window.location.searc);
-	</script>
 
+		</div>
 
 
 
-
+	</div>
 
 	<jsp:include page="../common/footer-layout2.jsp">
 		<jsp:param name="includePart" value="footerSection" />

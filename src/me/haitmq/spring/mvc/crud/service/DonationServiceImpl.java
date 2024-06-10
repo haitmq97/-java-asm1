@@ -22,6 +22,7 @@ import me.haitmq.spring.mvc.crud.entity.Donation;
 import me.haitmq.spring.mvc.crud.entity.UserDonation;
 import me.haitmq.spring.mvc.crud.utils.*;
 import me.haitmq.spring.mvc.crud.entity.status.DonationStatus;
+import me.haitmq.spring.mvc.crud.entity.status.UserDonationStatus;
 
 @Service
 public class DonationServiceImpl implements DonationService {
@@ -89,9 +90,13 @@ public class DonationServiceImpl implements DonationService {
 	@Transactional
 	public void update(Donation donation) {
 		if(isAbleToUpdate(donation)) {
+			//need handle for avoiding user change donation status from browser inspect
+
 			donationDAO.saveOrUpdate(donation);
 		}
 	}
+	
+	
 
 	
 	
@@ -322,8 +327,8 @@ public class DonationServiceImpl implements DonationService {
 		List<UserDonation> userDonations= userDonationDAO.getAllUserDonations()
 				.stream()
 				.filter(userDonation -> 
-					(userDonation.getDonation().getCode().equals(donation.getCode())&&
-							(userDonation.getShowing()==true))).toList();
+					(userDonation.getDonation().getCode().equals(donation.getCode())
+							&&(userDonation.getStatus()==UserDonationStatus.CONFIRMED))).toList();	
 		
 		if(!userDonations.isEmpty()) {
 			long total = userDonations.stream().count();

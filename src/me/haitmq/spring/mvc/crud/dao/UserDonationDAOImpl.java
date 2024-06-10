@@ -293,8 +293,9 @@ public class UserDonationDAOImpl implements UserDonationDAO {
 		
 		String theQueryString = "from UserDonation ud where"
 				 	+ " ud.showing = 1 and ("
-					+ " ud.donation.code like concat(:searchingValue, '%') or" 
-					+ " ud.user.userName like concat(:searchingValue, '%'))";
+					+ " lower(ud.donation.code) like lower(concat(:searchingValue, '%')) or" 
+					+ " lower(ud.user.userName) like lower(concat(:searchingValue, '%')))"
+					+ " order by ud.createdDate desc ,ud.status desc";
 
 		Session session = sessionFactory.getCurrentSession();
 		Query<UserDonation> theQuery = session.createQuery(theQueryString, UserDonation.class);
@@ -317,10 +318,10 @@ public class UserDonationDAOImpl implements UserDonationDAO {
 		String theQueryString = "from UserDonation ud where " 
 				+ "ud.showing = 1 and " 
 				+ " ud.donation.code =:donationCode and ("
-				+ " ud.status like concat(:searchingValue, '%') or" 
-				+ " ud.name like concat(:searchingValue, '%') or"
-				+ " ud.user.userName like concat(:searchingValue, '%') or"
-				+ " ud.user.email like concat(:searchingValue, '%'))"
+				+ " lower(ud.status) like lower(concat(:searchingValue, '%')) or" 
+				+ " lower(ud.name) like lower(concat(:searchingValue, '%')) or"
+				+ " lower(ud.user.userName) like lower(concat(:searchingValue, '%')) or"
+				+ " lower(ud.user.email) like lower(concat(:searchingValue, '%')))"
 				+ " order by ud.createdDate desc ,ud.status desc";
 
 		Query<UserDonation> theQuery = getSession().createQuery(theQueryString, UserDonation.class);
@@ -341,20 +342,18 @@ public class UserDonationDAOImpl implements UserDonationDAO {
 	}
 	
 
-	
-
-	public Page<UserDonation> findByDonationCodeSortByCreatedDate2(String donationCode, String searchingValue,
-			Pageable pageable) {
-
+	public Page<UserDonation> findByDonationCodeGroupByUserSortByTotalMoney(String donationCode, String searchingValue, Pageable pageable) {
+		
 		String theQueryString = "from UserDonation ud where " 
 				+ "ud.showing = 1 and " 
 				+ " ud.donation.code =:donationCode and ("
-				+ " ud.status like concat(:searchingValue, '%') or" 
-				+ " ud.name like concat(:searchingValue, '%') or"
-				+ " ud.user.userName like concat(:searchingValue, '%') or"
-				+ " ud.user.email like concat(:searchingValue, '%'))";
+				+ " lower(ud.status) like lower(concat(:searchingValue, '%')) or" 
+				+ " lower(ud.name) like lower(concat(:searchingValue, '%')) or"
+				+ " lower(ud.user.userName) like lower(concat(:searchingValue, '%')) or"
+				+ " lower(ud.user.email) like lower(concat(:searchingValue, '%')))"
+				+ " order by ud.createdDate desc ,ud.status desc";
 
-		Query<UserDonation> theQuery = getSession().createQuery(theQueryString, UserDonation.class);
+		Query<UserDonation> theQuery = getSession().createQuery("select ud.donation.code, ud.user.userName, ud.user.email, sum(money) as sum_money"+theQueryString, UserDonation.class);
 
 		// Đặt giá trị tham số
 		theQuery.setParameter("searchingValue", searchingValue);
@@ -368,10 +367,38 @@ public class UserDonationDAOImpl implements UserDonationDAO {
 		countQuery.setParameter("donationCode", donationCode);
 		Long total = countQuery.uniqueResult();
 
-		return new PageImpl<>(theQuery.getResultList()
-				.stream()
-				.sorted((userDonation1,userDonation2) 
-						-> userDonation1.getCreatedDate().compareTo(userDonation1.getCreatedDate())).toList(), pageable, total);
+		return new PageImpl<>(theQuery.getResultList(), pageable, total);
+		
+	}
+
+	@Override
+	public Page<UserDonation> findByUserNameSortByCreatedDate(String username, String searchingValue,
+			Pageable pageable) {
+
+		String theQueryString = "from UserDonation ud where " 
+				+ "ud.showing = 1 and " 
+				+ " ud.user.userName =:userName and ("
+				+ " lower(ud.status) like lower(concat(:searchingValue, '%')) or" 
+				+ " lower(ud.name) like lower(concat(:searchingValue, '%')) or"
+				+ " lower(ud.user.userName) like lower(concat(:searchingValue, '%')) or"
+				+ " lower(ud.user.email) like lower(concat(:searchingValue, '%')))"
+				+ " order by ud.createdDate desc ,ud.status desc";
+
+		Query<UserDonation> theQuery = getSession().createQuery(theQueryString, UserDonation.class);
+
+		// Đặt giá trị tham số
+		theQuery.setParameter("searchingValue", searchingValue);
+		theQuery.setParameter("userName", username);
+		theQuery.setFirstResult((int) pageable.getOffset());
+		theQuery.setMaxResults(pageable.getPageSize());
+
+		Query<Long> countQuery = getSession().createQuery("select count(ud) " + theQueryString, Long.class);
+
+		countQuery.setParameter("searchingValue", searchingValue);
+		countQuery.setParameter("userName", username);
+		Long total = countQuery.uniqueResult();
+
+		return new PageImpl<>(theQuery.getResultList(), pageable, total);
 	}
 	
 

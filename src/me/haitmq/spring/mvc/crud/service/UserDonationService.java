@@ -116,6 +116,9 @@ public interface UserDonationService {
 	
 	public Page<UserDonation> findByDonationCodeSortByCreatedDate(String donationCode, String searchingValue,int page,int size);
 	
+	public Page<UserDonation> findByDonationCodeGroupByUserSortByTotalMoney(String donationCode, String searchingValue,int page,int size);
+	
+	public Page<UserDonation> findByUserNameSortByCreatedDate(String username, String searchingValue,int page,int size);
 	
 	
 	public Donation getDonation(int userDonationId);

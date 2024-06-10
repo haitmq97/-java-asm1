@@ -83,22 +83,58 @@ public class DonationDAOImpl implements DonationDAO {
 		return new PageImpl<>(theQuery.getResultList(), pageable, countQuery.uniqueResult());
 	}
 
-
+	
 	@Override
 	public Page<Donation> findByPhoneNumberOrOrganizationOrCodeOrStatus(String searchingValue, Pageable pageable) {
 		
 		String theQueryString =
 				"from Donation d where "
 				+ "d.showing = 1 and ("
-				+ " d.status like concat(:searchingValue, '%') or" 
-				+ " d.phoneNumber like concat(:searchingValue, '%') or"
-				+ " d.organization like concat(:searchingValue, '%') or" 
-				+ " d.code like concat(:searchingValue, '%'))";
+				+ " lower(d.status) like lower(concat(:searchingValue, '%'))" 
+				+ " or lower(d.phoneNumber) like lower(concat(:searchingValue, '%'))"
+				+ " or lower(d.organization) like lower(concat(:searchingValue, '%'))" 
+				+ " or lower(d.code) like lower(concat(:searchingValue, '%')))";
 		
 		return findByQuery(theQueryString, searchingValue, pageable);
 	}
 	
+	
+	/*
+	@Override
+	public Page<Donation> findByPhoneNumberOrOrganizationOrCodeOrStatus(String searchingValue, Pageable pageable) {
 
+		String theQueryString = "select d"
+				+ " , case"
+					+ " when d.status = 'NEW' then 'Mới tạo'"
+					+ " when d.status = 'DONATING' then 'Đang quyên góp'"
+					+ " when d.status = 'END' then 'Đã kết thúc'"
+					+ " when d.status = 'CLOSED' then 'Đã đóng'"
+				+ " end as d_status"	
+				+ " from Donation d where" 
+				+ " d.showing = 1 and ("
+				+ " lower(d_status) like lower(concat(:searchingValue, '%')) or"
+				+ " lower(d.phoneNumber) like lower(concat(:searchingValue, '%')) or"
+				+ " lower(d.organization) like lower(concat(:searchingValue, '%')) or"
+				+ " lower(d.code) like lower(concat(:searchingValue, '%')))";
+
+		Query<Donation> theQuery = getSession().createQuery(theQueryString, Donation.class);
+
+		// Đặt giá trị tham số
+		theQuery.setParameter("searchingValue", searchingValue);
+		theQuery.setFirstResult((int) pageable.getOffset());
+		theQuery.setMaxResults(pageable.getPageSize());
+		
+		String countQueryString ="select count(ed) "
+				+ "from " + theQueryString + " ed";
+
+		Query<Long> countQuery = getSession().createQuery(countQueryString, Long.class);
+
+		countQuery.setParameter("searchingValue", searchingValue);
+
+		return new PageImpl<>(theQuery.getResultList(), pageable, countQuery.uniqueResult());
+	}
+	*/
+	
 	@Override
 	public Page<Donation> findAll(Pageable pageable) {
 		String theQueryString ="from Donation d";

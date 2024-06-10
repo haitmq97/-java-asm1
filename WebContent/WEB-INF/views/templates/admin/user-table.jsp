@@ -4,12 +4,14 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ page import="me.haitmq.spring.mvc.crud.content_path.ViewConstants" %>
-<%@ page import="me.haitmq.spring.mvc.crud.utils.JSPDataFormat" %>
+<%@ page import="me.haitmq.spring.mvc.crud.utils.JSPDataFormat"%>
+<%@ page import="me.haitmq.spring.mvc.crud.utils.Time"%>
 <%@ page import="me.haitmq.spring.mvc.crud.entity.status.UserStatus" %>
 <%@ page import="me.haitmq.spring.mvc.crud.entity.role.UserRole" %>
 
 <!DOCTYPE html>
 <html>
+<head>
 <head>
 <title>Donation website &mdash; Website Donation</title>
 <meta charset="utf-8">
@@ -19,7 +21,8 @@
 <meta name="keywords" content="" />
 <meta name="author" content="Free-Template.co" />
 
-
+<link rel="icon" type="image/x-icon"
+	href="<c:url value='/static/common/assets/img/icon/heart.ico' />">
 
 <link rel="stylesheet"
 	href="<c:url value='/static/common/assets/css/content-style.css' />">
@@ -74,29 +77,20 @@
 	href="<c:url value='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css'/>"
 	integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
 	crossorigin="anonymous" referrerpolicy="no-referrer" />
-	
 
- <!-- customer style -->
- <link rel="stylesheet"
-	href="<c:url value='/static/common/assets/css/style.css'/>" />
-	
+
+<!-- customer style -->
+
 <link rel="stylesheet"
-	href="<c:url value='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css'/>"
-	integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
-	crossorigin="anonymous" referrerpolicy="no-referrer" />
+	href="<c:url value='/static/common/assets/css/style.css'/>" />
 
 
 
+<!-- customer js -->
 
-<!-- customer js -->	
-
-<script src="<c:url value='https://code.jquery.com/jquery-3.6.4.min.js'/>"> </script>
-<script src="<c:url value='/static/common/assets/js/form.js' />"></script>
-<script src="<c:url value='/static/common/assets/js/script.js' />"></script> 
-<script src="<c:url value='/static/common/assets/js/data-list.js' />"></script> 
-<script src="<c:url value='/static/common/assets/js/layout-script.js' />"></script>
-
-
+<script src="<c:url value='/static/common/assets/js/script.js' />"></script>
+<script
+	src="<c:url value='/static/common/assets/js/layout-script.js' />"></script>
 </head>
 <body>
 <!-- Header layout -->
@@ -104,11 +98,12 @@
 		<jsp:param name="includePart" value="headerSection" />
 	</jsp:include>
 	
-	<input type="hidden" id="isLogined" value="${isLogined}" />
+	
 
 
 
 	<section class="site-section content">
+	<input type="hidden" id="isLogined" value="${isLogined}" />
 		<div class="container" id="content-table">
 			<div class="row mb-5 justify-content-center">
 				<div class="col-md-7 text-center">
@@ -130,8 +125,7 @@
 						<div class="sp-tool d-flex flex-row justify-content-between mt-3">
 							<div class="page-selector">
 
-								<input id="currentPage" type="hidden" name="currentPage"
-									value="${currentPage}" /> 
+								
 								<label for="size">Rows per page:</label> 
 								<select id="pageSize" name="size"
 									class="entries-select rounded form-control">
@@ -158,17 +152,18 @@
 						</div>
 					</div>
 					<div class="m-content list" id="data-list">
-						<table class="table table-striped table-content">
+						<div  class=" table-responsive">
+							<table class="table table-striped table-content">
 							<thead class="tb-head-title">
 								<tr>
 									
-									<th scope="col" class="th-custom"><p>Name</p></th>
-									<th scope="col" class="th-custom"><p>Email</p></th>
-									<th scope="col" class="th-custom"><p>Phone number</p></th>
+									<th scope="col" class="th-custom col-md-2"><p>Name</p></th>
+									<th scope="col" class="th-custom col-md-2"><p>Email <span class="custom-display-block">/Phone number</span></p></th>
+									<th scope="col" class="th-custom custom-display-none"><p>Phone number</p></th>
 									<th scope="col" class="th-custom"><p>UserName</p></th>
 									<th scope="col" class="th-custom"><p>Role</p></th>
 									<th scope="col" class="th-custom"><p>status</p></th>
-									<th scope="col" class="th-custom"><p>Action</p></th>
+									<th scope="col" class="th-custom col-1 col-md-2 col-lg-3"><p>Action</p></th>
 								</tr>
 							</thead>
 							<tbody>
@@ -206,20 +201,23 @@
 
 									<tr>
 										
-										<td><p>${tempUser.fullName}</p></td>
-										<td><p>${tempUser.email}</p></td>
-										<td><p>${tempUser.phoneNumber}</p></td>
-										<td><p>${tempUser.userName}</p></td>
-										<td><p>${tempUser.role.roleName}</p></td>
-										<td><p>${JSPDataFormat.userStatusFormat(tempUser.status)}</p></td>
+										<td class=""><p class="text-align-left">${tempUser.fullName}</p></td>
+										<td>
+											<p>${tempUser.email}</p>
+											<p class="custom-display-block">${tempUser.phoneNumber}</p>
+										</td>
+										<td class="custom-display-none"><p >${tempUser.phoneNumber}</p></td>
+										<td class=""><p >${tempUser.userName}</p></td>
+										<td><p class="color-text">${tempUser.role.roleName}</p></td>
+										<td><p class="color-text">${JSPDataFormat.userStatusFormat(tempUser.status)}</p></td>
 										<td class="action-c">
+										
+										<div class="row col-12 row-custom">
 											<button class="btn btn-success user-btn" title="Cập nhật" onclick="toAddOrUpdate('${tempUser.id}', '#user-addOrUpdate')">
-												<span class="content-btn-text">Cập nhật</span><span
-													class="content-btn-icon"></span>
+												Cập nhật
 											</button>
 											<button class="btn btn-success user-btn" title="Quyên góp" onclick="window.location.href='${detailLink}'">
-												<span class="content-btn-text">Chi tiết</span><span
-													class="content-btn-icon"></span>
+												Chi tiết
 											</button>
 											
 											
@@ -228,12 +226,11 @@
 
 												
 												
-												<button class="btn btn-success donation-btn d-delete-btn"
+												<button class="btn btn-danger donation-btn d-delete-btn"
 														title="Xóa"
 														onclick="toDelete('${tempUser.id}', '#delete')"
 														data-url="${deleteLink}">
-														<span class="content-btn-text">Xóa</span><span
-															class="content-btn-icon"></span>
+														Xóa
 													</button>
 
 
@@ -242,21 +239,19 @@
 
 													<c:when test="${tempUser.status == UserStatus.ACTIVE}">
 
-														<button class="btn btn-success donation-btn d-delete-btn"
+														<button class="btn btn-warning donation-btn d-delete-btn"
 																title="Khóa"
 																onclick="window.location.href='${closedStatusLink}'">
-															<span class="content-btn-text">Khóa</span><span
-																class="content-btn-icon"></span>
+															Khóa
 														</button>
 
 													</c:when>
 
 													<c:when test="${tempUser.status == UserStatus.LOCKED}">
 
-														<button class="btn btn-success donation-btn" title="Mở"
+														<button class="btn btn-primary donation-btn" title="Mở"
 															onclick="window.location.href='${activeStatusLink}'">
-															<span class="content-btn-text">Mở</span><span
-																class="content-btn-icon"></span>
+															Mở
 														</button>
 
 													</c:when>
@@ -268,6 +263,8 @@
 
 
 											</c:if>
+										</div>
+											
 
 
 
@@ -278,9 +275,14 @@
 
 							</tbody>
 						</table>
+						<script>
+						changeColorText();
+						</script>
+						</div>
+						
 						<div>
 							<div>
-								<p>showing ${users.number*users.size +1} to ${users.number*users.size +users.numberOfElements} of ${users.totalElements}</p>
+								<p class="font-weight-light font-italic">showing ${users.number*users.size +1} to ${users.number*users.size +users.numberOfElements} of ${users.totalElements}</p>
 							</div>
 							
 							<div>
@@ -302,7 +304,12 @@
 
 
 								<c:set var="testValue1" value="<c:url value='/v1/donations'/>" />
-
+								<input id="currentPage" type="hidden" name="currentPage"
+										value="${users.pageable.pageNumber+1}" />  
+										
+										
+											<input id="currentPage" type="hidden" name="currentPage"
+										value="${userDonations.pageable.pageNumber+1}" />
 
 
 							</div>
@@ -655,8 +662,18 @@
 </script>
 
 
- -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+ -->	<script src="https://code.jquery.com/jquery-3.6.4.min.js"
+		crossorigin="anonymous"></script>
+
+
+
+	<script src="<c:url value='/static/common/assets/js/form.js' />"></script>
+
+	<script src="<c:url value='/static/common/assets/js/script.js' />"></script>
+
+	<script
+		src="<c:url value='/static/common/assets/js/layout-script.js' />"></script>
+
 
 </body>
 </html>

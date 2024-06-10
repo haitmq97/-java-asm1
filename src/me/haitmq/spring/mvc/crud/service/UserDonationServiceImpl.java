@@ -291,6 +291,20 @@ public class UserDonationServiceImpl implements UserDonationService {
 	
 	@Override
 	@Transactional
+	public Page<UserDonation> findByDonationCodeGroupByUserSortByTotalMoney(String donationCode, String searchingValue,int page,int size) {
+		PageRequest pageRequest = PageRequest.of(page-1, size);
+		return userDonationDAO.findByDonationCodeGroupByUserSortByTotalMoney(donationCode, searchingValue, pageRequest);
+	}
+	
+	@Override
+	@Transactional
+	public Page<UserDonation> findByUserNameSortByCreatedDate(String username, String searchingValue,int page,int size) {
+		PageRequest pageRequest = PageRequest.of(page-1, size);
+		return userDonationDAO.findByUserNameSortByCreatedDate(username, searchingValue, pageRequest);
+	}
+	
+	@Override
+	@Transactional
 	public Donation getDonation(int userDonationId) {
 		UserDonation theUserDonation = userDonationDAO.getUserDonation(userDonationId);
 		return theUserDonation.getDonation();

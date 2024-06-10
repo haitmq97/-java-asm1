@@ -96,4 +96,12 @@ public interface UserDonationDAO {
 	public Page<UserDonation> findByUserNameOrDonationCodeSortByStatusByCreatedDate(String searchingValue, Pageable pageable);
 	
 	public Page<UserDonation> findByDonationCodeSortByCreatedDate(String donationCode, String searchingValue, Pageable pageable);
+	
+	public Page<UserDonation> findByDonationCodeGroupByUserSortByTotalMoney(String donationCode, String searchingValue, Pageable pageable);
+	
+	
+	public Page<UserDonation> findByUserNameSortByCreatedDate(String username, String searchingValue, Pageable pageable);
+	
+	
+	
 }

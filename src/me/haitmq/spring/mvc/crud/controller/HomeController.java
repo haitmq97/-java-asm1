@@ -172,7 +172,10 @@ public class HomeController {
 	 * 
 	 */
 	@GetMapping("donation-detail")
-	public String donationDetails(HttpServletRequest request, @RequestParam("id") int theId, Model theModel) {
+	public String donationDetails(HttpServletRequest request, @RequestParam("id") int theId,
+			@RequestParam(defaultValue = "1") int page, @RequestParam(name = "size", defaultValue = "5") int size,
+			@RequestParam(name = "searchingValue", defaultValue = "", required = false) String searchingValue,
+			Model theModel) {
 		
 		HttpSession session = request.getSession();
 		
@@ -180,9 +183,32 @@ public class HomeController {
 		SessionUtils.addLoginUserInfoToModel(session, theModel);
 		
 		// add donation info to the model
-		Donation donation = donationService.getDonation(theId);
+		Donation theDonation = donationService.getDonation(theId);
 
-		theModel.addAttribute("donation", donation);
+		
+		/*
+		 * 
+		 * theModel.addAttribute("donationId", theId);
+		 */
+		// check if there are errors from last login then add to model the logined user
+		// with error, if not add new login user
+		theModel.addAttribute("loginUser",
+				theModel.containsAttribute("loginUser") ? theModel.getAttribute("loginUser") : new LoginUser());
+		// get users list to display
+		Page<UserDonation> userDonations = userDonationService
+				.findByDonationCodeSortByCreatedDate(theDonation.getCode(), searchingValue, page, size);
+		
+
+		// add to model
+		theModel.addAttribute("donation", theDonation);
+
+		theModel.addAttribute("userDonations", userDonations);
+
+		theModel.addAttribute("currentPage", page);
+
+		theModel.addAttribute("currentSize", size);
+
+		theModel.addAttribute("searchingValue", searchingValue);
 
 		// donate handle
 		// add donate obj for donate form
@@ -192,22 +218,14 @@ public class HomeController {
 
 		// check if privious donate is success then add to model to showing message
 		theModel.addAttribute("successDonate", theModel.containsAttribute("successDonate") ? true : false);
-		/*
-		 * 
-		 * theModel.addAttribute("donationId", theId);
-		 */
-		// check if there are errors from last login then add to model the logined user
-		// with error, if not add new login user
-		theModel.addAttribute("loginUser",
-				theModel.containsAttribute("loginUser") ? theModel.getAttribute("loginUser") : new LoginUser());
 
-		
 		System.out.println("current page...................detail: " + request.getRequestURL().toString());
 		System.out.println("context path..................detail:" + request.getContextPath());
 		System.out.println("request uri......................detail: " + request.getRequestURI());
-		System.out.println("totalLink...........................detaildetail:" + request.getContextPath() + request.getRequestURI());
+		System.out.println("totalLink...........................detaildetail:" + request.getContextPath()
+				+ request.getRequestURI());
 		System.out.println("query...........................details:" + request.getQueryString());
-		
+
 		SessionUtils.setCurrentEndpoint(request);
 
 		return ViewConstants.V_PUBLIC_DONATION_DETAILS;
@@ -489,8 +507,10 @@ public class HomeController {
 			return ViewConstants.V_REDIRECT_HOME;
 			*/
 			
-			
+			System.out.println("...........................in setCurrentEndpoint processDonating: " + SessionUtils.getCurrentEndpoint(request));
 			return "redirect:" + SessionUtils.getCurrentEndpoint(request);
+			
+			
 			
 		} catch (Exception e) {
 			// log.error("UserDonationController ERROR - processDonating(): ", e);
