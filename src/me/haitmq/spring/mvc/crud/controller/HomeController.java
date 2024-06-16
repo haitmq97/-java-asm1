@@ -27,7 +27,6 @@ import me.haitmq.spring.mvc.crud.entity.User;
 import me.haitmq.spring.mvc.crud.service.UserDonationService;
 import me.haitmq.spring.mvc.crud.service.DonationService;
 import me.haitmq.spring.mvc.crud.service.UserService;
-import me.haitmq.spring.mvc.crud.utils.LoginUserInfomation;
 import me.haitmq.spring.mvc.crud.utils.SessionUtils;
 
 // home controller 
@@ -185,11 +184,6 @@ public class HomeController {
 		// add donation info to the model
 		Donation theDonation = donationService.getDonation(theId);
 
-		
-		/*
-		 * 
-		 * theModel.addAttribute("donationId", theId);
-		 */
 		// check if there are errors from last login then add to model the logined user
 		// with error, if not add new login user
 		theModel.addAttribute("loginUser",
@@ -198,7 +192,6 @@ public class HomeController {
 		Page<UserDonation> userDonations = userDonationService
 				.findByDonationCodeSortByCreatedDate(theDonation.getCode(), searchingValue, page, size);
 		
-
 		// add to model
 		theModel.addAttribute("donation", theDonation);
 
@@ -218,14 +211,16 @@ public class HomeController {
 
 		// check if privious donate is success then add to model to showing message
 		theModel.addAttribute("successDonate", theModel.containsAttribute("successDonate") ? true : false);
-
+		/*
 		System.out.println("current page...................detail: " + request.getRequestURL().toString());
 		System.out.println("context path..................detail:" + request.getContextPath());
 		System.out.println("request uri......................detail: " + request.getRequestURI());
 		System.out.println("totalLink...........................detaildetail:" + request.getContextPath()
 				+ request.getRequestURI());
 		System.out.println("query...........................details:" + request.getQueryString());
-
+		
+		*/
+		// save current url
 		SessionUtils.setCurrentEndpoint(request);
 
 		return ViewConstants.V_PUBLIC_DONATION_DETAILS;
@@ -535,7 +530,7 @@ public class HomeController {
 
 		HttpSession session = request.getSession();
 
-		LoginUserInfomation.removeLoginUserInfoFromSesstion(session);
+		SessionUtils.removeLoginUserInfoFromSesstion(session);
 
 		return ViewConstants.V_REDIRECT_HOME;
 	}

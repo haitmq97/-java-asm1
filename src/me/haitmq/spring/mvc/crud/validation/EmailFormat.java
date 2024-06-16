@@ -18,7 +18,7 @@ public @interface EmailFormat {
 	public String value() default "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
 
 	// define default message
-	public String message() default "This field only contain email format";
+	public String message() default "Định dạng email không đúng";
 
 	// define default groups
 	public Class<?>[] groups() default {};

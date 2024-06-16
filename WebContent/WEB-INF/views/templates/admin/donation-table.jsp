@@ -21,8 +21,7 @@
 <link rel="icon" type="image/x-icon"
 	href="<c:url value='/static/common/assets/img/icon/heart.ico' />">
 
-<link rel="stylesheet"
-	href="<c:url value='/static/common/assets/css/content-style.css' />">
+
 
 <link rel="stylesheet"
 	href="<c:url value='/static/user/assets/css/custom-bs.css' />">
@@ -263,7 +262,7 @@
 												<button class="btn btn-success donation-btn donation-update-btn" 
 														title="Chi tiết" 
 														onclick="toAddOrUpdate('${tempDonation.id}','#donation-addOrUpdate')">
-													<span class="content-btn-text">Cập nhật</span>
+													<span>Cập nhật</span>
 												</button>
 											</c:if>
 											
@@ -273,7 +272,7 @@
 											<button class="btn btn-success donation-btn" 
 													title="Chi tiết"
 													onclick="window.location.href='${detailLink}'">
-												<span class="content-btn-text">Chi tiết</span>
+												<span>Chi tiết</span>
 											</button> 
 											
 											
@@ -281,32 +280,28 @@
 												
 												<c:when test="${tempDonation.status == DonationStatus.NEW}">
 												
+													<button class="btn btn-success donation-btn"
+															title="Quyên góp"
+															onclick="toDelete('${tempDonation.id}', '#update-status')">
+														<span>Quyên góp</span>
+													</button>
+													
 													<button class="btn btn-success donation-btn d-delete-btn"
 														title="Xóa"
 														onclick="toDelete('${tempDonation.id}', '#closedOrDelete')"
 														data-url="${deleteLink}">
-														<span class="content-btn-text">Xóa</span><span
-															class="content-btn-icon"></span>
+														<span>Xóa</span>
 													</button>
 													
-													<button class="btn btn-success donation-btn"
-															title="Quyên góp"
-															<%-- onclick="window.location.href='${donatingStatusLink}'" --%>
-															onclick="toDelete('${tempDonation.id}', '#update-status')"
-															
-															>
-														<span class="content-btn-text">Quyên góp</span>
-													</button>
+													
 												</c:when>
 												
 												<c:when test="${tempDonation.status == DonationStatus.DONATING}">
             										
             										<button class="btn btn-danger donation-btn"
 															title="Quyên góp"
-															<%-- onclick="window.location.href='${endStatusLink}'" --%>
-															onclick="toDelete('${tempDonation.id}', '#update-status')"
-															>
-														<span class="content-btn-text">Kết thúc</span><span
+															onclick="toDelete('${tempDonation.id}', '#update-status')">
+														<span>Kết thúc</span><span
 															class="content-btn-icon"></span>
 													</button>
             										
@@ -316,7 +311,7 @@
             										<button class="btn btn-danger donation-btn" 
 															title="Chi tiết"
 															onclick="toDelete('${tempDonation.id}', '#closedOrDelete')">
-													<span class="content-btn-text">Đóng</span>
+													<span >Đóng</span>
 													</button>
          										</c:when>
 
@@ -405,283 +400,37 @@
 	<div class="overlay-container">
 		<div class="row">
 			<div id="overlay" onclick="closeAllModal()"></div>
-			<div class="popup col-12 col-sm-8 col-md-4">
 
+			<!-- for update or add donation modal -->
+			<jsp:include
+				page="../admin/form-modal/donation-modal/donation-add-or-update-modal.jsp" />
 
-				<input type="hidden" id="errorProcess" value="${errorProcess}" />
-
-				<% Boolean isLogined = ((Boolean)request.getAttribute("isLogined")) != null ? (Boolean)request.getAttribute("isLogined") : false; %>
-				<% Boolean isAdmin = ((Boolean)request.getAttribute("isAdmin")) != null ? (Boolean)request.getAttribute("isAdmin") : false; %>
-				<%-- 
-			<% boolean isLogined = (Boolean)request.getAttribute("isLogined"); %>
-			<% boolean isAdmin = (Boolean)request.getAttribute("isAdmin"); %>
-    		 --%>
-				<% if (isAdmin) { %>
-				
-				<jsp:include page="../common/form-modal/closed-or-delete-donation-modal.jsp" />
-				
-				<%-- <div class="form-container donate-form" id="closedOrDelete">
-					<c:if test="${donation.status == DonationStatus.NEW}">
-		
-		 <c:set var = "output1" value = "xóa"/>
-		
-		
-		<c:url var="closedOrDeleteLink" value="/admin/updateDonationStatus">
-			<c:param name="id" value="${donation.id}" />
-			<c:param name="status" value="${DonationStatus.CLOSED}" />
-		</c:url>
-	</c:if>
-
-	<c:if test="${donation.status == DonationStatus.END}">
-
-		<c:set var="output1" value="đóng" />
-		
-
-		<c:url var="closedOrDeleteLink" value="/admin/deleteDonation">
-			<c:param name="id" value="${donation.id}" />
-			
-		</c:url>
-
-
-	</c:if>
-					
-				
-					<div class="container form-head">
-						<h3>Bạn có chắc chắn <c:out value = "${output1}"/>?</h3>
-					</div>
-					<div class="container form-main">
-						<p>
-							Đợt quyên góp: <span>${donation.name}</span>
-						</p>
-						<p>
-							Mã quyên góp: <span>${donation.code}</span>
-						</p>
-						<div class="submit-p">
-							<button type="button" class="cancel-btn "
-								onclick="closeAllModal()">Hủy</button>
-							<button type="submit" class="submit-btn" id="confirm-delete-btn"
-								onclick="window.location.href='${closedOrDeleteLink}'">Xác nhận</button>
-						</div>
-
-					</div>
-				</div> --%>
-				
-				<%-- <div class="form-container donate-form" id="delete">
-					<div class="container form-head">
-						<h3>Bạn có chắc chắn xóa?</h3>
-					</div>
-					<div class="container form-main">
-						<p>
-							Đợt quyên góp: <span>${donation.name}</span>
-						</p>
-						<p>
-							Mã quyên góp: <span>${donation.code}</span>
-						</p>
-						<div class="submit-p">
-							<button type="button" class="cancel-btn "
-								onclick="closeAllModal()">Hủy</button>
-							<button type="submit" class="submit-btn" id="confirm-delete-btn"
-								onclick="window.location.href='${pageContext.request.contextPath}/admin/deleteDonation?id=${donation.id}'">Xóa</button>
-						</div>
-
-					</div>
-				</div>
- --%>
-
-
-
-
-				<div class="form-container donate-form " id="donation-addOrUpdate">
-					<div class="container form-head">
-						<div class="form-title">
-							<div class="d-flex justify-content-between">
-
-
-								<c:choose>
-									<c:when test="${donation.id != 0}">
-										<h4 class="d-inline-block mx-auto">Cập nhật</h4>
-									</c:when>
-									<c:otherwise>
-										<h4 class="d-inline-block mx-auto">Thêm mới</h4>
-									</c:otherwise>
-								</c:choose>
-
-							</div>
-
-						</div>
-					</div>
-					<div class="container form-main">
-						<form:form modelAttribute="donation" action="${process}"
-							method="POST">
-
-							<form:input type="hidden" id="donationId" path="id" />
-
-							<div class="form-group form-group-custom">
-								<label class="field-label" for="code-add">Mã đợt quyên
-									góp</label>
-								<form:input type="text" class="form-control" id="code-add"
-									path="code" />
-
-								<form:errors cssClass="error" path="code" />
-							</div>
-							<div class="form-group form-group-custom">
-								<label class="field-label" for="name-add">Tên đợt quyên
-									góp:</label>
-								<form:input type="text" class="form-control" id="name-add"
-									path="name" />
-								<form:errors cssClass="error" path="name" />
-							</div>
-
-							<div class="form-group form-group-custom">
-								<label class="field-label" for="startDate-add">Ngày bất
-									đầu:</label>
-								<form:input type="date" class="form-control" id="startDate-add"
-									path="startDate" />
-								<form:errors cssClass="error" path="startDate" />
-							</div>
-							<div class="form-group form-group-custom">
-								<label class="field-label" for="endDate-add">Ngày kết
-									thúc:</label>
-								<form:input type="date" class="form-control" id="endDate-add"
-									path="endDate" />
-								<form:errors cssClass="error" path="endDate" />
-							</div>
-							<div class="form-group form-group-custom">
-								<label class="field-label" for="organization-add">Tổ
-									chức:</label>
-								<form:input type="text" class="form-control"
-									id="organization-add" path="organization" />
-								<form:errors cssClass="error" path="organization" />
-							</div>
-
-							<div class="form-group form-group-custom">
-								<label class="field-label" for="phoneNumber-add">Số điện
-									thoại:</label>
-								<form:input type="number" class="form-control"
-									id="phoneNumber-add" path="phoneNumber" />
-								<form:errors cssClass="error" path="phoneNumber" />
-							</div>
-
-							<div class="form-group form-group-custom">
-								<label class="field-label" for="description-add">Nội
-									dung:</label>
-
-								<form:textarea class="form-control" id="description-add"
-									path="description" rows="3"></form:textarea>
-							</div>
-							<form:input type="hidden" class="form-control"
-									 path="status" />
-							<div>
-								<form:errors path="" cssClass="error" />
-							</div>
-							<div class="submit-p">
-								<button type="button" class="cancel-btn "
-									onclick="closeAllModal()">Hủy</button>
-								<button type="submit" class="submit-btn">Thêm</button>
-							</div>
-						</form:form>
-					</div>
-
-				</div>
-
-
-				<% } else { %>
-
-				<% } %>
-
-
-				<c:if test="${successAdd}">
-					<jsp:include page="../common/form-modal/donation-add-success-modal.jsp" />  
-  
+			<!-- for close or delete donation modal -->
+			<jsp:include
+				page="../admin/form-modal/donation-modal/donation-closed-or-delete-modal.jsp" />
 <%-- 
-					<input type="hidden" id="successDonate" value="${successDonate}">
-					<div class="form-container donate-form" id="success-donate"
-						style="display: block;">
-						<div class="container form-head">
-							<div class="form-title">
-								<p>Đã thêm 1 đợt quyên góp thành công</p>
-							</div>
-						</div>
-						<div class="container form-main">
-							<div class="container form-main d-flex justify-content-end">
-								<button type="button" class="btn btn-secondary cancel-btn "
-									onclick="closeModal('#success-donate')"></button>
-							</div>
-						</div>
+			<% Boolean isLogined = ((Boolean)request.getAttribute("isLogined")) != null ? (Boolean)request.getAttribute("isLogined") : false; %>
+				<% Boolean isAdmin = ((Boolean)request.getAttribute("isAdmin")) != null ? (Boolean)request.getAttribute("isAdmin") : false; %>
+			
+			 --%>
 
-					</div> --%>
-				</c:if>
+
+			<c:if test="${successAdd}">
+				<!-- Hien thị thông báo tạo thành công -->
+				<jsp:include
+					page="../common/form-modal/donation-add-success-modal.jsp" />
+
+			</c:if>
+
+
+
+			<div class="popup col-12 col-sm-8 col-md-4">
+				
+				<!-- modatl thay đổi trạng thái (quyen gop hoac ket thuc) -->
 
 				<jsp:include page="../common/form-modal/update-donation-status-modal.jsp" />  
-  
-				<%-- <div class="form-container donate-form" id="update-status">
-					
-					<c:if test="${donation.status == DonationStatus.NEW}">
-						
-						 <c:set var = "output1" value = "quyên góp"/>
-						 <c:set var = "output2" value = "Ngày bắt đầu sẽ chuyển thành hôm nay ${Time.getCurrentDateTimeRaw()}"/>
-						
-						<c:url var="updateStatusLink" value="/admin/updateDonationStatus">
-							<c:param name="id" value="${donation.id}" />
-							<c:param name="status" value="${DonationStatus.DONATING}" />
-						</c:url>
-					</c:if>
-
-					<c:if test="${donation.status == DonationStatus.DONATING}">
-
-						<c:set var="output1" value="kết thúc" />
-						<c:set var="output2" value="Ngày kêt thúc sẽ chuyển thành hôm nay ${Time.getCurrentDateTimeRaw()}" />
-
-						<c:url var="updateStatusLink" value="/admin/updateDonationStatus">
-							<c:param name="id" value="${donation.id}" />
-							<c:param name="status" value="${DonationStatus.END}" />
-						</c:url>
-
-
-					</c:if>
-
-
-					<div class="container form-head">
-						<c:if test="${donation.status.equals(DonationStatus.NEW)}">
-						
-						 <p>hello</p>
-					</c:if>
-
-					<c:if test="${donation.status.equals(DonationStatus.DONATING)}">
-
-						<p>kello</p>
-
-					</c:if>
-						<h3>
-							status: ${donation.status}
-						</h3>
-						<h3>
-							Bạn có chắc chắn muốn chuyển sang trạng thái <c:out value = "${output1}"/>
-						</h3>
-					</div>
-					<div class="container form-main">
-						<p>
-							Đợt quyên góp: <span>${donation.name}</span>
-						</p>
-						<p>
-							Mã quyên góp: <span>${donation.code}</span>
-						</p>
-
-						<p><c:out value = "${output2}"/></p>
-
-						<div class="submit-p">
-							<button type="button" class="cancel-btn "
-								onclick="closeAllModal()">Hủy</button>
-							<button type="submit" class="submit-btn" id="confirm-delete-btn"
-								onclick="window.location.href='${updateStatusLink}'">Xác nhận</button>
-						</div>
-
-					</div>
-				</div> --%>
-
+			
 			</div>
-
-
 		</div>
 	
 	</div>
@@ -689,23 +438,6 @@
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-<script>
-$(document).ready(function() {
-	  $(".d-delete-btn").click(function() {
-	    var url = $(this).data("url");
-	    console.log(url);
-	    
-	   	$("#confirm-delete-btn").click(function() {
-	      window.location.href = url;
-	    });
-	     
-	     openModal("delete");
-
-	  });
-	});
-
-</script>
 
 </body>
 </html>

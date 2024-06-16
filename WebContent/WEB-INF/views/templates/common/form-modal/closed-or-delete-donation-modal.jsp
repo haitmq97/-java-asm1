@@ -7,29 +7,37 @@
 <%@ page import="me.haitmq.spring.mvc.crud.utils.JSPDataFormat"%>
 <%@ page import="me.haitmq.spring.mvc.crud.utils.Time"%>
 <%@ page import="me.haitmq.spring.mvc.crud.entity.status.DonationStatus"%>
+
 <div class="form-container donate-form" id="closedOrDelete">
 
 	<c:choose>
 
 		<c:when test="${donation.status == DonationStatus.NEW}">
 			<c:set var="output1" value="xóa" />
+			<c:url var="closedOrDeleteLink" value="/admin/deleteDonation">
+				<c:param name="id" value="${donation.id}" />
+			</c:url>
+		</c:when>
+
+		<c:when test="${donation.status == DonationStatus.END}">
+			<c:set var="output1" value="đóng" />
 			<c:url var="closedOrDeleteLink" value="/admin/updateDonationStatus">
 				<c:param name="id" value="${donation.id}" />
 				<c:param name="status" value="${DonationStatus.CLOSED}" />
 			</c:url>
 		</c:when>
-
-
-
+<%-- 
 		<c:otherwise>
 
 			<c:set var="output1" value="đóng" />
-			<c:url var="closedOrDeleteLink" value="/admin/deleteDonation">
+			<c:url var="closedOrDeleteLink" value="/admin/updateDonationStatus">
 				<c:param name="id" value="${donation.id}" />
+				<c:param name="status" value="${DonationStatus.CLOSED}" />
 			</c:url>
+			
 
 
-		</c:otherwise>
+		</c:otherwise> --%>
 	</c:choose>
 
 

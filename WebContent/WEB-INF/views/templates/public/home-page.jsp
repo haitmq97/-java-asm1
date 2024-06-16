@@ -12,6 +12,8 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
 <title>Donation website &mdash; Website Donation</title>
+
+<!-- meta tag -->
 <meta charset="utf-8">
 <meta name="viewport"
 	content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -19,12 +21,12 @@
 <meta name="keywords" content="" />
 <meta name="author" content="Free-Template.co" />
 
+<!-- icon web -->
 <link rel="icon" type="image/x-icon"
 	href="<c:url value='/static/common/assets/img/icon/heart.ico' />">
 
-<link rel="stylesheet"
-	href="<c:url value='/static/common/assets/css/content-style.css' />">
-
+<!-- style -->
+<!-- from template -->
 <link rel="stylesheet"
 	href="<c:url value='/static/user/assets/css/custom-bs.css' />">
 <link rel="stylesheet"
@@ -39,6 +41,19 @@
 	href="<c:url value='/static/user/assets/css/owl.carousel.min.css' />">
 <link rel="stylesheet"
 	href="<c:url value='/static/user/assets/css/animate.min.css' />">
+
+<!-- sytle custom -->
+<!-- fontawesome -->
+<link rel="stylesheet"
+	href="<c:url value='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css'/>"
+	integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+	crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+<!-- bootstrap -->
+<%-- 
+<link rel="stylesheet" href="<c:url value='https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm'/>" crossorigin="anonymous">
+
+ --%>
 
 
 <script src="<c:url value='/static/user/assets/js/jquery.min.js' />"></script>

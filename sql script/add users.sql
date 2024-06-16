@@ -52,16 +52,30 @@ INSERT INTO `user` (`full_name`, `user_name`, `password`, `email`, `phone_number
 
 
 INSERT INTO `donation` (`code`, `name`, `phone_number`, `organization`, `created_date`, `status` ,`start_date`,`end_date`) VALUES 
-	('QG001', 'donation 1', '0123456789', 'organization 1' , '2024-01-01', 'NEW', '2024-01-01', '2024-01-10'),
-    ('QG002', 'donation 2', '0123456799', 'organization 2' , '2024-01-02', 'DONATING', '2024-01-05', '2024-02-01'),
-    ('QG003', 'donation 3', '0123456799', 'organization 4' , '2024-01-02', 'DONATING', '2024-01-02', '2024-01-15'),
-    ('QG004', 'donation 4', '0123456799', 'organization 3' , '2024-02-05', 'END', '2024-02-20', '2024-02-28'),
-    ('QA005', 'donation 5', '0123456799', 'organization 6' , '2024-01-01', 'END', '2024-01-10', '2024-01-12'),
-    ('QG006', 'donation 6', '0123456799', 'organization 7' , '2024-04-05', 'END', '2024-04-05', '2024-05-01'),
-    ('QG007', 'donation 7', '0123456799', 'organization 8' , '2024-02-03', 'DONATING', '2024-02-03', '2024-02-15'),
-    ('QA008', 'donation 8', '0123456799', 'organization 4' , '2024-04-03', 'DONATING', '2024-04-05', '2024-04-23'),
-    ('QG009', 'donation 9', '0123456666', 'organization 3' , '2024-02-05', 'CLOSED', '2024-02-05', '2024-03-01');
+	('QG001', 'donation 1', '0123456789', 'organization 1' , '2024-01-01', 'NEW', '2024-06-03', '2024-06-16'),
+    ('QG002', 'donation 2', '0123456799', 'organization 2' , '2024-01-01', 'NEW', '2024-01-05', '2024-01-10'),
+    ('QG003', 'donation 3', '0123456799', 'organization 4' , '2024-01-01', 'NEW', '2024-01-17', '2024-02-01'),
+    ('QG004', 'donation 4', '0123456799', 'organization 3' , '2024-01-01', 'NEW', '2024-06-12', '2024-06-15'),
+    ('QA005', 'donation 5', '0123456799', 'organization 6' , '2024-01-01', 'NEW', '2024-06-15', '2024-06-17'),
+    ('QG006', 'donation 6', '0123456799', 'organization 7' , '2024-01-01', 'NEW', '2024-03-01', '2024-04-01'),
+    ('QG007', 'donation 7', '0123456799', 'organization 8' , '2024-01-01', 'CLOSED', '2024-02-24', '2024-05-11'),
+    ('QA008', 'donation 8', '0123456799', 'organization 4' , '2024-01-01', 'NEW', '2024-04-01', '2024-04-30'),
+    ('QG009', 'donation 9', '0123456666', 'organization 3' , '2024-01-01', 'NEW', '2024-05-21', '2024-06-14');
     
+
+/*
+INSERT INTO `donation` (`code`, `name`, `phone_number`, `organization`, `created_date`, `status` ,`start_date`,`end_date`) VALUES 
+	('QG001', 'donation 1', '0123456789', 'organization 1' , '01/01/2024', 'NEW', '03/06/2024', '16/06/2024'),
+    ('QG002', 'donation 2', '0123456799', 'organization 2' , '01/01/2024', 'NEW', '05/01/2024', '10/01/2024'),
+    ('QG003', 'donation 3', '0123456799', 'organization 4' , '01/01/2024', 'NEW', '17/01/2024', '01/02/2024'),
+    ('QG004', 'donation 4', '0123456799', 'organization 3' , '01/01/2024', 'NEW', '12/06/2024', '15/06/2024'),
+    ('QA005', 'donation 5', '0123456799', 'organization 6' , '01/01/2024', 'NEW', '15/06/2024', '05/07/2024'),
+    ('QG006', 'donation 6', '0123456799', 'organization 7' , '01/01/2024', 'NEW', '01/03/2024', '01/04/2024'),
+    ('QG007', 'donation 7', '0123456799', 'organization 8' , '01/01/2024', 'CLOSED', '24/02/2024', '11/05/2024'),
+    ('QA008', 'donation 8', '0123456799', 'organization 4' , '01/01/2024', 'NEW', '01/04/2024', '30/04/2024'),
+    ('QG009', 'donation 9', '0123456666', 'organization 3' , '01/01/2024', 'NEW', '21/05/2024', '14/06/2024');
+    
+*/
 --     
 --     
 -- insert into `user_donation`(`created_date`, `money`, `name`, `status`, `user_id`, `donation_id`)

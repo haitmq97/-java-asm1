@@ -1,19 +1,26 @@
+<%@ page import="javax.servlet.http.HttpServletRequest"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
-<%@ page import="me.haitmq.spring.mvc.crud.utils.JSPDataFormat" %>
+<%@ page import="me.haitmq.spring.mvc.crud.content_path.ViewConstants"%>
+<%@ page import="me.haitmq.spring.mvc.crud.utils.JSPDataFormat"%>
+<%@ page import="me.haitmq.spring.mvc.crud.utils.Time"%>
+<%@ page import="me.haitmq.spring.mvc.crud.entity.status.DonationStatus"%>
+<%@ page import="me.haitmq.spring.mvc.crud.entity.status.UserStatus"%>
+<%@ page import="me.haitmq.spring.mvc.crud.entity.status.UserDonationStatus"%>
 <!doctype html>
 <html lang="en">
 <head>
-    <title>Donation website &mdash; Website Donation</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="" />
-    <meta name="keywords" content="" />
-    <meta name="author" content="Free-Template.co" />
-    
-<link rel="shortcut icon" href="ftco-32x32.png">
+  <meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="" />
+<meta name="keywords" content="" />
+<meta name="author" content="Free-Template.co" />
+
+<link rel="icon" type="image/x-icon"
+	href="<c:url value='/static/common/assets/img/icon/heart.ico' />">
 
 <link rel="stylesheet"
 	href="<c:url value='/static/common/assets/css/content-style.css' />">
@@ -32,8 +39,6 @@
 	href="<c:url value='/static/user/assets/css/owl.carousel.min.css' />">
 <link rel="stylesheet"
 	href="<c:url value='/static/user/assets/css/animate.min.css' />">
-
-<!-- MAIN CSS -->
 
 
 <script src="<c:url value='/static/user/assets/js/jquery.min.js' />"></script>
@@ -70,41 +75,28 @@
 	href="<c:url value='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css'/>"
 	integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
 	crossorigin="anonymous" referrerpolicy="no-referrer" />
-<link rel="stylesheet"
-	href="<c:url value='/static/common/assets/css/header-style.css'/>" />
-<link rel="stylesheet"
-	href="<c:url value='/static/common/assets/css/donation-table-home-style.css'/>" />
-<link rel="stylesheet"
-	href="<c:url value='/static/common/assets/css/footer-style.css' />">
-	
 
 
- <!-- customer style -->
- <link rel="stylesheet"
+<!-- customer style -->
+
+<link rel="stylesheet"
 	href="<c:url value='/static/common/assets/css/style.css'/>" />
-	
-<link rel="stylesheet"
-	href="<c:url value='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css'/>"
-	integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
-	crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 
-
-
-<!-- customer js -->	
-
-<script src="<c:url value='https://code.jquery.com/jquery-3.6.4.min.js'/>"> </script>
+<!-- customer js -->
 
 <script src="<c:url value='/static/common/assets/js/script.js' />"></script>
-<script src="<c:url value='/static/common/assets/js/layout-script.js' />"></script>
+<script
+	src="<c:url value='/static/common/assets/js/layout-script.js' />"></script>
+
 </head>
-<body id="top">
-<jsp:include page="../common/header-layout-test.jsp">
+<body>
+	<jsp:include page="../common/header-layout-test.jsp">
 		<jsp:param name="includePart" value="headerSection" />
 	</jsp:include>
 
 
-<section class="site-section">
+	<%-- <section class="site-section">
             <div class="container">
               <div class="row">
                 <div class="col-lg-6">
@@ -172,7 +164,293 @@
         
         
             
-          </section>
+          </section> --%>
+	
+	<section class="site-section content">
+		<div class="container">
+			<div class="row mb-5 justify-content-center">
+				<div class="col-md-7 text-center">
+					<h2 class="section-title mb-2">Chi tiết cá nhân</h2>
+					
+					
+
+				</div>
+				
+
+			</div>
+
+
+			<div class="donation-detail-containter">
+				<div class="row">
+					<!-- Row 1 -->
+					<div class="col-md-6">
+						<div class="p-3">
+							<div class="">
+							
+								<p class="font-weight-bold mb-1 text-align-left">Họ và tên:</p>
+								
+							</div>
+							<div class="border rounded bg-light">
+							
+								<p class="p-1 m-1">${currentUser.fullName}</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="p-3">
+							<div class="">
+								<p class="font-weight-bold mb-1 text-align-left">Username:</p>
+							</div>
+							<div class="border rounded bg-light">
+								<p class="p-1 m-1">${currentUser.userName}</p>
+							</div>
+						
+						</div>
+					</div>
+				</div>
+				
+				<div class="row">
+					<!-- Row 2 -->
+					<div class="col-md-6">
+						<div class="p-3">
+							<div class="">
+								<p class="font-weight-bold mb-1 text-align-left">Email:</p>
+							</div>
+							<div class="border rounded bg-light">
+								<p class="p-1 m-1">${currentUser.email}</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="p-3">
+							<div class="">
+								<p class="font-weight-bold mb-1 text-align-left">Số điện thoại:</p>
+							</div>
+							<div class="border rounded bg-light">
+								<p class="p-1 m-1">${currentUser.phoneNumber}</p>
+							</div>
+						
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<!-- Row 2 -->
+					<div class="col-md-6">
+						<div class="p-3">
+							<div class="">
+								<p class="font-weight-bold mb-1 text-align-left">Địa chỉ:</p>
+							</div>
+							<div class="border rounded bg-light">
+								<p class="p-1 m-1">${currentUser.address}</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="p-3">
+							<div class="">
+								<p class="font-weight-bold mb-1 text-align-left">Ngày tạo:</p>
+							</div>
+							<div class="border rounded bg-light">
+								<p class="p-1 m-1">${currentUser.createdDate}</p>
+							</div>
+						
+						</div>
+					</div>
+				</div>
+				
+				<div class="row">
+					<!-- Row 2 -->
+					<div class="col-md-6">
+						<div class="p-3">
+							<div class="">
+								<p class="font-weight-bold mb-1 text-align-left">Vai trò:</p>
+							</div>
+							<div class="border rounded bg-light">
+								<p class="p-1 m-1">${currentUser.role.roleName}</p>
+							</div>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<div class="p-3">
+							<div class="">
+								<p class="font-weight-bold mb-1 text-align-left">Trạng thái:</p>
+							</div>
+							<div class="border rounded bg-light">
+								<p class="p-1 m-1">${JSPDataFormat.userStatusFormat(currentUser.status)}</p>
+							</div>
+						
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<!-- Row 5 with full width -->
+					<div class="col-md-12">
+						<div class="p-3 border bg-light">
+							<div class="">
+								<p class="font-weight-bold mb-1 text-align-left">Số lần quyên góp thành công:</p>
+							</div>
+							<div class="border rounded bg-light">
+								<p class="p-1 m-1"></p>
+							</div>
+						
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class= "row mt-5">
+				<div class="col-12">
+					
+							<div>
+								<h3 class="text-align-center">Danh sách các lượt quyên góp của người dùng</h3>
+							</div>
+
+					<c:choose>
+
+						<c:when test="${userDonations.totalElements == 0}">
+							<p class="mt-4 text-align-center font-italic">Hiện bạn này chưa quyên góp</p>
+						</c:when>
+
+
+
+						<c:otherwise>
+							<div class="d-flex justify-content-between flex-wrap mb-3">
+								<div class="page-selector">
+								
+										
+									<label for="size">Rows per
+										page:</label> 
+									<select id="pageSize" name="size"
+										class="entries-select rounded form-control">
+										<option value="3" ${userDonations.size == 3 ? 'selected' : ''}>3</option>
+										<option value="4" ${userDonations.size == 4 ? 'selected' : ''}>4</option>
+										<option value="5" ${userDonations.size == 5 ? 'selected' : ''}>5</option>
+										<option value="10" ${userDonations.size == 10 ? 'selected' : ''}>10</option>
+										<option value="15" ${userDonations.size == 15 ? 'selected' : ''}>15</option>
+										<option value="20" ${userDonations.size == 20 ? 'selected' : ''}>20</option>
+
+									</select>
+
+
+
+								</div>
+								<div class="search-box">
+									<label for="searching-input">Search:</label> <input type="text"
+										name="searching-input" id="searchingValue"
+										class="searching-input rounded p-2 form-control"
+										placeholder="by Code or by status ..."
+										value="${searchingValue}" />
+								</div>
+							</div>
+							<div>
+							<div class="" id="data-list">
+						<div class=" table-responsive">
+							<table class="table table-striped table-content">
+								<thead class="tb-head-title bg-secondary">
+									<tr>
+
+
+										<th scope="col" class="th-custom col-2 col-lg-3"><p>Tên đợt</p></th>
+										<th scope="col" class="th-custom"><p>Mã đợt</p></th>
+										<th scope="col" class="th-custom"><p>Trạng thái đợt</p></th>
+										<th scope="col" class="th-custom col-2"><p>Số tiền</p></th>
+										<th scope="col" class="th-custom"><p>Ngày quyên góp</p></th>
+										<th scope="col" class="th-custom col-1 col-lg-2"><p>Trạng thái</p></th>
+									
+									</tr>
+								</thead>
+
+
+
+								<tbody id="scrollableRows">
+									<c:forEach var="tempUserDonation" items="${userDonations.content}">
+
+										
+										<c:url var="confirmLink"
+											value="/admin/update_user_donations">
+											<c:param name="id" value="${tempUserDonation.id}" />
+											<c:param name="status" value="${UserDonationStatus.CONFIRMED}" />
+										</c:url>
+										
+										<c:url var="cancelLink"
+											value="/admin/update_user_donations">
+											<c:param name="id" value="${tempUserDonation.id}" />
+											<c:param name="status" value="${UserDonationStatus.CANCELED}" />
+										</c:url>
+
+
+
+													<tr>
+													<td><p class="font-weight-bold">${tempUserDonation.id}</p></td>
+													<td><p class="font-weight-bold">${tempUserDonation.name}</p></td>
+														<td><p class="font-weight-bold">${tempUserDonation.donation.name}</p></td>
+														<td><p class="font-weight-bold">${tempUserDonation.donation.code}</p></td>
+														<td><p class="font-weight-bold color-text">${JSPDataFormat.donationStatusFormat(tempUserDonation.donation.status)}</p></td>
+														<td><p>${JSPDataFormat.moneyFormat(tempUserDonation.money)}</p></td>
+														<td><p>${tempUserDonation.createdDate}</p></td>
+
+														<td><p class="font-weight-bold color-text">${JSPDataFormat.userDonationStatusFormat(tempUserDonation.status)}</p></td>
+
+												
+													</tr>
+
+
+
+
+												</c:forEach>
+
+
+								</tbody>
+							</table>
+						</div>
+
+
+						<div>
+							<div>
+								
+								<input id="currentPage1" type="hidden" value="${currentPage}" />
+
+								<input id="totalPages1" type="hidden"
+									value="${userDonations.totalPages}" /> <br> <input id="size1"
+									type="hidden" value="${currentSize}" /> <br> <input
+									id="searchingValue1" type="hidden" value="${searchingValue}" />
+
+								<input id="importUrl1" type="hidden"
+									value="${searchingValue}" />
+
+
+									
+									<input id="currentPage" type="hidden" name="currentPage"
+										value="${userDonations.pageable.pageNumber+1}" /> 
+
+
+							</div>
+							<div id="pagination-container"></div>
+
+
+						</div>
+
+					</div>
+						
+						
+						
+						</div>
+							
+						</c:otherwise>
+					</c:choose>
+
+				
+				</div>
+
+						
+					</div>
+
+
+				</div>
+
+
+	</section>
+
 
 	<jsp:include page="../common/footer-layout2.jsp">
 		<jsp:param name="includePart" value="footerSection" />
@@ -181,7 +459,7 @@
 	
 	<div class="overlay-container">
 		<div class="row">
-			<div id="overlay" onclick="closeAllPopup()"></div>
+			<div id="overlay" onclick="closeAllModal()"></div>
 			<div class="popup col-12 col-sm-8 col-md-4">
 		
 		<div class="form-container donate-form " id="userUpdate">

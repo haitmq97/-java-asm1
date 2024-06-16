@@ -436,7 +436,7 @@
 
 <div class="overlay-container">
 		<div class="row">
-			<div id="overlay" onclick="closeAllPopup()"></div>
+			<div id="overlay" onclick="closeAllModal()"></div>
 			<div class="popup col-12 col-sm-8 col-md-4">
 		
 			<jsp:include page="../common/form-modal/user-donation-cancel-modal.jsp" />

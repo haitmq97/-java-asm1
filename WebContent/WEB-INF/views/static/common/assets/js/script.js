@@ -602,15 +602,15 @@ function toDelete(id, divId) {
 	currentUrl.searchParams.set('size', size);
 	currentUrl.searchParams.set('page', page);
 	currentUrl.searchParams.set('searchingValue', searchingValue);
-	if(currentUrl.searchParams.get('id')) {
-		
-	}
+	
 	if(currentUrl.pathname.includes("/admin/donation-detail")) {
 		console.log("..................................test url donation-details");
 		currentUrl.searchParams.set('userDonationId', id);
 	} else if(currentUrl.pathname.includes("/admin/user-detail")) {
 		console.log("..................................test url user-details");
 		currentUrl.searchParams.set('userDonationId', id);
+	} else {
+		currentUrl.searchParams.set('id', id);
 	}
 		
 		console.log("..................................test url: " + currentUrl);

@@ -67,12 +67,15 @@ public class Time {
     public static boolean isAfterDate(String benMarkDateString, String checkDateString) {
     	
     	if((benMarkDateString.length() != 0) && (checkDateString.length() != 0)) {
-    		System.out.println("check");
+    		//System.out.println("check");
     		LocalDate benMarkDate = LocalDate.parse(benMarkDateString, dateTimeFormatterRaw);
-    		System.out.println("In isAfterDate method ......original Date:" + benMarkDate);
+    		
     		
         	LocalDate checkDate = LocalDate.parse(checkDateString, dateTimeFormatterRaw);
+        	/*
+        	System.out.println("In isAfterDate method ......original Date:" + benMarkDate);
         	System.out.println("In isAfterDate method ......check Date:" + checkDate);
+        	*/
         	if(benMarkDate.isAfter(checkDate)) {
         		return true;
         	}
@@ -86,10 +89,10 @@ public class Time {
     	if((benMarkDateString.length() != 0) && (checkDateString.length() != 0)) {
     		LocalDate benMarkDate = LocalDate.parse(benMarkDateString, dateTimeFormatterRaw);
         	LocalDate checkDate = LocalDate.parse(checkDateString, dateTimeFormatterRaw);
-        	
+        	/*
         	System.out.println("In isBefore method ......original Date:" + benMarkDate);
         	System.out.println("In isBefore method ......check Date:" + checkDate);
-        	
+        	*/
         	if(benMarkDate.isBefore(checkDate)) {
         		return true;
         	}

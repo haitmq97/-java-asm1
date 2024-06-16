@@ -116,22 +116,46 @@ function loginErrorShowing() {
 	}
 }
 
-function openSuccessDonateMgs() {
+function openSuccessProccessMgs() {
 	var successDonate = document.getElementById("successDonate");
+	var successAdd = document.getElementById("successAdd");
+	var successUpdate = document.getElementById("successUpdate");
 	
 	if(successDonate != null) {
 		openModal("#success-donate");
+	}
+	console.log("is successAdd null: " + (successAdd != null) );
+	console.log("successAdd value: " +  successAdd.value);
+	console.log("successAdd value equals true: " + (successAdd.value == "true"));
+	if(successAdd != null && successAdd.value == "true") {
+		openModal("#success-add");
+	}
+	
+	console.log("is successUpdate null: " + (successUpdate != null) );
+	console.log("successUpdate value: " +  successUpdate.value);
+	console.log("successUpdate value equals true: " + (successUpdate.value == "true"));
+	
+	if(successUpdate != null && successUpdate.value == "true") {
+		openModal("#success-update");
 	}
 	
 }
 
 
 function ErrorFormShowing() {
-	if ($("#errorProcess").val() === 'true') {
+	var donationModal = document.getElementById("donation-addOrUpdate");
+	var userModal = document.getElementById("user-addOrUpdate");
+	var errorProcess = document.getElementById("errorProcess");
+	
+	if (errorProcess && errorProcess.value === 'true') {
 
-		openModal('#donation-addOrUpdate');
+		if(donationModal!=null) {
+			openModal('#donation-addOrUpdate');
+		}
 		
-		openModal('#user-addOrUpdate');
+		if(userModal!=null) {
+			openModal('#user-addOrUpdate');
+		}
 
 	}
 }
@@ -194,7 +218,7 @@ $(document).ready(function() {
 
 	loginErrorShowing();
 	
-	openSuccessDonateMgs();
+	openSuccessProccessMgs();
 	
 	ErrorFormShowing();
 	

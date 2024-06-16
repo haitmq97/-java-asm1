@@ -1,16 +1,14 @@
 package me.haitmq.spring.mvc.crud.controller;
 
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import javax.validation.Validator;
+
 
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.aop.ThrowsAdvice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -30,16 +28,18 @@ import me.haitmq.spring.mvc.crud.entity.status.UserDonationStatus;
 import me.haitmq.spring.mvc.crud.entity.status.UserStatus;
 import me.haitmq.spring.mvc.crud.common.InitDonation;
 import me.haitmq.spring.mvc.crud.common.InitUser;
-import me.haitmq.spring.mvc.crud.common.LoginUser;
 import me.haitmq.spring.mvc.crud.content_path.ViewConstants;
 import me.haitmq.spring.mvc.crud.entity.Donation;
 import me.haitmq.spring.mvc.crud.entity.User;
 import me.haitmq.spring.mvc.crud.service.UserDonationService;
 import me.haitmq.spring.mvc.crud.service.DonationService;
 import me.haitmq.spring.mvc.crud.service.UserService;
-import me.haitmq.spring.mvc.crud.utils.LoginUserInfomation;
+import me.haitmq.spring.mvc.crud.utils.BinddingResultsCustomFunction;
+import me.haitmq.spring.mvc.crud.utils.CustomValidator;
 import me.haitmq.spring.mvc.crud.utils.SessionUtils;
-import me.haitmq.spring.mvc.crud.validation.UniquedDonationCodeConstraintValidator;
+import me.haitmq.spring.mvc.crud.validation.UniquedDonationCode;
+import me.haitmq.spring.mvc.crud.validation.ValidDonationPeriod;
+
 
 @Controller
 @RequestMapping("/admin")
@@ -48,8 +48,6 @@ public class AdminController {
 	
 	private static final Logger log = LoggerFactory.getLogger(AdminController.class);
 	
-	@Autowired
-	private Validator validator;
 	
 	private ModelMapper modelMapper = new ModelMapper();
 
@@ -169,9 +167,12 @@ public class AdminController {
 			@RequestParam(name = "size", defaultValue = "5") int size,
 			@RequestParam(name = "searchingValue", defaultValue = "", required = false) String searchingValue,
 			@RequestParam(name = "id", defaultValue = "0") int donationId, 
+		
 			Model theModel) {
 
 		try {
+			// update donation status directly
+			donationService.autoUpdateStatusAll();
 
 			// check authority (isLogined, isAdmin) (bao gồm phần header)
 			HttpSession session = request.getSession();
@@ -204,8 +205,6 @@ public class AdminController {
 
 			InitDonation donation = new InitDonation();
 			
-			boolean errorProcess=false;
-			boolean successAdd = false;
 			
 			// if donation id !=0 then it is update
 			if (donationId != 0) {
@@ -217,35 +216,100 @@ public class AdminController {
 			// if there are donaion error then get donation obj and add to model 
 			if (theModel.containsAttribute("errorDonation")) {
 	            donation = (InitDonation) theModel.getAttribute("errorDonation");
-	            errorProcess = true;
-	        } else if(theModel.containsAttribute("successAdd")) {
-	        	successAdd = true;
+	            
+	            BindingResult theBindingResult = (BindingResult) theModel.getAttribute("org.springframework.validation.BindingResult.donation");
+	            theModel.addAttribute("errors", theBindingResult);
+	            
+	            // use for after get validator error ( because when return /donations the "donationId" is 0)
+	            if(donation.getId()!=0) {
+	            	donationProcess = "processUpdateDonation";
+	            }
+	            
+	            theModel.addAttribute("errorProcess",true);
+	            
+
+	        } else if(theModel.containsAttribute("successProcess")) {
+	        	theModel.addAttribute("processAdd", true);
+	        	theModel.addAttribute("processUpdate", true);
 	        }
-			
-			// check if the last add donation is success
-			 theModel.addAttribute("successAdd", successAdd);
-			
-			theModel.addAttribute("errorProcess",errorProcess);
+
 			theModel.addAttribute("donation", donation);
 
 			theModel.addAttribute("process", donationProcess);
 			
-			// update donation status directly
-			donationService.autoUpdateStatusAll();
-			
 			// set current endpoint for view return in process function
 			SessionUtils.setCurrentEndpoint(request);
-			
-			System.out.println("test test test test test test");
 
 			return ViewConstants.V_ADMIN_DONATIONS;
-		} catch (Exception e) {
 			
-			log.error("errror heeereroerheo: {}", e);
+		} catch (IllegalStateException e) {
+
+			log.error("NO PERMISSION: {}", e);
+
+			return ViewConstants.V_ERROR_PERMISSION;
+
+		} catch (Exception e) {
+
+			log.error("ERROR FUNCTIONNAL: {}", e);
+
 			return ViewConstants.V_ERROR;
 		}
 	}
+	
+	@PostMapping("/processAddDonation")
+	public String processAdd(HttpServletRequest request,
+			@Valid @ModelAttribute("donation") InitDonation theDonation,
+			BindingResult theBindingResult,
+			RedirectAttributes redirectAttributes) {
+		
+		if (BinddingResultsCustomFunction.isErrorForAddDonation(theBindingResult)) {
+			
+			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.donation", theBindingResult);
+			redirectAttributes.addFlashAttribute("errorDonation", theDonation);
+			//redirectAttributes.addFlashAttribute("errorLoginOrRegister", true);
+			redirectAttributes.addFlashAttribute("errorForm", true);
+			
+			return "redirect:" + SessionUtils.getCurrentEndpoint(request);
+	
+	    }
+		
+		donationService.add(modelMapper.map(theDonation,Donation.class));
+    	redirectAttributes.addFlashAttribute("successProcess", true);
+		
+		
+		//return "redirect:" + SessionUtils.getCurrentEndpoint(request);
+		
+		//return ViewConstants.V_REDIRECT_ADMIN_DONATIONS;
+		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
+	}
+	
+	
+	@PostMapping("/processUpdateDonation")
+	public String processUpdate(HttpServletRequest request, 
+			@Valid @ModelAttribute("donation") InitDonation theDonation,
+			BindingResult theBindingResult,
+			RedirectAttributes redirectAttributes) {
+		
+		if(BinddingResultsCustomFunction.isErrorForUpdateDonation(theBindingResult, donationService, theDonation)) {
+			
+			// check if code, startdate, enddate change is chnage or not
+			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.donation",
+					theBindingResult);
 
+			redirectAttributes.addFlashAttribute("errorDonation", theDonation);
+
+			redirectAttributes.addFlashAttribute("errorForm", true);
+			
+			return "redirect:" + SessionUtils.getCurrentEndpoint(request);
+		}
+		
+		donationService.update(theDonation.copyPropertiesToDonationObj(donationService.getDonation(theDonation.getId())));
+		redirectAttributes.addFlashAttribute("successProcess", true);
+
+		//return ViewConstants.V_REDIRECT_ADMIN_DONATIONS;
+		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
+	}
+	
 	
 	/*
 	 * What donations need to do? - request param: + HttpServletRequest + donation
@@ -355,30 +419,55 @@ public class AdminController {
 	}
 	*/
 	
+	/*
 	@PostMapping("/processUpdateDonation")
 	public String processUpdate(HttpServletRequest request, 
-			@ModelAttribute("donation") InitDonation theDonation,
+			@Valid @ModelAttribute("donation") InitDonation theDonation,
 			BindingResult theBindingResult,
 			RedirectAttributes redirectAttributes) {
 		
+		System.out.println("....................................in admincontroller- processUpdateDonation the id: " + theDonation.getId());
+		
+		Donation theExistingDonation = donationService.getDonation(theDonation.getId());
+		if(theExistingDonation!= null) {
+			boolean codeChanged = !theDonation.getCode().equals(theExistingDonation.getCode());
+	        boolean startDateChanged = !theDonation.getStartDate().equals(theExistingDonation.getStartDate());
+	        boolean endDateChanged = !theDonation.getEndDate().equals(theExistingDonation.getEndDate());
+
+		}
+		
 		if(theBindingResult.hasErrors()) {
+			
+			theBindingResult.getFieldErrors().forEach(fieldError ->  {
+				log.error("AdminController - processAdd - error field (validator) {}", fieldError);
+				log.error("AdminController - processAdd - error field (validator) {}", fieldError.getDefaultMessage());
+			});
+			theBindingResult.getGlobalErrors().forEach(globalError ->  {
+				log.error("AdminController - processAdd - error field (validator) {}", globalError);
+				System.out.println("test123................is global error from @UniquedDonationCode:" + globalError.getCode().equals("UniquedDonationCode"));
+				log.error("AdminController - processAdd - error field (validator) {}", globalError.getDefaultMessage());
+			});
+			
+			
+			// check if code, startdate, enddate change is chnage or not
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.donation", theBindingResult);
 			
 			redirectAttributes.addFlashAttribute("errorDonation", theDonation);
 			
 			redirectAttributes.addFlashAttribute("errorForm", true);
 			
-		} else {
-	    	
-	    	donationService.update(theDonation.copyPropertiesToDonationObj(donationService.getDonation(theDonation.getId())));
-			redirectAttributes.addFlashAttribute("successProcess", true);
-	    }
+			
+			return "redirect:" + SessionUtils.getCurrentEndpoint(request);
+		}
+		
+		donationService.update(theDonation.copyPropertiesToDonationObj(donationService.getDonation(theDonation.getId())));
+		redirectAttributes.addFlashAttribute("successProcess", true);
 
 		//return ViewConstants.V_REDIRECT_ADMIN_DONATIONS;
 		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
 	}
 	
-	
+	*/
 	
 	
 	
@@ -432,33 +521,7 @@ public class AdminController {
 	
 	
 	
-	@PostMapping("/processAddDonation")
-	public String processAdd(HttpServletRequest request,
-			@Valid @ModelAttribute("donation") InitDonation theDonation,
-			BindingResult theBindingResult,
-			RedirectAttributes redirectAttributes) {
-		
-		if (theBindingResult.hasErrors()) {
-			// truyền dữ liệu lỗi mà người dùng đăng nhập về lại trang đăng nhập
-			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.donation", theBindingResult);
-			redirectAttributes.addFlashAttribute("errorDonation", theDonation);
-			/* redirectAttributes.addFlashAttribute("errorLoginOrRegister", true); */
-			redirectAttributes.addFlashAttribute("errorForm", true);
-	            
-	    } else {
-	    	
-	    	
-	    	donationService.add(modelMapper.map(theDonation,Donation.class));
-	    	redirectAttributes.addFlashAttribute("successAdd", true);
-	    }
-		
-		
-		/*
-		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
-		*/
-		//return ViewConstants.V_REDIRECT_ADMIN_DONATIONS;
-		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
-	}
+	
 
 	// user manager
 	
@@ -466,7 +529,8 @@ public class AdminController {
 	
 
 	@GetMapping("/users")
-	public String userList(HttpServletRequest request, @RequestParam(defaultValue = "1") int page,
+	public String userList(HttpServletRequest request, 
+			@RequestParam(defaultValue = "1") int page,
 			@RequestParam(name = "size", defaultValue = "5") int size,
 			@RequestParam(name = "searchingValue", defaultValue = "", required = false) String searchingValue,
 			@RequestParam(name = "id", defaultValue = "0") int userId, Model theModel) {
@@ -486,15 +550,15 @@ public class AdminController {
 
 			Page<User> users = userService.findByEmailOrUserNameOrPhoneNumberOrStatus(page, size,searchingValue);
 
+			theModel.addAttribute("users", users);
+			
+			theModel.addAttribute("currentPage", page);
+			
+			theModel.addAttribute("currentSize", size);
+			
 			theModel.addAttribute("searchingValue", searchingValue);
 
-			theModel.addAttribute("users", users);
-
-			theModel.addAttribute("currentPage", page);
-
 			theModel.addAttribute("totalPage", users.getTotalPages());
-
-			theModel.addAttribute("currentSize", size);
 
 			// user model attribute
 
@@ -516,32 +580,47 @@ public class AdminController {
 			
 			// if there are donaion error then get donation obj and add to model 
 			if (theModel.containsAttribute("errorUser")) {
+				
 				user = (InitUser) theModel.getAttribute("errorUser");
+
+	            BindingResult theBindingResult = (BindingResult) theModel.getAttribute("org.springframework.validation.BindingResult.user");
+	            theModel.addAttribute("errors", theBindingResult);
+	            
+	            // use for after get validator error ( because when return /donations the "donationId" is 0)
+	            if(user.getId()!=0) {
+	            	userProcess = "processUpdateUser";
+	            }
+				
 	            errorProcess = true;
+	            
 	        } else if(theModel.containsAttribute("successAdd")) {
+	        	
 	        	successAdd = true;
 	        }
 			
 			// check if the last add donation is success
-			 theModel.addAttribute("successAdd", successAdd);
+			theModel.addAttribute("successAdd", successAdd);
 			
 			theModel.addAttribute("errorProcess",errorProcess);
 			theModel.addAttribute("user", user);
 
 			theModel.addAttribute("process", userProcess);
-			
-			
-			
+
 			// set current endpoint for view return in process function
 			SessionUtils.setCurrentEndpoint(request);
-			
-			System.out.println("test test test test test test");
 
 			return ViewConstants.V_ADMIN_USERS;
 			
-		} catch (Exception e) {
+		} catch (IllegalStateException e) {
 			
 			log.error("NO PERMISSION: {}", e);
+			
+			return ViewConstants.V_ERROR_PERMISSION;
+			
+		} catch (Exception e) {
+			
+			log.error("ERROR FUNCTIONNAL: {}", e);
+			
 			return ViewConstants.V_ERROR;
 		}
 		
@@ -561,13 +640,17 @@ public class AdminController {
 	}
 	
 	
+	
+	
+	
+	
 	@PostMapping("/processAddUser")
 	public String processAdd(HttpServletRequest request,
 			@Valid @ModelAttribute("user") InitUser theUser,
 			BindingResult theBindingResult,
 			RedirectAttributes redirectAttributes) {
 		
-		if (theBindingResult.hasErrors()) {
+		if (BinddingResultsCustomFunction.isErrorForAddUser(theBindingResult)) {
 			// truyền dữ liệu lỗi mà người dùng đăng nhập về lại trang đăng nhập
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", theBindingResult);
 			redirectAttributes.addFlashAttribute("errorUser", theUser);
@@ -581,13 +664,35 @@ public class AdminController {
 	    }
 		
 		
-		/*
-		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
-		*/
 		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
 	}
 	
+	
+	
+	
+	@PostMapping("/processUpdateUser")
+	public String processUpdate(HttpServletRequest request, 
+			@Valid @ModelAttribute("user") InitUser theUser,
+			BindingResult theBindingResult,
+			RedirectAttributes redirectAttributes) {
+		
+		if(BinddingResultsCustomFunction.isErrorForUpdateUser(theBindingResult, userService, theUser)) {
+			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", theBindingResult);
+			
+			redirectAttributes.addFlashAttribute("errorUser", theUser);
+			
+			redirectAttributes.addFlashAttribute("errorForm", true);
+			
+		} else {
+	    	
+	    	userService.update(theUser.copyPropertiesToUserObj(userService.getUser(theUser.getId())), UserRole.ADMIN);
+			redirectAttributes.addFlashAttribute("successProcess", true);
+	    }
 
+		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
+	}
+	
+	
 
 
 	@GetMapping("/updateUser")
@@ -604,27 +709,7 @@ public class AdminController {
 
 	
 	
-	@PostMapping("/processUpdateUser")
-	public String processUpdate(HttpServletRequest request, 
-			@ModelAttribute("user") InitUser theUser,
-			BindingResult theBindingResult,
-			RedirectAttributes redirectAttributes) {
-		
-		if(theBindingResult.hasErrors()) {
-			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", theBindingResult);
-			
-			redirectAttributes.addFlashAttribute("errorUser", theUser);
-			
-			redirectAttributes.addFlashAttribute("errorForm", true);
-			
-		} else {
-	    	
-	    	userService.update(theUser.copyPropertiesToUserObj(userService.getUser(theUser.getId())), UserRole.ADMIN);
-			redirectAttributes.addFlashAttribute("successProcess", true);
-	    }
-
-		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
-	}
+	
 
 	@GetMapping("/updateUserStatus")
 	public String updateUserStatus(HttpServletRequest request,
@@ -721,7 +806,7 @@ public class AdminController {
 
 			HttpSession session = request.getSession();
 			
-			LoginUserInfomation.addLoginUserInfoToModel(session, theModel);
+			SessionUtils.addLoginUserInfoToModel(session, theModel);
 			
 			// userDonations table
 			Page<UserDonation> userDonations = userDonationService

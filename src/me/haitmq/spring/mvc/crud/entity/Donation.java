@@ -92,6 +92,9 @@ public class Donation {
 	@Column(name = "showing")
 	private boolean showing;
 	
+	@Column(name = "auto_update")
+	private boolean autoUpdate;
+	
 	
 	@OneToMany(mappedBy = "donation", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
 	private List<UserDonation> userDonations = new ArrayList<>();
@@ -209,6 +212,14 @@ public class Donation {
 	
 	
 	
+
+	public boolean getAutoUpdate() {
+		return autoUpdate;
+	}
+
+	public void setAutoUpdate(boolean autoUpdate) {
+		this.autoUpdate = autoUpdate;
+	}
 
 	public List<UserDonation> getUserDonations() {
 		return userDonations;

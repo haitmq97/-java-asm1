@@ -1072,16 +1072,20 @@ button {
 }
 
 
-.error {
-	color: red;
-	font-size: 0.8rem;
+.error-msg {
+	margin: 0;
+	display: inline-block;
+    position: absolute;
+    color: red;
+    font-style: italic;
+    font-size: 0.8rem;
 }
-
+/* 
 .error-msg {
 	position: absolute;
 	right: 0;
 }
-
+ */
 
  .scrollable-col  {
 	

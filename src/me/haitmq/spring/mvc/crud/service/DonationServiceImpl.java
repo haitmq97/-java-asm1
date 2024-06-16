@@ -73,6 +73,7 @@ public class DonationServiceImpl implements DonationService {
 		donation.setCreatedDate(Time.getCurrentDateTimeRaw());
 		donation.setStatus(DonationStatus.NEW);
 		donation.setShowing(true);
+		donation.setAutoUpdate(true);
 		donationDAO.saveOrUpdate(donation);
 	}
 	
@@ -91,7 +92,14 @@ public class DonationServiceImpl implements DonationService {
 	public void update(Donation donation) {
 		if(isAbleToUpdate(donation)) {
 			//need handle for avoiding user change donation status from browser inspect
-
+			/*
+			Donation donation2 = donationDAO.getDontaion(donation.getId());
+			if (!donation2.getEndDate().equals(donation.getEndDate()) || !donation2.getStartDate().equals(donation.getStartDate())) {
+				donation2.setAutoUpdate(true);
+			}
+			donationDAO.saveOrUpdate(donation2);
+			*/
+			donation.setAutoUpdate(true);
 			donationDAO.saveOrUpdate(donation);
 		}
 	}
@@ -147,7 +155,8 @@ public class DonationServiceImpl implements DonationService {
 				if(newStatus == DonationStatus.DONATING) {
 					donation.setStartDate(Time.getCurrentDateTimeRaw());
 				} else if(newStatus == DonationStatus.END) {
-					donation.setEndDate(Time.getPreviousDayRaw(Time.getCurrentDateTimeRaw()));
+					donation.setEndDate(Time.getCurrentDateTimeRaw());
+					donation.setAutoUpdate(false);
 				}
 				donationDAO.saveOrUpdate(donation);
 			}
@@ -192,9 +201,9 @@ public class DonationServiceImpl implements DonationService {
 	public boolean isAbleToAutoDonatingStatus(Donation donation) {
 
 		boolean condition1 = !Time.isBeforeDate( Time.getCurrentDateTimeRaw(), donation.getStartDate());
-		boolean condition2 = donation.getStatus() == DonationStatus.NEW;
-
-		if (condition1 && condition2) {
+		boolean condition2 = (donation.getStatus() == DonationStatus.CLOSED) || (donation.getStatus() == DonationStatus.END);
+		boolean condition3 = donation.getAutoUpdate();
+		if (condition1 && condition2 && condition3) {
 			return true;
 		}
 
@@ -205,10 +214,14 @@ public class DonationServiceImpl implements DonationService {
 	public boolean isAbleToAutoEndStatus(Donation donation) {
 		boolean condition1 = Time.isAfterDate(Time.getCurrentDateTimeRaw(), donation.getEndDate());
 		boolean condition2 = donation.getStatus() == DonationStatus.DONATING;
+		boolean condition3 = donation.getAutoUpdate();
+		/*
 		System.out.println(".............."+ donation.getId()+" is current after endate: " + condition1);
-		
+		System.out.println(".............."+ donation.getId()+" auto update: " + condition3);
 		System.out.println(".............."+ donation.getId()+" status is donating: " + condition2);
-		if (condition1 && condition2) {
+		
+		*/
+		if (condition1 && condition2 && condition3) {
 			return true;
 		}
 		return false;
@@ -218,7 +231,7 @@ public class DonationServiceImpl implements DonationService {
 	@Override
 	@Transactional
 	public void autoUpdateStatus(Donation donation) {
-		System.out.println("................autouopdateStatus: "+ donation.getStatus() );
+		//System.out.println("................autouopdateStatus: "+ donation.getStatus() );
 		if (isAbleToAutoDonatingStatus(donation)) {
 			donation.setStatus(DonationStatus.DONATING);
 
@@ -238,7 +251,7 @@ public class DonationServiceImpl implements DonationService {
 	@Transactional
 	public void autoUpdateStatusAll() {
 		List<Donation> dList = donationDAO.getDonationList();
-		System.out.println("//////////////////// scheduled");
+		//System.out.println("//////////////////// scheduled");
 		for (Donation donation : dList) {
 			autoUpdateStatus(donation);
 		}

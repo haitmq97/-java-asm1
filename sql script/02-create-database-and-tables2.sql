@@ -45,6 +45,7 @@ CREATE TABLE `donation` (
   `end_date` varchar(100) DEFAULT NULL,
   `donation_quantity` int DEFAULT 0,
   `showing` boolean DEFAULT true,
+  `auto_update` boolean DEFAULT true,
   PRIMARY KEY (`id`),
   UNIQUE KEY `CODE_UNIQUE` (`code`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 collate=utf8mb4_unicode_ci;

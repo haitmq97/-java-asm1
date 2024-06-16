@@ -1,4 +1,5 @@
 eclipse.preferences.version=1
+encoding//WebContent/WEB-INF/views/templates/common/form-modal/closed-or-delete-donation-modal.jsp=UTF-8
 encoding//WebContent/WEB-INF/views/templates/common/form-modal/donate-error-modal.jsp=UTF-8
 encoding//WebContent/WEB-INF/views/templates/common/form-modal/donate-form.jsp=UTF-8
 encoding//WebContent/WEB-INF/views/templates/common/form-modal/donate-success-modal.jsp=UTF-8

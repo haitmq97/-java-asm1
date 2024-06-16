@@ -85,21 +85,18 @@ public class SessionUtils {
 			*/
 			//endpoint+= "?" + query;
 			//StringBuilder sBuilder = new StringBuilder(query);
-			System.out.println("...........................in setCurrentEndpoint: not null");
 			
 			
 			
-			
-			
-			System.out.println("...........................in setCurrentEndpoint endpoint test2: " + endpoint);
+			//System.out.println("...........................in setCurrentEndpoint endpoint test2: " + endpoint);
 			
 		} else {
-			System.out.println("test here:.................................query: false");
+			//System.out.println("test here:.................................query: false");
 		}
 		
 		
 
-
+		/*
 		System.out.println("test here:.................................");
 		
 		System.out.println("test here:................................. requestURi:" + requestUri);
@@ -116,17 +113,18 @@ public class SessionUtils {
 		System.out.println("...........................in setCurrentEndpoint endpoint test3: " + endpoint);
 		
 
-		
+		*/
 
 		session.setAttribute(CURRENT_ENDPOINT, endpoint);
-		
+		/*
 		System.out.println("...........................in setCurrentEndpoint CURRENT_ENDPOINT: " + session.getAttribute(CURRENT_ENDPOINT));
-		
+		*/
 	}
 	
 	public static String getCurrentEndpoint(HttpServletRequest request) {
 		HttpSession session = request.getSession();
-		System.out.println("...........................in getCurrentEndpoint endpoint: " +  session.getAttribute(CURRENT_ENDPOINT));
+		
+		//System.out.println("...........................in getCurrentEndpoint endpoint: " +  session.getAttribute(CURRENT_ENDPOINT));
 		return (String) session.getAttribute(CURRENT_ENDPOINT);
 	}
 	
@@ -164,5 +162,7 @@ public class SessionUtils {
 		session.removeAttribute("isAdmin");
 		session.removeAttribute("currentUserId");
 	}
+	
+
 
 }

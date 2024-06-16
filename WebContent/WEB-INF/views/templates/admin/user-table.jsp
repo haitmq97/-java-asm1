@@ -352,146 +352,16 @@
 	<div class="overlay-container">
 		<div class="row">
 			<div id="overlay" onclick="closeAllPopup()"></div>
-			<div class="popup col-12 col-sm-8 col-md-4">
-		
-		<input type="hidden" id="errorProcess" value="${errorProcess}"/>
-		
-		<% Boolean isLogined = ((Boolean)request.getAttribute("isLogined")) != null ? (Boolean)request.getAttribute("isLogined") : false; %>
-			<% Boolean isAdmin = ((Boolean)request.getAttribute("isAdmin")) != null ? (Boolean)request.getAttribute("isAdmin") : false; %>
-			<%-- <% boolean isLogined = (Boolean)request.getAttribute("isLogined"); %>
-			<% boolean isAdmin = (Boolean)request.getAttribute("isAdmin"); %>
-    		 --%>
-    		<% if (isAdmin) { %>
-				<div class="form-container donate-form " id="user-addOrUpdate">
-			        <div class="container form-head">
-			            <div class="form-title">
-			                <div class="d-flex justify-content-between">
+			<jsp:include
+				page="../admin/form-modal/user-modal/user-add-or-update-modal.jsp" />
 
 
-								<c:choose>
-									<c:when test="${user.id != 0}">
-										<h4 class="d-inline-block mx-auto">Cập nhật</h4>
-									</c:when>
-									<c:otherwise>
-										<h4 class="d-inline-block mx-auto">Thêm mới</h4>
-									</c:otherwise>
-								</c:choose>
-			                     
-			                </div>
-			
-			            </div>
-			        </div>
-			        <div class="container form-main">
-			            <form:form modelAttribute="user" action="${process}"
-			                method="POST">
-			  		
-			 				<form:input type="hidden"  id="donationId" path="id" />
-			 				
-			                <div class="form-group form-group-custom">
-			                  <label class="field-label" for="fullName">Họ và tên</label>
-			                  <form:input type="text" class="form-control" id="fullName" path="fullName" />
-			                  
-			                </div>
-			                <div class="form-group form-group-custom">
-			                  <label class="field-label" for="email">Email:</label>
-			                  <form:input type="text" class="form-control" id="email" path="email" readonly="${user.id != 0 ? 'true' : 'false'}"/>
-			                </div>
-			                
-			                <div class="form-group form-group-custom">
-			                  <label class="field-label" for="phoneNumber">Số điện thoại:</label>
-			                  <form:input type="text" class="form-control" id="phoneNumber" path="phoneNumber" />
-			                </div>
-			                <div class="form-group form-group-custom">
-			                  <label class="field-label" for="address">Địa chỉ:</label>
-			                  <form:input type="text" class="form-control" id="address" path="address" />
-			                </div>
-			                <div class="form-group form-group-custom">
-			                  <label class="field-label" for="userName">Tài khoản:</label>
-			                  <form:input type="text" class="form-control" id="userName" path="userName" readonly="${user.id != 0 ? 'true' : 'false'}"/>
-			                </div>
-			                
-			                <c:if test="${user.id == 0}">
-			                	<div class="form-group form-group-custom">
-			                  		<label class="field-label" for="password">Mật khẩu:</label>
-			                  		<form:input type="text" class="form-control" id="password" path="password" />
-			                	</div>
-			                </c:if>
-							<c:if test="${user.role.roleName != UserRole.ADMIN}">
-								<div class="form-group form-group-custom">
-									<label class="field-label" for="description-add">Vai
-										trò:</label>
-									<form:select id="role" class="form-control"
-										path="role.roleName">
-										
-										<form:option value="${UserRole.USER}">USER</form:option>
-										<form:option value="${UserRole.ADMIN}">ADMIN</form:option>
-										<%-- 
-										<form:option value="${UserRole.USER}"
-											${user.role.roleName == UserRole.USER ? 'selected' : ''}>User</form:option>
-										<form:option value="${UserRole.ADMIN}"
-											${user.role.roleName == UserRole.ADMIN ? 'selected' : ''}>Admin</form:option>
-										 --%>
-									</form:select>
-								</div>
+			<jsp:include
+				page="../admin/form-modal/user-modal/user-delete-modal.jsp" />
 
 
-
-							</c:if>
-							
-							
-			                <div class="submit-p">
-			                    <button type="button" class="cancel-btn "
-			                        onclick="closeAllPopup()">Hủy</button>
-			                    <button type="submit" class="submit-btn">
-			                    	<c:choose>
-										<c:when test="${user.id != 0}">
-											Cập nhật
-										</c:when>
-										<c:otherwise>
-											Thêm mới
-										</c:otherwise>
-			                    	</c:choose>
-			                    
-			                    </button>
-			                </div>
-			            </form:form>
-			        </div>
-
-    		</div>
-    		
-    		
-    		<div class="form-container donate-form" id="delete">
-					<div class="container form-head">
-						<h3>Bạn có chắc chắn xóa?</h3>
-					</div>
-					<div class="container form-main">
-						<p>
-							Email: <span>${user.email}</span>
-						</p>
-						<p>
-							username: <span>${user.userName}</span>
-						</p>
-						<div class="submit-p">
-							<button type="button" class="cancel-btn "
-								onclick="closeAllPopup()">Hủy</button>
-							<button type="submit" class="submit-btn" id="confirm-delete-btn"
-								onclick="window.location.href='${pageContext.request.contextPath}/admin/deleteUser?id=${user.id}'">Xóa</button>
-						</div>
-
-					</div>
-				</div>
-				
-    		
-    		 <% } else { %>
-    		 
-    		 <% } %>
-    		 
-    
 		</div>
-		
-		
-		</div>
-	
+
 	</div>
     
 

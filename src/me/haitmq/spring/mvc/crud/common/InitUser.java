@@ -1,19 +1,29 @@
 package me.haitmq.spring.mvc.crud.common;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.constraints.NotBlank;
-
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+import org.springframework.data.domain.Page;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-
-
+import me.haitmq.spring.mvc.crud.content_path.ViewConstants;
+import me.haitmq.spring.mvc.crud.entity.Donation;
 import me.haitmq.spring.mvc.crud.entity.Role;
 import me.haitmq.spring.mvc.crud.entity.User;
 import me.haitmq.spring.mvc.crud.entity.status.UserStatus;
+import me.haitmq.spring.mvc.crud.utils.SessionUtils;
 import me.haitmq.spring.mvc.crud.validation.EmailFormat;
 import me.haitmq.spring.mvc.crud.validation.PhoneNumberFormat;
+import me.haitmq.spring.mvc.crud.validation.UniquedEmail;
+import me.haitmq.spring.mvc.crud.validation.UniquedUserName;
 
-
+@UniquedEmail
+@UniquedUserName
 public class InitUser {
 	
 	private int id;
@@ -29,7 +39,7 @@ public class InitUser {
 	@Pattern(regexp = "^[^\\s]*$", message = "Không được chứa khoảng trắng")
 	private String password;
 	
-	@NotBlank
+	@NotBlank(message = "is required")
 	@EmailFormat
 	private String email;
 	
@@ -165,7 +175,8 @@ public class InitUser {
 		user.setEmail(this.getEmail());
 		user.setAddress(this.getAddress());
 		user.setPhoneNumber(this.getPhoneNumber());
-		user.getRole().setRoleName(this.getRole().getRoleName());;
+		user.getRole().setRoleName(this.getRole().getRoleName());
+		user.setStatus(this.getStatus());
 		
 		
 		return user;
@@ -180,8 +191,10 @@ public class InitUser {
 		this.setAddress(user.getAddress());
 		this.setPhoneNumber(user.getPhoneNumber());
 		this.setRole(user.getRole());
+		this.setStatus(user.getStatus());
 	}
 	
+
 
 	
 
