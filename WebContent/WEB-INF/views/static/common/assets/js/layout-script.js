@@ -7,9 +7,11 @@ document.addEventListener("DOMContentLoaded", function() {
 
 	var navbar = document.getElementById("navbar");
 	var header = document.getElementById("header-sec");
-	var sticky = navbar.offsetTop;
-
-	function stickyNav() {
+	
+	
+	if(navbar!=null) {
+		var sticky = navbar.offsetTop;
+		function stickyNav() {
 		if (window.pageYOffset >= sticky) {
 			navbar.classList.add("sticky");
 			header.classList.add("sticky-header");
@@ -18,6 +20,9 @@ document.addEventListener("DOMContentLoaded", function() {
 			header.classList.remove("sticky-header");
 		}
 	}
+	}
+	
+	
 });
 
 
@@ -80,8 +85,9 @@ function closeAllModal() {
 function togglePassword() {
 	var passwordInput = document.getElementById("password");
 	var eyeIcon = document.getElementById("eyeIcon");
-
-	if (passwordInput.type === "password") {
+	
+	if(passwordInput!=null) {
+		if (passwordInput.type === "password") {
 		passwordInput.type = "text";
 		eyeIcon.classList.add("fa-eye-slash");
 		eyeIcon.classList.remove("fa-eye");
@@ -92,6 +98,20 @@ function togglePassword() {
 		eyeIcon.classList.remove("fa-eye-slash");
 		document.querySelector(".toggle-pass-btn").title = "Hiện mật khẩu";
 	}
+	}
+
+	console.log("...............passwordInput" + passwordInput);
+	/*if (passwordInput.type === "password") {
+		passwordInput.type = "text";
+		eyeIcon.classList.add("fa-eye-slash");
+		eyeIcon.classList.remove("fa-eye");
+		document.querySelector(".toggle-pass-btn").title = "Ẩn mật khẩu";
+	} else {
+		passwordInput.type = "password";
+		eyeIcon.classList.add("fa-eye");
+		eyeIcon.classList.remove("fa-eye-slash");
+		document.querySelector(".toggle-pass-btn").title = "Hiện mật khẩu";
+	}*/
 }
 
 

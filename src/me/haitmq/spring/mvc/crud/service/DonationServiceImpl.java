@@ -231,8 +231,7 @@ public class DonationServiceImpl implements DonationService {
 	@Override
 	@Transactional
 	public void autoUpdateStatus(Donation donation) {
-		//System.out.println("................autouopdateStatus: "+ donation.getStatus() );
-		System.out.println("...................... donation code: " + donation.getCode() +" isAble auto donating " + isAbleToAutoDonatingStatus(donation));
+		
 		if (isAbleToAutoDonatingStatus(donation)) {
 			donation.setStatus(DonationStatus.DONATING);
 			

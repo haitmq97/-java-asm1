@@ -72,10 +72,6 @@
 	src="<c:url value='/static/user/assets/js/bootstrap-select.min.js' />"></script>
 <script src="<c:url value='/static/user/assets/js/custom.js' />"></script>
 
-<%-- <script
-	src="<c:url value='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js' />"
-	crossorigin="anonymous"></script> --%>
-
 <!-- bootstrap cdn -->
 <script
 	src="<c:url value='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' />"
@@ -246,7 +242,7 @@
 						<div>
 							<div>
 								<c:if test="${donations.totalElements != 0}">
-									<p class="font-weight-light font-italic">Showing ${donations.number*donations.size +1} to
+									<p class="font-weight-light font-italic text-muted">Showing ${donations.number*donations.size +1} to
 										${donations.number*donations.size +donations.numberOfElements}
 										of ${donations.totalElements} entries</p>
 								</c:if>
@@ -343,10 +339,6 @@
 
 	<script src="<c:url value='ttps://code.jquery.com/jquery-3.6.4.min.js' />h"
 		crossorigin="anonymous"></script>
-
-
-
-	<script src="<c:url value='/static/common/assets/js/form.js' />"></script>
 
 	<script src="<c:url value='/static/common/assets/js/script.js' />"></script>
 

@@ -4,6 +4,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -20,6 +23,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import me.haitmq.spring.mvc.crud.entity.UserDonation;
 import me.haitmq.spring.mvc.crud.entity.role.UserRole;
+import me.haitmq.spring.mvc.crud.common.InitUser;
 import me.haitmq.spring.mvc.crud.common.LoginUser;
 import me.haitmq.spring.mvc.crud.content_path.ViewConstants;
 import me.haitmq.spring.mvc.crud.entity.Donation;
@@ -27,6 +31,7 @@ import me.haitmq.spring.mvc.crud.entity.User;
 import me.haitmq.spring.mvc.crud.service.UserDonationService;
 import me.haitmq.spring.mvc.crud.service.DonationService;
 import me.haitmq.spring.mvc.crud.service.UserService;
+import me.haitmq.spring.mvc.crud.utils.BinddingResultsCustomFunction;
 import me.haitmq.spring.mvc.crud.utils.SessionUtils;
 
 // home controller 
@@ -34,7 +39,11 @@ import me.haitmq.spring.mvc.crud.utils.SessionUtils;
 @Controller
 @RequestMapping("/v1")
 public class HomeController {
-
+	
+	private static final Logger log = LoggerFactory.getLogger(HomeController.class);
+	
+	private ModelMapper modelMapper = new ModelMapper();
+	
 	@Autowired
 	private UserService userService;
 
@@ -80,78 +89,63 @@ public class HomeController {
 			@RequestParam(name = "donationId", defaultValue = "1") int donationId,
 			Model theModel) {
 
-		// check authority (isLogined, isAdmin) (bao gồm phần header)
+		try {
+			// check authority (isLogined, isAdmin) (bao gồm phần header)
 
-		HttpSession session = request.getSession();
-		Integer currentUserId = SessionUtils.getCurrentUserId(session);
-		
-		
-		// add to model loginUser information
-		SessionUtils.addLoginUserInfoToModel(session, theModel);
-		
-		// showing donations table
-		// 		+ get donations list table
-		Page<Donation> donations = 
-				donationService.findByPhoneNumberOrOrganizationOrCodeOrStatus(searchingValue, page, size);
-		// 		+ add to model
-		theModel.addAttribute("donations", donations);
+			HttpSession session = request.getSession();
+			
+			// add to model loginUser information
+			SessionUtils.addLoginUserInfoToModel(session, theModel);
+			
+			// showing donations table
+			// 		+ get donations list table
+			Page<Donation> donations = 
+					donationService.findByPhoneNumberOrOrganizationOrCodeOrStatus(searchingValue, page, size);
+			// 		+ add to model
+			theModel.addAttribute("donations", donations);
 
-		theModel.addAttribute("currentPage", page);
-		
-		theModel.addAttribute("currentSize", size);
-		
-		theModel.addAttribute("searchingValue", searchingValue);
-		
-		theModel.addAttribute("totalPage", donations.getTotalPages());
-		
-		theModel.addAttribute("totalElements", donations.getTotalElements());
+			theModel.addAttribute("currentPage", page);
+			
+			theModel.addAttribute("currentSize", size);
+			
+			theModel.addAttribute("searchingValue", searchingValue);
+			
+			theModel.addAttribute("totalPage", donations.getTotalPages());
+			
+			theModel.addAttribute("totalElements", donations.getTotalElements());
 
-		// login form (import showLoginForm function on jsp page)
+			// login form (import showLoginForm function on jsp page)
 
-		// donate form model attributes
-		
-		// to showing infomation of donation donating
-		Donation donation = donationService.getDonation(donationId);
+			// donate form model attributes
+			
+			// to showing infomation of donation donating
+			Donation donation = donationService.getDonation(donationId);
 
-		theModel.addAttribute("donation", donation);
-		
-		
-		// donate handle
-		// add donate obj for donate form
-		theModel.addAttribute("userDonation", new UserDonation());
+			theModel.addAttribute("donation", donation);
+			
+			
+			// donate handle
+			// add donate obj for donate form
+			theModel.addAttribute("userDonation", new UserDonation());
 
-		theModel.addAttribute("processDonating", "processDonating");
+			theModel.addAttribute("processDonating", "processDonating");
 
-		// check if privious donate is success then add to model to showing message
-		theModel.addAttribute("successDonate", theModel.containsAttribute("successDonate") ? true : false);
+			// check if privious donate is success then add to model to showing message
+			theModel.addAttribute("successDonate", theModel.containsAttribute("successDonate") ? true : false);
 
-				/*
-		// check if there are errors from last login then add to model the logined user with error, if not add new login user
-		theModel.addAttribute("loginUser", theModel.containsAttribute("loginUser")? theModel.getAttribute("loginUser"): new LoginUser());
-		*/
-		
-		
-		// for direct update donation status
-		donationService.autoUpdateStatusAll();
-		
-		
-		// set current endpoint to session (user for process method return last url)
-		SessionUtils.setCurrentEndpoint(request);
-		
-		
-		/*
-		System.out.println("current page...................home: " + request.getRequestURL().toString());
-		System.out.println("context path..................home:" + request.getContextPath());
-		System.out.println("request uri......................home: " + request.getRequestURI());
-		System.out.println("totalLink...........................home:" + request.getContextPath() + request.getRequestURI());
-		System.out.println("query...........................home:" + request.getQueryString());
+			// for direct update donation status
+			donationService.autoUpdateStatusAll();
+			
+			
+			// set current endpoint to session (user for process method return last url)
+			SessionUtils.setCurrentEndpoint(request);
+			
+			return ViewConstants.V_HOME;
 
-		
-		System.out.println("page...........................home:" + page);
-		System.out.println("size...........................home:" + size);
-		System.out.println("searchingValue...........................home:" + searchingValue);
-		*/
-		return ViewConstants.V_HOME;
+		} catch (Exception e) {
+			log.error("HomeController - homePage: {}", e);
+			return ViewConstants.V_ERROR;
+		}	
 	}
 
 	
@@ -175,54 +169,54 @@ public class HomeController {
 			@RequestParam(name = "searchingValue", defaultValue = "", required = false) String searchingValue,
 			Model theModel) {
 		
-		HttpSession session = request.getSession();
 		
-		// add to model loginUser information
-		SessionUtils.addLoginUserInfoToModel(session, theModel);
-		
-		// add donation info to the model
-		Donation theDonation = donationService.getDonation(theId);
+		try {
+			HttpSession session = request.getSession();
+			
+			// add to model loginUser information
+			SessionUtils.addLoginUserInfoToModel(session, theModel);
+			
+			// add donation info to the model
+			Donation theDonation = donationService.getDonation(theId);
 
-		// check if there are errors from last login then add to model the logined user
-		// with error, if not add new login user
-		theModel.addAttribute("loginUser",
-				theModel.containsAttribute("loginUser") ? theModel.getAttribute("loginUser") : new LoginUser());
-		// get users list to display
-		Page<UserDonation> userDonations = userDonationService
-				.findByDonationCodeSortByCreatedDate(theDonation.getCode(), searchingValue, page, size);
-		
-		// add to model
-		theModel.addAttribute("donation", theDonation);
+			// check if there are errors from last login then add to model the logined user
+			// with error, if not add new login user
+			theModel.addAttribute("loginUser",
+					theModel.containsAttribute("loginUser") ? theModel.getAttribute("loginUser") : new LoginUser());
+			// get users list to display
+			Page<UserDonation> userDonations = userDonationService
+					.findByDonationCodeSortByCreatedDate(theDonation.getCode(), searchingValue, page, size);
+			
+			// add to model
+			theModel.addAttribute("donation", theDonation);
 
-		theModel.addAttribute("userDonations", userDonations);
+			theModel.addAttribute("userDonations", userDonations);
 
-		theModel.addAttribute("currentPage", page);
+			theModel.addAttribute("currentPage", page);
 
-		theModel.addAttribute("currentSize", size);
+			theModel.addAttribute("currentSize", size);
 
-		theModel.addAttribute("searchingValue", searchingValue);
+			theModel.addAttribute("searchingValue", searchingValue);
 
-		// donate handle
-		// add donate obj for donate form
-		theModel.addAttribute("userDonation", new UserDonation());
+			// donate handle
+			// add donate obj for donate form
+			theModel.addAttribute("userDonation", new UserDonation());
 
-		theModel.addAttribute("processDonating", "processDonating");
+			theModel.addAttribute("processDonating", "processDonating");
 
-		// check if privious donate is success then add to model to showing message
-		theModel.addAttribute("successDonate", theModel.containsAttribute("successDonate") ? true : false);
-		/*
-		System.out.println("current page...................detail: " + request.getRequestURL().toString());
-		System.out.println("context path..................detail:" + request.getContextPath());
-		System.out.println("request uri......................detail: " + request.getRequestURI());
-		System.out.println("totalLink...........................detaildetail:" + request.getContextPath()
-				+ request.getRequestURI());
-		System.out.println("query...........................details:" + request.getQueryString());
-		
-		*/
-		// save current url
-		SessionUtils.setCurrentEndpoint(request);
+			// check if privious donate is success then add to model to showing message
+			theModel.addAttribute("successDonate", theModel.containsAttribute("successDonate") ? true : false);
+			
+			// save current url
+			SessionUtils.setCurrentEndpoint(request);
 
-		return ViewConstants.V_PUBLIC_DONATION_DETAILS;
+			return ViewConstants.V_PUBLIC_DONATION_DETAILS;
+
+		} catch (Exception e) {
+			log.error("HomeController - homePage: {}", e);
+			return ViewConstants.V_ERROR;
+		}	
+
 	}
 
 	// register
@@ -237,7 +231,44 @@ public class HomeController {
 	 */
 	@GetMapping(value = { "/registerForm", "/register" })
 	public String showFormForAdd(Model theModel) {
-		User newUser = new User();
+		
+		/*
+		try {
+			InitUser newUser = new InitUser();
+			
+			if (theModel.containsAttribute("errorUser")) {
+				
+				newUser = (InitUser) theModel.getAttribute("errorUser");
+
+	            BindingResult theBindingResult = (BindingResult) theModel.getAttribute("org.springframework.validation.BindingResult.user");
+	            theModel.addAttribute("errors", theBindingResult);
+
+	            theModel.addAttribute("errorProcess",true);
+	        }
+
+			theModel.addAttribute("user", newUser);
+			theModel.addAttribute("process", "processRegister");
+
+			return ViewConstants.V_REGISTER;
+			
+		} catch (Exception e) {
+			log.error("HomeController - showFormForAdd: {}", e);
+			return ViewConstants.V_ERROR;
+		}	
+		*/
+		InitUser newUser = new InitUser();
+		System.out.println("///////////////////////////test 1");
+		
+		if (theModel.containsAttribute("errorUser")) {
+			
+			newUser = (InitUser) theModel.getAttribute("errorUser");
+
+            BindingResult theBindingResult = (BindingResult) theModel.getAttribute("org.springframework.validation.BindingResult.user");
+            theModel.addAttribute("errors", theBindingResult);
+
+            theModel.addAttribute("errorProcess",true);
+        }
+
 		theModel.addAttribute("user", newUser);
 		theModel.addAttribute("process", "processRegister");
 
@@ -261,39 +292,49 @@ public class HomeController {
 	 */
 	@PostMapping("/processRegister")
 	public String processRegister(HttpServletRequest request, 
-			@Valid @ModelAttribute("user") User theUser, 
+			@Valid @ModelAttribute("user") InitUser theUser, 
 			BindingResult theBindingResult,
 			RedirectAttributes redirectAttributes) {
 		
-		HttpSession session = request.getSession();
-
-		if(theBindingResult.hasErrors()) {
-
-			return ViewConstants.V_REGISTER;
-		}
-		
-		userService.add(theUser, UserRole.USER);
-		// get id user from database
-		int userId = userService.getIdIfUserExisted(new LoginUser(theUser.getUserName(), theUser.getPassword()));
-		
-		if (userId != -1) {
+		try {
+			HttpSession session = request.getSession();
+			if (BinddingResultsCustomFunction.isErrorForAddUser(theBindingResult)) {
+				// get and pass invalid data to register form
+				redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", theBindingResult);
+				redirectAttributes.addFlashAttribute("errorUser", theUser);
+				
+				redirectAttributes.addFlashAttribute("errorForm", true);
+		        
+				return ViewConstants.V_REDIRECT_REGISTER_FORM;
+		    }
 			
-			boolean isActive = false;
-			boolean isAdmin = false;
+			userService.add(modelMapper.map(theUser ,User.class), UserRole.USER);
+			// get id user from database
+			int userId = userService.getIdIfUserExisted(new LoginUser(theUser.getUserName(), theUser.getPassword()));
 			
-			// if user is locked, consider role = user (avoid user performing admin function)
-			if(userService.isActive(userId)) {
-				isActive = true;
-				isAdmin = userService.isAdmin(userId);
+			if (userId != -1) {
+				
+				boolean isActive = false;
+				boolean isAdmin = false;
+				
+				// if user is locked, consider role = user (avoid user performing admin function)
+				if(userService.isActive(userId)) {
+					isActive = true;
+					isAdmin = userService.isAdmin(userId);
+				}
+				
+				// set loign user info to sesion
+				SessionUtils.setLoginUserInfoToSesstion(session, true, isActive, isAdmin, userId);
 			}
 			
-			// set loign user info to sesion
-			SessionUtils.setLoginUserInfoToSesstion(session, true, isActive, isAdmin, userId);
-		}
-		
-		redirectAttributes.addFlashAttribute("sucessRegister", true);
+			redirectAttributes.addFlashAttribute("sucessRegister", true);
 
-		return ViewConstants.V_REDIRECT_HOME;
+			return ViewConstants.V_REDIRECT_HOME;
+			
+		} catch (Exception e) {
+			log.error("HomeController - showFormForAdd: {}", e);
+			return ViewConstants.V_ERROR;
+		}	
 	}
 
 	// login

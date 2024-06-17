@@ -11,7 +11,7 @@
 <div class="popup col-12 col-sm-8">
 	<input type="hidden" id="errorProcess" value="${errorProcess}" />
 
-	<div class="form-container donate-form " id="donation-addOrUpdate">
+	<div class="form-container " id="donation-addOrUpdate">
 		<div class="container form-head">
 			<div class="form-title">
 				<div class="d-flex justify-content-between">

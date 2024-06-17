@@ -1,68 +1,89 @@
+<%@ page import="javax.servlet.http.HttpServletRequest"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@ page import="me.haitmq.spring.mvc.crud.utils.DonationStatusMapper"%>
+<%@ page import="me.haitmq.spring.mvc.crud.utils.FormatTest"%>
+<%@ page import="me.haitmq.spring.mvc.crud.utils.JSPDataFormat"%>
+<%@ page import="me.haitmq.spring.mvc.crud.content_path.ViewConstants"%>
+
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-<meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-    <meta name="description" content="" />
-    <meta name="author" content="" />
-    <title>Register</title>
-    
-    
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-      integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css"
-      rel="stylesheet"
-    />
+<title>Donation website &mdash; Website Donation</title>
 
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-      crossorigin="anonymous"
-    />
+<!-- meta tag -->
+<meta charset="utf-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="" />
+<meta name="keywords" content="" />
+<meta name="author" content="Free-Template.co" />
 
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-      crossorigin="anonymous"
-    ></script>
+<!-- icon web -->
+<link rel="icon" type="image/x-icon"
+	href="<c:url value='/static/common/assets/img/icon/heart.ico' />">
 
-    <script
-      src="https://cdn.jsdelivr.net/npm/simple-datatables@latest"
-      crossorigin="anonymous"
-    ></script>
-    <script src="https://cdn.ckeditor.com/ckeditor5/29.0.0/classic/ckeditor.js"></script>
+<!-- style -->
+<!-- from template -->
+<link rel="stylesheet"
+	href="<c:url value='/static/user/assets/css/custom-bs.css' />">
+<link rel="stylesheet"
+	href="<c:url value='/static/user/assets/css/jquery.fancybox.min.css' />">
+<link rel="stylesheet"
+	href="<c:url value='/static/user/assets/css/bootstrap-select.min.css' />">
+<link rel="stylesheet"
+	href="<c:url value='/static/user/assets/fonts/icomoon/style.css' />">
+<link rel="stylesheet"
+	href="<c:url value='/static/user/assets/fonts/line-icons/style.css' />">
+<link rel="stylesheet"
+	href="<c:url value='/static/user/assets/css/owl.carousel.min.css' />">
+<link rel="stylesheet"
+	href="<c:url value='/static/user/assets/css/animate.min.css' />">
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<!-- sytle custom -->
+<!-- fontawesome -->
+<link rel="stylesheet"
+	href="<c:url value='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css'/>"
+	integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+	crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    
+<!-- bootstrap -->
 
-    
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-	rel="stylesheet"
-	integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
-	crossorigin="anonymous">
+<script src="<c:url value='/static/user/assets/js/jquery.min.js' />"></script>
+<script
+	src="<c:url value='/static/user/assets/js/bootstrap.bundle.min.js' />"></script>
+<script
+	src="<c:url value='/static/user/assets/js/isotope.pkgd.min.js' />"></script>
+<script src="<c:url value='/static/user/assets/js/stickyfill.min.js' />"></script>
+<script
+	src="<c:url value='/static/user/assets/js/jquery.fancybox.min.js' />"></script>
+<script
+	src="<c:url value='/static/user/assets/js/jquery.easing.1.3.js' />"></script>
 
+<script
+	src="<c:url value='/static/user/assets/js/jquery.waypoints.min.js' />"></script>
+<script
+	src="<c:url value='/static/user/assets/js/jquery.animateNumber.min.js' />"></script>
+<script
+	src="<c:url value='/static/user/assets/js/owl.carousel.min.js' />"></script>
+<script
+	src="<c:url value='/static/user/assets/js/bootstrap-select.min.js' />"></script>
+<script src="<c:url value='/static/user/assets/js/custom.js' />"></script>
+
+<!-- bootstrap cdn -->
+<script
+	src="<c:url value='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' />"
+	crossorigin="anonymous"></script>
+<script
+	src="<c:url value='https://unpkg.com/sweetalert/dist/sweetalert.min.js' />"></script>
+
+<!-- customer style -->
 
 <link rel="stylesheet"
-	href="<c:url value='/static/common/assets/css/register-style.css' />">
+	href="<c:url value='/static/common/assets/css/style.css'/>" />
 
-<script src="<c:url value='/static/common/assets/js/form.js' />"></script>
 </head>
 <body>
 
