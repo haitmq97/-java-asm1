@@ -200,8 +200,8 @@ public class DonationServiceImpl implements DonationService {
 	@Override
 	public boolean isAbleToAutoDonatingStatus(Donation donation) {
 
-		boolean condition1 = !Time.isBeforeDate( Time.getCurrentDateTimeRaw(), donation.getStartDate());
-		boolean condition2 = (donation.getStatus() == DonationStatus.CLOSED) || (donation.getStatus() == DonationStatus.END);
+		boolean condition1 = !Time.isBeforeDate(Time.getCurrentDateTimeRaw(), donation.getStartDate());
+		boolean condition2 = (donation.getStatus() == DonationStatus.NEW) || (donation.getStatus() == DonationStatus.END);
 		boolean condition3 = donation.getAutoUpdate();
 		if (condition1 && condition2 && condition3) {
 			return true;
@@ -232,8 +232,10 @@ public class DonationServiceImpl implements DonationService {
 	@Transactional
 	public void autoUpdateStatus(Donation donation) {
 		//System.out.println("................autouopdateStatus: "+ donation.getStatus() );
+		System.out.println("...................... donation code: " + donation.getCode() +" isAble auto donating " + isAbleToAutoDonatingStatus(donation));
 		if (isAbleToAutoDonatingStatus(donation)) {
 			donation.setStatus(DonationStatus.DONATING);
+			
 
 		}
 

@@ -59,7 +59,9 @@ public class BinddingResultsCustomFunction {
 
 			result = true;
 		}
-
+		
+		log.error("BinddingResultsCustomFunction - isErrorForAddDonation - the Bindding Result {}", result);
+		
 		return result;
 	}
 	
@@ -116,7 +118,7 @@ public class BinddingResultsCustomFunction {
 			}
 
 		}
-
+		log.error("BinddingResultsCustomFunction - isErrorForUpdateDonation - the Bindding Result {}", (!result));
 		return !result;
 	}
 	

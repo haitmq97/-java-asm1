@@ -228,7 +228,7 @@
 												
 												<button class="btn btn-danger donation-btn d-delete-btn"
 														title="Xóa"
-														onclick="toDelete('${tempUser.id}', '#delete')"
+														onclick="toDelete('${tempUser.id}', '#user-delete')"
 														data-url="${deleteLink}">
 														Xóa
 													</button>
@@ -241,7 +241,7 @@
 
 														<button class="btn btn-warning donation-btn d-delete-btn"
 																title="Khóa"
-																onclick="window.location.href='${closedStatusLink}'">
+																onclick="toDelete('${tempUser.id}', '#user-lockOrUnlock')">
 															Khóa
 														</button>
 
@@ -250,7 +250,7 @@
 													<c:when test="${tempUser.status == UserStatus.LOCKED}">
 
 														<button class="btn btn-primary donation-btn" title="Mở"
-															onclick="window.location.href='${activeStatusLink}'">
+															onclick="toDelete('${tempUser.id}', '#user-lockOrUnlock')">
 															Mở
 														</button>
 
@@ -352,14 +352,36 @@
 	<div class="overlay-container">
 		<div class="row">
 			<div id="overlay" onclick="closeAllPopup()"></div>
+			
+			<!-- for add or update modal -->
 			<jsp:include
 				page="../admin/form-modal/user-modal/user-add-or-update-modal.jsp" />
 
-
+			<!-- for delete modal -->
 			<jsp:include
 				page="../admin/form-modal/user-modal/user-delete-modal.jsp" />
+			
+			<!-- for change user status modal -->
+			<jsp:include
+				page="../admin/form-modal/user-modal/user-lock-or-unlock-status-modal.jsp" />
+			
+			<!-- for success add modal -->
+			<input type="hidden" id="successAdd" value="${successAdd}">
+			<jsp:include
+				page="../admin/form-modal/user-modal/user-success-add-modal.jsp" />
 
+			<input type="hidden" id="successUpdate" value="${successUpdate}">
+			<jsp:include
+				page="../admin/form-modal/user-modal/user-success-update-modal.jsp" />
 
+			<input type="hidden" id="successDelete" value="${successDelete}">
+			<jsp:include
+				page="../admin/form-modal/user-modal/user-success-delete-modal.jsp" />
+				
+			<input type="hidden" id="successChangeStatus" value="${successChangeStatus}">
+			<jsp:include
+				page="../admin/form-modal/user-modal/user-success-change-status-modal.jsp" />
+			
 		</div>
 
 	</div>

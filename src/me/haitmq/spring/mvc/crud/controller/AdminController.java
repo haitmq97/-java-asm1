@@ -37,6 +37,7 @@ import me.haitmq.spring.mvc.crud.service.UserService;
 import me.haitmq.spring.mvc.crud.utils.BinddingResultsCustomFunction;
 import me.haitmq.spring.mvc.crud.utils.CustomValidator;
 import me.haitmq.spring.mvc.crud.utils.SessionUtils;
+import me.haitmq.spring.mvc.crud.utils.Time;
 import me.haitmq.spring.mvc.crud.validation.UniquedDonationCode;
 import me.haitmq.spring.mvc.crud.validation.ValidDonationPeriod;
 
@@ -228,10 +229,23 @@ public class AdminController {
 	            theModel.addAttribute("errorProcess",true);
 	            
 
-	        } else if(theModel.containsAttribute("successProcess")) {
-	        	theModel.addAttribute("processAdd", true);
-	        	theModel.addAttribute("processUpdate", true);
-	        }
+	        } else if(theModel.containsAttribute("successAdd")) {
+	        	
+	        	theModel.addAttribute("successAdd", true);
+	        	
+	        } else if(theModel.containsAttribute("successUpdate")) {
+	        
+	        	theModel.addAttribute("successUpdate", true);
+	        	
+	        } else if(theModel.containsAttribute("successChangeStatus")) {
+	        
+	        	theModel.addAttribute("successChangeStatus", true);
+	        	
+	        } else if(theModel.containsAttribute("successDelete")) {
+	        
+	        	theModel.addAttribute("successDelete", true);
+	        	
+	        } 
 
 			theModel.addAttribute("donation", donation);
 
@@ -274,7 +288,7 @@ public class AdminController {
 	    }
 		
 		donationService.add(modelMapper.map(theDonation,Donation.class));
-    	redirectAttributes.addFlashAttribute("successProcess", true);
+    	redirectAttributes.addFlashAttribute("successAdd", true);
 		
 		
 		//return "redirect:" + SessionUtils.getCurrentEndpoint(request);
@@ -304,7 +318,7 @@ public class AdminController {
 		}
 		
 		donationService.update(theDonation.copyPropertiesToDonationObj(donationService.getDonation(theDonation.getId())));
-		redirectAttributes.addFlashAttribute("successProcess", true);
+		redirectAttributes.addFlashAttribute("successUpdate", true);
 
 		//return ViewConstants.V_REDIRECT_ADMIN_DONATIONS;
 		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
@@ -399,10 +413,12 @@ public class AdminController {
 	@GetMapping("/updateDonationStatus")
 	public String updateDonationStatus(HttpServletRequest request,
 			@RequestParam("id") int donationId,
-			@RequestParam(name = "status") DonationStatus status, Model theModel) {
+			@RequestParam(name = "status") DonationStatus status,
+			RedirectAttributes redirectAttributes) {
 
 		donationService.changeDonationStatus(status, donationId);
-
+		
+		redirectAttributes.addFlashAttribute("successChangeStatus", true);
 		//return ViewConstants.V_REDIRECT_ADMIN_DONATIONS;
 		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
 	}
@@ -475,9 +491,14 @@ public class AdminController {
 	
 	
 	@GetMapping("/deleteDonation")
-	public String delete(HttpServletRequest request, @RequestParam("id") int donationId) {
+	public String delete(HttpServletRequest request, 
+			@RequestParam("id") int donationId,
+			RedirectAttributes redirectAttributes) {
 
 		donationService.changeDonationShowingStatus(donationId);
+		
+		redirectAttributes.addFlashAttribute("successDelete", true);
+		
 		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
 		//return ViewConstants.V_REDIRECT_ADMIN_DONATIONS;
 
@@ -568,8 +589,6 @@ public class AdminController {
 
 			InitUser user = new InitUser();
 			
-			boolean errorProcess=false;
-			boolean successAdd = false;
 			
 			// if donation id !=0 then it is update
 			if (userId != 0) {
@@ -591,17 +610,26 @@ public class AdminController {
 	            	userProcess = "processUpdateUser";
 	            }
 				
-	            errorProcess = true;
+	            theModel.addAttribute("errorProcess",true);
 	            
 	        } else if(theModel.containsAttribute("successAdd")) {
 	        	
-	        	successAdd = true;
-	        }
+	        	theModel.addAttribute("successAdd", true);
+	        	
+	        } else if(theModel.containsAttribute("successUpdate")) {
+	        
+	        	theModel.addAttribute("successUpdate", true);
+	        	
+	        } else if(theModel.containsAttribute("successChangeStatus")) {
+	        
+	        	theModel.addAttribute("successChangeStatus", true);
+	        	
+	        } else if(theModel.containsAttribute("successDelete")) {
+	        
+	        	theModel.addAttribute("successDelete", true);
+	        	
+	        } 
 			
-			// check if the last add donation is success
-			theModel.addAttribute("successAdd", successAdd);
-			
-			theModel.addAttribute("errorProcess",errorProcess);
 			theModel.addAttribute("user", user);
 
 			theModel.addAttribute("process", userProcess);
@@ -686,7 +714,7 @@ public class AdminController {
 		} else {
 	    	
 	    	userService.update(theUser.copyPropertiesToUserObj(userService.getUser(theUser.getId())), UserRole.ADMIN);
-			redirectAttributes.addFlashAttribute("successProcess", true);
+			redirectAttributes.addFlashAttribute("successUpdate", true);
 	    }
 
 		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
@@ -713,11 +741,14 @@ public class AdminController {
 
 	@GetMapping("/updateUserStatus")
 	public String updateUserStatus(HttpServletRequest request,
-			@RequestParam("id") int userId, @RequestParam(name = "status") UserStatus status,
-			Model theModel) {
+			@RequestParam("id") int userId, 
+			@RequestParam(name = "status") UserStatus status,
+			RedirectAttributes redirectAttributes) {
 
 		userService.changeUserStatus(status, userId);
-
+		
+		redirectAttributes.addFlashAttribute("successChangeStatus", true);
+		
 		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
 	}
 	
@@ -728,14 +759,12 @@ public class AdminController {
 	
 	@GetMapping("/deleteUser")
 	public String deleteUser(HttpServletRequest request, @RequestParam("id") int theId,
-			@RequestParam(name = "currentUrl", defaultValue = "/admin/users") String currentUrl) {
+			@RequestParam(name = "currentUrl", defaultValue = "/admin/users") String currentUrl,
+			RedirectAttributes redirectAttributes) {
 		userService.changeUserShowingStatus(theId);
 		
+		redirectAttributes.addFlashAttribute("successDelete", true);
 		
-		
-		/*
-		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
-*/		
 		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
 	}
 	

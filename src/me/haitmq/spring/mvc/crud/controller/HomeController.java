@@ -86,8 +86,6 @@ public class HomeController {
 		Integer currentUserId = SessionUtils.getCurrentUserId(session);
 		
 		
-		System.out.println("currrent User Id ..........................: " + currentUserId);
-		
 		// add to model loginUser information
 		SessionUtils.addLoginUserInfoToModel(session, theModel);
 		
@@ -141,7 +139,7 @@ public class HomeController {
 		SessionUtils.setCurrentEndpoint(request);
 		
 		
-
+		/*
 		System.out.println("current page...................home: " + request.getRequestURL().toString());
 		System.out.println("context path..................home:" + request.getContextPath());
 		System.out.println("request uri......................home: " + request.getRequestURI());
@@ -152,6 +150,7 @@ public class HomeController {
 		System.out.println("page...........................home:" + page);
 		System.out.println("size...........................home:" + size);
 		System.out.println("searchingValue...........................home:" + searchingValue);
+		*/
 		return ViewConstants.V_HOME;
 	}
 

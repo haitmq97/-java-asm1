@@ -9,18 +9,19 @@
 <%@ page import="me.haitmq.spring.mvc.crud.entity.status.UserStatus"%>
 <%@ page import="me.haitmq.spring.mvc.crud.entity.role.UserRole"%>
 
-<div class="popup col-12 col-sm-8 col-md-6 col-lg-6">
+<div class="popup col-12 col-sm-8 col-md-6 col-lg-4">
 
-	<div class="form-container donate-form" id="delete">
+	<div class="form-container donate-form" id="user-delete">
 		<div class="container form-head">
-			<h3>Bạn có chắc chắn xóa?</h3>
+			<h3 class="text-align-center">Xóa người dùng</h3>
 		</div>
 		<div class="container form-main">
-			<p>
-				Email: <span>${user.email}</span>
+			<h5>Bạn có chắc chắn xóa?</h5>
+			<p class="mb-2">
+				Email: <span class="font-weight-bold">${user.email}</span>
 			</p>
-			<p>
-				username: <span>${user.userName}</span>
+			<p class="mb-2">
+				username: <span class="font-weight-bold">${user.userName}</span>
 			</p>
 			<div class="submit-p">
 				<button type="button" class="cancel-btn " onclick="closeAllPopup()">Hủy</button>

@@ -286,7 +286,7 @@
 														<span>Quyên góp</span>
 													</button>
 													
-													<button class="btn btn-success donation-btn d-delete-btn"
+													<button class="btn btn-danger donation-btn d-delete-btn"
 														title="Xóa"
 														onclick="toDelete('${tempDonation.id}', '#closedOrDelete')"
 														data-url="${deleteLink}">
@@ -385,8 +385,7 @@
 			</div>
 		</div>
 	</section>
-
- 
+	
 
 	<script src="<c:url value='/static/common/assets/js/script.js' />"></script> 
 
@@ -413,24 +412,30 @@
 				<% Boolean isAdmin = ((Boolean)request.getAttribute("isAdmin")) != null ? (Boolean)request.getAttribute("isAdmin") : false; %>
 			
 			 --%>
-
-
-			<c:if test="${successAdd}">
-				<!-- Hien thị thông báo tạo thành công -->
-				<jsp:include
-					page="../common/form-modal/donation-add-success-modal.jsp" />
-
-			</c:if>
-
-
-
-			<div class="popup col-12 col-sm-8 col-md-4">
-				
-				<!-- modatl thay đổi trạng thái (quyen gop hoac ket thuc) -->
-
-				<jsp:include page="../common/form-modal/update-donation-status-modal.jsp" />  
+			<!-- for donating or end donation modal -->
+			<jsp:include
+				page="../admin/form-modal/donation-modal/donation-update-status-modal.jsp" />
 			
-			</div>
+				<!-- Hien thị thông báo tạo thành công -->
+
+			<input type="hidden" id="successAdd" value="${successAdd}">
+			<jsp:include
+				page="../admin/form-modal/donation-modal/donation-success-add-modal.jsp" />
+
+
+			<input type="hidden" id="successUpdate" value="${successUpdate}">
+			<jsp:include
+				page="../admin/form-modal/donation-modal/donation-success-update-modal.jsp" />
+
+			<input type="hidden" id="successDelete" value="${successDelete}">
+			<jsp:include
+				page="../admin/form-modal/donation-modal/donation-success-delete-modal.jsp" />
+
+			<input type="hidden" id="successChangeStatus"
+				value="${successChangeStatus}">
+			<jsp:include
+				page="../admin/form-modal/donation-modal/donation-success-change-status-modal.jsp" />
+
 		</div>
 	
 	</div>

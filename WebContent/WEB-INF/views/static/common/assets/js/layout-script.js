@@ -120,23 +120,50 @@ function openSuccessProccessMgs() {
 	var successDonate = document.getElementById("successDonate");
 	var successAdd = document.getElementById("successAdd");
 	var successUpdate = document.getElementById("successUpdate");
+	var successDelete = document.getElementById("successDelete");
+	var successChangeStatus = document.getElementById("successChangeStatus");
 	
 	if(successDonate != null) {
-		openModal("#success-donate");
-	}
-	console.log("is successAdd null: " + (successAdd != null) );
-	console.log("successAdd value: " +  successAdd.value);
-	console.log("successAdd value equals true: " + (successAdd.value == "true"));
-	if(successAdd != null && successAdd.value == "true") {
-		openModal("#success-add");
+		if (successDonate.value == "true") {
+			openModal("#success-donate");
+		}
+		
 	}
 	
-	console.log("is successUpdate null: " + (successUpdate != null) );
-	console.log("successUpdate value: " +  successUpdate.value);
-	console.log("successUpdate value equals true: " + (successUpdate.value == "true"));
-	
-	if(successUpdate != null && successUpdate.value == "true") {
-		openModal("#success-update");
+	if(successAdd != null) {
+		console.log("successAdd value: " + successAdd.value);
+		console.log("successAdd value equals true: " + (successAdd.value == "true"));
+		if (successAdd.value == "true") {
+			openModal("#success-add");
+		}
+	}
+
+	if(successUpdate != null) {
+		console.log("successUpdate value: " +  successUpdate.value);
+		console.log("successUpdate value equals true: " + (successUpdate.value == "true"));
+		
+		if(successUpdate.value == "true"){
+			openModal("#success-update");
+		}
+		
+	}
+	if(successDelete != null) {
+		console.log("successUpdate value: " +  successDelete.value);
+		console.log("successUpdate value equals true: " + (successDelete.value == "true"));
+		
+		if(successDelete.value == "true"){
+			openModal("#success-delete");
+		}
+		
+	}
+	if(successChangeStatus != null) {
+		console.log("successUpdate value: " +  succsuccessChangeStatusessUpdate.value);
+		console.log("successUpdate value equals true: " + (successChangeStatus.value == "true"));
+		
+		if(successChangeStatus.value == "true"){
+			openModal("#success-changeStatus");
+		}
+		
 	}
 	
 }

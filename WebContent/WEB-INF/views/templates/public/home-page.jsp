@@ -50,11 +50,6 @@
 	crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 <!-- bootstrap -->
-<%-- 
-<link rel="stylesheet" href="<c:url value='https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm'/>" crossorigin="anonymous">
-
- --%>
-
 
 <script src="<c:url value='/static/user/assets/js/jquery.min.js' />"></script>
 <script
@@ -77,20 +72,16 @@
 	src="<c:url value='/static/user/assets/js/bootstrap-select.min.js' />"></script>
 <script src="<c:url value='/static/user/assets/js/custom.js' />"></script>
 
-<script
+<%-- <script
 	src="<c:url value='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js' />"
-	crossorigin="anonymous"></script>
+	crossorigin="anonymous"></script> --%>
+
+<!-- bootstrap cdn -->
 <script
 	src="<c:url value='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' />"
 	crossorigin="anonymous"></script>
 <script
 	src="<c:url value='https://unpkg.com/sweetalert/dist/sweetalert.min.js' />"></script>
-
-<link rel="stylesheet"
-	href="<c:url value='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css'/>"
-	integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
-	crossorigin="anonymous" referrerpolicy="no-referrer" />
-
 
 <!-- customer style -->
 
@@ -98,12 +89,6 @@
 	href="<c:url value='/static/common/assets/css/style.css'/>" />
 
 
-
-<!-- customer js -->
-
-<script src="<c:url value='/static/common/assets/js/script.js' />"></script>
-<script
-	src="<c:url value='/static/common/assets/js/layout-script.js' />"></script>
 </head>
 <body>
 
@@ -198,13 +183,13 @@
 										<tr class="" ondblclick="window.location.href='${detailLink}'">
 
 											<th scope="row" class="d-ns-cell col-12 scrollable-col">
-												<p class="d-name text-align-left">${tempDonation.name}</p>
-												<p class="d-status color-text">
+												<p class="d-name text-align-left font-weight-bold">${tempDonation.name}</p>
+												<p class="d-status color-text font-weight-bold">
 													${JSPDataFormat.donationStatusFormat(tempDonation.status)}
 												</p>
 
 											</th>
-											<td><p>${tempDonation.code}</p></td>
+											<td><p class="font-weight-bold">${tempDonation.code}</p></td>
 											<td>
 												<!-- <p class="mb-1">Bắt đầu:</p> -->
 												<p class="mb-2">${JSPDataFormat.dateFormat(tempDonation.startDate)}</p>
@@ -251,9 +236,12 @@
 										</tr>
 									</c:forEach>
 
-
+									
 								</tbody>
 							</table>
+							<script>
+									changeColorText();
+							</script>
 						</div>
 						<div>
 							<div>
@@ -305,9 +293,7 @@
 			</div>
 		</div>
 	</section>
-	<jsp:include page="../common/footer-layout2.jsp">
-		<jsp:param name="includePart" value="footerSection" />
-	</jsp:include>
+	
 
 
 	<script src="<c:url value='/static/common/assets/js/script.js' />"></script>
@@ -316,141 +302,31 @@
 	<div class="overlay-container">
 		<div class="row">
 			<div id="overlay" onclick="closeAllModal()"></div>
-			<div class="popup col-12 col-sm-8 col-md-4">
 
+				<% Boolean isLogined = ((Boolean) request.getAttribute("isLogined")) != null 
+					? (Boolean) request.getAttribute("isLogined") : false; %>
+				<% Boolean isActive = ((Boolean) request.getAttribute("isActive")) != null 
+					? (Boolean) request.getAttribute("isActive") : false; %>
 
-				<%
-				Boolean isLogined = ((Boolean) request.getAttribute("isLogined")) != null ? (Boolean) request.getAttribute("isLogined")
-						: false;
-				%>
-				<%
-				Boolean isActive = ((Boolean) request.getAttribute("isActive")) != null ? (Boolean) request.getAttribute("isActive")
-						: false;
-				%>
-
-				<%
-				if (isLogined) {
-				%>
-				<%
-				if (isActive) {
-				%>
-				<jsp:include page="../common/form-modal/donate-form.jsp" />
-
-				<%-- <div class="form-container donate-form " id="donate" >
-					<div class="container form-head">
-						<div class="form-title">
-							<div class="d-flex justify-content-between">
-								<p>Quyên góp:</p>
+				<% if (isLogined) { %>
+					<% if (isActive) { %>
 					
-								<p>${donation.code}</p>
-							</div>
-											<h4 class="d-inline-block mx-auto">${donation.name}</h4>
-						</div>
-					</div>
-					<div class="container form-main">
-						<form:form modelAttribute="userDonation" action="${processDonating}"
-							method="POST">
-					
-							<input type="hidden" name="donationId" value="${donation.id}" />
+						<jsp:include page="../public/form-modal/user-donation-modal/donate-form.jsp" />
 
-							<div class="form-group form-group-custom">
-								<label class="field-label" for="fullName">Họ và Tên:</label>
-								<form:input type="text" class="form-control" id="fullName"
-									path="name" />
-
-							</div>
-							<div class="form-group form-group-custom">
-								<label class="field-label" for="donationAmount">Số Tiền
-									Quyên Góp:</label>
-								<form:input type="number" class="form-control"
-									id="donationAmount" path="money" />
-							</div>
-							<div class="form-group form-group-custom">
-								<label class="field-label" for="note">Ghi Chú:</label>
-								<form:textarea class="form-control" id="note" path="note"
-									rows="3"></form:textarea>
-							</div>
-
+					<% } else { %>
 				
-
-							<div class="submit-p">
-								<button type="button" class="cancel-btn "
-									onclick="closeModal('#donate')">Hủy</button>
-								<button type="submit" class="submit-btn">Quyên góp</button>
-							</div>
-						</form:form>
-					</div>
-
-				</div> --%>
-				<%
-				} else {
-				%>
-				<jsp:include page="../common/form-modal/no-permission-modal.jsp" />
-
-				<!-- <div class="form-container donate-form " id="donate">
-					<div class="container form-head">
-						<div class="form-title">
-							<p>Tài khoản của bạn hiện bị khóa. Không thể thực hiện chức năng quyên góp</p>
-						</div>
-					</div>
-					<div class="container form-main">
-						<div class="container form-main d-flex justify-content-end">
-						<button type="button" class="btn btn-secondary cancel-btn "
-                        onclick="closeModal('#donate')">Đóng</button>
-					</div>
-					</div>
-
-				</div> -->
-				<%
-				}
-				%>
+						<jsp:include page="../common/form-modal/user-modal/user-no-permission-modal.jsp" />
+					<% } %>
+				
+				<% } else { %>
+					<jsp:include page="../common/form-modal/user-modal/user-no-login-modal.jsp" />
+				
+				<% } %>
 
 
 
-				<%
-				} else {
-				%>
-
-				<jsp:include page="../common/form-modal/login-error-modal.jsp" />
-				<!-- <div class="form-container loginWarning-form" id="donate">
-		        	<div class="container form-head">
-		        		<p>Bạn phải đăng nhập trước</p>
-		        	</div>
+				<jsp:include page="../common/form-modal/donate-success-modal.jsp" />
 					
-					
-					<div class="container form-main d-flex justify-content-end">
-						<button type="button" class="btn btn-secondary cancel-btn "
-                        onclick="closeModal('#donate')">Đóng</button>
-					
-					</div>
-					
-					
-				</div> -->
-				<%
-				}
-				%>
-
-
-				<c:if test="${successDonate}">
-					<jsp:include page="../common/form-modal/donate-success-modal.jsp" />
-
-					<%--  <input type = "hidden" id="successDonate" value="${successDonate}">
-				<div class="form-container donate-form" id="success-donate" style="display:block;">
-					<div class="container form-head">
-						<div class="form-title">
-							<p>quyên góp thành công. Vui lòng chờ Quản trị viên xác nhận</p>
-						</div>
-					</div>
-					<div class="container form-main">
-						<div class="container form-main d-flex justify-content-end">
-						<button type="button" class="btn btn-secondary cancel-btn "
-                        onclick="closeModal('#success-donate')">Đóng</button>
-					</div>
-					</div>
-
-				</div> --%>
-				</c:if>
-
 
 
 			</div>
@@ -460,10 +336,12 @@
 
 
 
-	</div>
+	<jsp:include page="../common/footer-layout2.jsp">
+		<jsp:param name="includePart" value="footerSection" />
+	</jsp:include>
 
 
-	<script src="https://code.jquery.com/jquery-3.6.4.min.js"
+	<script src="<c:url value='ttps://code.jquery.com/jquery-3.6.4.min.js' />h"
 		crossorigin="anonymous"></script>
 
 
@@ -474,10 +352,6 @@
 
 	<script
 		src="<c:url value='/static/common/assets/js/layout-script.js' />"></script>
-
-
-
-
 
 
 </body>

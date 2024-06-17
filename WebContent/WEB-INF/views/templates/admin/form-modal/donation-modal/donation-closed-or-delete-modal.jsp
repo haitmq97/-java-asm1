@@ -41,11 +41,11 @@
 				<c:out value="${output1}" />?
 			</h4>
 			
-			<p>
-				Đợt quyên góp: <span>${donation.name}</span>
+			<p class="mb-2">
+				Đợt quyên góp: <span class="font-weight-bold">${donation.name}</span>
 			</p>
-			<p>
-				Mã quyên góp: <span>${donation.code}</span>
+			<p class="mb-2">
+				Mã quyên góp: <span class="font-weight-bold">${donation.code}</span>
 			</p>
 			<div class="submit-p">
 				<button type="button" class="cancel-btn " onclick="closeAllModal()">Hủy</button>
