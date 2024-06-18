@@ -79,7 +79,7 @@
 						</div>
 						<div class="mt-4">
 							<p>
-								Don't have a account yet, <a
+								Don't have an account yet, <a
 									href="${pageContext.request.contextPath}/user/registerForm">register
 									now</a>
 							</p>

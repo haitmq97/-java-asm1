@@ -13,6 +13,11 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import me.haitmq.spring.mvc.crud.entity.status.UserDonationStatus;
 
@@ -26,12 +31,25 @@ public class UserDonation {
 	@Column(name = "id")
 	private int id;
 	
+	/*
+	@NotBlank(message = "is required")
+	@NotNull(message = "is required")
+	*/
 	@Column(name = "name")
 	private String name;
 	
 	@Column(name = "created_date")
 	private String createdDate;
 	
+	
+	/*
+	 @NotBlank
+	@Pattern(regexp = "^[1-9]\\d*000$", message = "")
+	@Min(value=5000, message="Số tiền quyên góp tối thiểu 5.000vnđ")  
+    @Max(value=500000000, message="Số tiền quyên góp tối đa 500.000.000vnđ")  
+	 */
+	
+	@Min(value=5000, message="Số tiền quyên góp tối thiểu 5.000vnđ")
 	@Column(name = "money")
 	private long money;
 	

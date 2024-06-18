@@ -40,8 +40,6 @@ public interface UserDAO {
 
 	// get user list(pageable)
 
-	public Page<User> findByQuery(String theQueryString, String searchingValue, Pageable pageable);
-	
 	public Page<User> findByEmailOrUserNameOrPhoneNumber(Pageable pageable, String searchingValue);
 
 	public Page<User> findByEmailOrUserNameOrPhoneNumberOrStatus(String searchingValue, Pageable pageable);

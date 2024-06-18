@@ -9,6 +9,8 @@ import org.springframework.data.domain.Pageable;
 import me.haitmq.spring.mvc.crud.entity.Donation;
 import me.haitmq.spring.mvc.crud.entity.User;
 import me.haitmq.spring.mvc.crud.entity.UserDonation;
+import me.haitmq.spring.mvc.crud.entity.status.DonationStatus;
+import me.haitmq.spring.mvc.crud.entity.status.UserDonationStatus;
 
 public interface UserDonationDAO {
 	
@@ -62,15 +64,10 @@ public interface UserDonationDAO {
 	
 	public void delete(int theId);
 	
-	
-
-	
 	public List<UserDonation> getUserDonationByDonationId(int theId);
 	
 	public List<UserDonation> getUserDonationByUserId(int theId);
 	
-	
-	/////////
 	
 	public Page<UserDonation> findAll(Pageable pageable);
 	
@@ -84,10 +81,6 @@ public interface UserDonationDAO {
 	
 	public Page<UserDonation> findByDonationId(int donationId, Pageable pageable);
 	
-	
-	
-	//////////////////////////
-	
 	public Long getTotalMoneyByDonationId(int theId);
 	
 	public List<UserDonation> getUserDonationListByDonationId(int theId);
@@ -96,6 +89,8 @@ public interface UserDonationDAO {
 	public Page<UserDonation> findByUserNameOrDonationCodeSortByStatusByCreatedDate(String searchingValue, Pageable pageable);
 	
 	public Page<UserDonation> findByDonationCodeSortByCreatedDate(String donationCode, String searchingValue, Pageable pageable);
+	
+	public Page<UserDonation> findByDonationCodeAndStatusSortByCreatedDate(String donationCode,UserDonationStatus status ,String searchingValue, Pageable pageable);
 	
 	public Page<UserDonation> findByDonationCodeGroupByUserSortByTotalMoney(String donationCode, String searchingValue, Pageable pageable);
 	

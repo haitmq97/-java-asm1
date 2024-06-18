@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 
 
 import me.haitmq.spring.mvc.crud.entity.UserDonation;
+import me.haitmq.spring.mvc.crud.entity.status.DonationStatus;
 import me.haitmq.spring.mvc.crud.entity.status.UserDonationStatus;
 import me.haitmq.spring.mvc.crud.entity.User;
 import me.haitmq.spring.mvc.crud.entity.Donation;
@@ -115,6 +116,8 @@ public interface UserDonationService {
 	
 	
 	public Page<UserDonation> findByDonationCodeSortByCreatedDate(String donationCode, String searchingValue,int page,int size);
+	
+	public Page<UserDonation> findByDonationCodeAndStatusSortByCreatedDate(String donationCode, UserDonationStatus status ,String searchingValue,int page,int size);
 	
 	public Page<UserDonation> findByDonationCodeGroupByUserSortByTotalMoney(String donationCode, String searchingValue,int page,int size);
 	

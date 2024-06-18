@@ -47,12 +47,18 @@ public class UserDonationServiceImpl implements UserDonationService {
 		UserStatus userStatus = userDonation.getUser().getStatus();
 		DonationStatus donationStatus = userDonation.getDonation().getStatus();
 		
+		System.out.println("userDonationService................................ userdonation: " + userDonation);
+		System.out.println("userDonationService................................ userdonation id: " + userDonation.getId() );
+		
+		
 		if(isAbletoUserDonation(userDonation.getUser(), userDonation.getDonation())) {
 			if(userDonation.getCreatedDate()==null) {
 				userDonation.setCreatedDate(Time.getCurrentDateTime());
 				userDonation.setStatus(UserDonationStatus.WAITING);
 				userDonation.setShowing(true);
 			}
+			System.out.println("userDonationService.............test2................... userdonation: " + userDonation);
+			System.out.println("userDonationService.............test2................... userdonation id: " + userDonation.getId() );
 			userDonationDAO.save(userDonation);
 		}
 		
@@ -287,6 +293,13 @@ public class UserDonationServiceImpl implements UserDonationService {
 	public Page<UserDonation> findByDonationCodeSortByCreatedDate(String donationCode, String searchingValue,int page,int size) {
 		PageRequest pageRequest = PageRequest.of(page-1, size);
 		return userDonationDAO.findByDonationCodeSortByCreatedDate(donationCode, searchingValue, pageRequest);
+	}
+	
+	@Override
+	@Transactional
+	public Page<UserDonation> findByDonationCodeAndStatusSortByCreatedDate(String donationCode, UserDonationStatus status ,String searchingValue,int page,int size) {
+		PageRequest pageRequest = PageRequest.of(page-1, size);
+		return userDonationDAO.findByDonationCodeAndStatusSortByCreatedDate(donationCode, status, searchingValue, pageRequest);
 	}
 	
 	@Override

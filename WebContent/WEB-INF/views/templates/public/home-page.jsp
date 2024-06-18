@@ -185,7 +185,7 @@
 												</p>
 
 											</th>
-											<td><p class="font-weight-bold">${tempDonation.code}</p></td>
+											<td><p class="font-weight-bold mb-2">${tempDonation.code}</p></td>
 											<td>
 												<!-- <p class="mb-1">Bắt đầu:</p> -->
 												<p class="mb-2">${JSPDataFormat.dateFormat(tempDonation.startDate)}</p>
@@ -199,7 +199,7 @@
 											</td>
 
 											<%-- <td><p>${JSPDataFormat.dateFormat(tempDonation.endDate)}</p></td> --%>
-											<td><p>${tempDonation.phoneNumber}</p></td>
+											<td><p class="mb-2">${tempDonation.phoneNumber}</p></td>
 
 
 
@@ -292,8 +292,6 @@
 	
 
 
-	<script src="<c:url value='/static/common/assets/js/script.js' />"></script>
-
 
 	<div class="overlay-container">
 		<div class="row">
@@ -308,22 +306,19 @@
 					<% if (isActive) { %>
 					
 						<jsp:include page="../public/form-modal/user-donation-modal/donate-form.jsp" />
-
+						
+						<jsp:include page="../public/form-modal/user-donation-modal/donate-success-modal.jsp" />
 					<% } else { %>
 				
 						<jsp:include page="../common/form-modal/user-modal/user-no-permission-modal.jsp" />
+						
+						
 					<% } %>
 				
 				<% } else { %>
 					<jsp:include page="../common/form-modal/user-modal/user-no-login-modal.jsp" />
 				
 				<% } %>
-
-
-
-				<jsp:include page="../common/form-modal/donate-success-modal.jsp" />
-					
-
 
 			</div>
 
@@ -337,7 +332,7 @@
 	</jsp:include>
 
 
-	<script src="<c:url value='ttps://code.jquery.com/jquery-3.6.4.min.js' />h"
+	<script src="<c:url value='https://code.jquery.com/jquery-3.6.4.min.js' />"
 		crossorigin="anonymous"></script>
 
 	<script src="<c:url value='/static/common/assets/js/script.js' />"></script>

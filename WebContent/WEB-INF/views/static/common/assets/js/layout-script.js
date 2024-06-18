@@ -151,16 +151,12 @@ function openSuccessProccessMgs() {
 	}
 	
 	if(successAdd != null) {
-		console.log("successAdd value: " + successAdd.value);
-		console.log("successAdd value equals true: " + (successAdd.value == "true"));
 		if (successAdd.value == "true") {
 			openModal("#success-add");
 		}
 	}
 
 	if(successUpdate != null) {
-		console.log("successUpdate value: " +  successUpdate.value);
-		console.log("successUpdate value equals true: " + (successUpdate.value == "true"));
 		
 		if(successUpdate.value == "true"){
 			openModal("#success-update");
@@ -168,8 +164,6 @@ function openSuccessProccessMgs() {
 		
 	}
 	if(successDelete != null) {
-		console.log("successUpdate value: " +  successDelete.value);
-		console.log("successUpdate value equals true: " + (successDelete.value == "true"));
 		
 		if(successDelete.value == "true"){
 			openModal("#success-delete");
@@ -177,8 +171,6 @@ function openSuccessProccessMgs() {
 		
 	}
 	if(successChangeStatus != null) {
-		console.log("successUpdate value: " +  succsuccessChangeStatusessUpdate.value);
-		console.log("successUpdate value equals true: " + (successChangeStatus.value == "true"));
 		
 		if(successChangeStatus.value == "true"){
 			openModal("#success-changeStatus");
@@ -192,6 +184,7 @@ function openSuccessProccessMgs() {
 function ErrorFormShowing() {
 	var donationModal = document.getElementById("donation-addOrUpdate");
 	var userModal = document.getElementById("user-addOrUpdate");
+	var donateModal = document.getElementById("donate");
 	var errorProcess = document.getElementById("errorProcess");
 	
 	if (errorProcess && errorProcess.value === 'true') {
@@ -202,6 +195,10 @@ function ErrorFormShowing() {
 		
 		if(userModal!=null) {
 			openModal('#user-addOrUpdate');
+		}
+		
+		if(donateModal!=null) {
+			openModal('#donate');
 		}
 
 	}
@@ -255,7 +252,24 @@ function checkUrl() {
 		userBtn.classList.add("active-b");
 	}
 
-	
+}
+
+
+function showUserDonationTable() {
+	let userDonationTotal = document.getElementById("userDonation-total");
+	let tableScript = document.getElementById("table-script");
+	let tableContainer = document.getElementById("table-container");
+	if(userDonationTotal!=null) {
+		
+		console.log("//////////////////////// total Element: " + userDonationTotal.value);
+		if(userDonationTotal.value!=0) {
+			tableScript.classList.add("d-none");
+			tableContainer.classList.remove("d-none");
+		} else {
+			tableContainer.classList.add("d-none");
+			tableScript.classList.remove("d-none");
+		}
+	}
 	
 }
 
@@ -270,6 +284,8 @@ $(document).ready(function() {
 	ErrorFormShowing();
 	
 	changeColorText();
+	
+	showUserDonationTable()
 
 });
 

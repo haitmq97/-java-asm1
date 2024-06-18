@@ -8,7 +8,7 @@ public final class ViewConstants {
     public static final String V_PUBLIC_DONATION_DETAILS = "public/donation-detail";
     
     public static final String V_LOGIN = "common/login-form";
-    public static final String V_REGISTER = "common/register-form2";
+    public static final String V_REGISTER = "common/register-form";
     public static final String V_ERROR = "common/error/error-page";
     public static final String V_ERROR_LOGIN = "common/error/error-login";
     public static final String V_ERROR_PERMISSION = "common/error/error-permission";

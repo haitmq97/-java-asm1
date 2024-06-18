@@ -15,6 +15,8 @@ import org.springframework.stereotype.Repository;
 
 import me.haitmq.spring.mvc.crud.entity.Donation;
 import me.haitmq.spring.mvc.crud.entity.User;
+import me.haitmq.spring.mvc.crud.entity.status.DonationStatus;
+import me.haitmq.spring.mvc.crud.utils.FormatData;
 
 @Repository
 public class DonationDAOImpl implements DonationDAO {
@@ -45,100 +47,58 @@ public class DonationDAOImpl implements DonationDAO {
 		return theQuery.getResultList();
 	}
 
-	
-	@Override
-	public Page<Donation> findByQuery(String theQueryString, Pageable pageable) {
-		
-		// tạo 1 query truy vấn từ chuối query tham số để truy vấn các đối tượng Donation
-		Query<Donation> theQuery = getSession().createQuery(theQueryString, Donation.class);
-		
-		// xác định vị trí bắt đầu kết quả dựa trên offset của page
-		theQuery.setFirstResult((int) pageable.getOffset());
-		
-		// xác định số phần tử của trang dựa trên size
-		theQuery.setMaxResults(pageable.getPageSize());
-		
-		// đếm số kết quả trả về theo truy vấn để tính tổng số phần tử => phân trang
-		Query<Long> countQuery = getSession().createQuery("select count(d) " + theQueryString, Long.class);
-		
-		// trả về đối tượng page chứa danh sách kết quả truy vấn
-		return new PageImpl<>(theQuery.getResultList(), pageable, countQuery.uniqueResult());
-	}
-	
-	
-	@Override
-	public Page<Donation> findByQuery(String theQueryString, String searchingValue, Pageable pageable) {
-		
-		Query<Donation> theQuery = getSession().createQuery(theQueryString, Donation.class);
-		
-		//Đặt giá trị tham số
-		theQuery.setParameter("searchingValue", searchingValue);
-		theQuery.setFirstResult((int) pageable.getOffset());
-		theQuery.setMaxResults(pageable.getPageSize());
-		
-		Query<Long> countQuery = getSession().createQuery("select count(d) " + theQueryString, Long.class);
-		
-		countQuery.setParameter("searchingValue", searchingValue);
-		
-		return new PageImpl<>(theQuery.getResultList(), pageable, countQuery.uniqueResult());
-	}
 
-	
 	@Override
 	public Page<Donation> findByPhoneNumberOrOrganizationOrCodeOrStatus(String searchingValue, Pageable pageable) {
+		
+		DonationStatus donationStatus = FormatData.donationStatusFormat(searchingValue);
+		
 		
 		String theQueryString =
-				"from Donation d where "
-				+ "d.showing = 1 and ("
-				+ " lower(d.status) like lower(concat(:searchingValue, '%'))" 
+				"from Donation d"
+				+ " where d.showing = 1 "
+				+ " and ( d.status = :donationStatus" 
 				+ " or lower(d.phoneNumber) like lower(concat(:searchingValue, '%'))"
+				+ " or lower(d.name) like lower(concat(:searchingValue, '%'))"
 				+ " or lower(d.organization) like lower(concat(:searchingValue, '%'))" 
 				+ " or lower(d.code) like lower(concat(:searchingValue, '%')))";
-		
-		return findByQuery(theQueryString, searchingValue, pageable);
-	}
-	
-	
-	/*
-	@Override
-	public Page<Donation> findByPhoneNumberOrOrganizationOrCodeOrStatus(String searchingValue, Pageable pageable) {
-
-		String theQueryString = "select d"
-				+ " , case"
-					+ " when d.status = 'NEW' then 'Mới tạo'"
-					+ " when d.status = 'DONATING' then 'Đang quyên góp'"
-					+ " when d.status = 'END' then 'Đã kết thúc'"
-					+ " when d.status = 'CLOSED' then 'Đã đóng'"
-				+ " end as d_status"	
-				+ " from Donation d where" 
-				+ " d.showing = 1 and ("
-				+ " lower(d_status) like lower(concat(:searchingValue, '%')) or"
-				+ " lower(d.phoneNumber) like lower(concat(:searchingValue, '%')) or"
-				+ " lower(d.organization) like lower(concat(:searchingValue, '%')) or"
-				+ " lower(d.code) like lower(concat(:searchingValue, '%')))";
 
 		Query<Donation> theQuery = getSession().createQuery(theQueryString, Donation.class);
 
 		// Đặt giá trị tham số
 		theQuery.setParameter("searchingValue", searchingValue);
+		theQuery.setParameter("donationStatus", donationStatus);
 		theQuery.setFirstResult((int) pageable.getOffset());
 		theQuery.setMaxResults(pageable.getPageSize());
-		
-		String countQueryString ="select count(ed) "
-				+ "from " + theQueryString + " ed";
 
-		Query<Long> countQuery = getSession().createQuery(countQueryString, Long.class);
+		Query<Long> countQuery = getSession().createQuery("select count(d) " + theQueryString, Long.class);
 
 		countQuery.setParameter("searchingValue", searchingValue);
+		countQuery.setParameter("donationStatus", donationStatus);
 
 		return new PageImpl<>(theQuery.getResultList(), pageable, countQuery.uniqueResult());
 	}
-	*/
+	
+	
 	
 	@Override
 	public Page<Donation> findAll(Pageable pageable) {
-		String theQueryString ="from Donation d";
-		return findByQuery(theQueryString, pageable);
+		String theQueryString = "from Donation d where d.showing = 1";
+		// tạo 1 query truy vấn từ chuối query tham số để truy vấn các đối tượng
+		// Donation
+		Query<Donation> theQuery = getSession().createQuery(theQueryString, Donation.class);
+
+		// xác định vị trí bắt đầu kết quả dựa trên offset của page
+		theQuery.setFirstResult((int) pageable.getOffset());
+
+		// xác định số phần tử của trang dựa trên size
+		theQuery.setMaxResults(pageable.getPageSize());
+
+		// đếm số kết quả trả về theo truy vấn để tính tổng số phần tử => phân trang
+		Query<Long> countQuery = getSession().createQuery("select count(d) " + theQueryString, Long.class);
+
+		// trả về đối tượng page chứa danh sách kết quả truy vấn
+		return new PageImpl<>(theQuery.getResultList(), pageable, countQuery.uniqueResult());
 	}
 	
 	@Override

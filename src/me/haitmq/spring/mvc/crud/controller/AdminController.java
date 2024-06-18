@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javassist.expr.Instanceof;
 import me.haitmq.spring.mvc.crud.entity.UserDonation;
 import me.haitmq.spring.mvc.crud.entity.role.UserRole;
 import me.haitmq.spring.mvc.crud.entity.status.DonationStatus;
@@ -258,13 +259,13 @@ public class AdminController {
 			
 		} catch (IllegalStateException e) {
 
-			log.error("NO PERMISSION: {}", e);
+			log.error("AdminController - donationlist - NO PERMISSION: {}", e);
 
 			return ViewConstants.V_ERROR_PERMISSION;
 
 		} catch (Exception e) {
 
-			log.error("ERROR FUNCTIONNAL: {}", e);
+			log.error("AdminController - donationlist - ERROR FUNCTIONNAL: {}", e);
 
 			return ViewConstants.V_ERROR;
 		}
@@ -289,7 +290,7 @@ public class AdminController {
 		
 		donationService.add(modelMapper.map(theDonation,Donation.class));
     	redirectAttributes.addFlashAttribute("successAdd", true);
-		
+
 		
 		//return "redirect:" + SessionUtils.getCurrentEndpoint(request);
 		
@@ -342,57 +343,64 @@ public class AdminController {
 			@RequestParam(name = "userDonationId", defaultValue = "0") int userDonationId,
 			Model theModel) {
 
-		/*
-		 * try {
-		 * 
-		 * 
-		 * 
-		 * } catch (Exception e) { return ViewConstants.V_ERROR; }
-		 */
-
-		// check authority (isLogined, isAdmin) (bao gồm phần header)
-		HttpSession session = request.getSession();
-
-		// check current user is admin
-		if (!userService.isAdmin(SessionUtils.getCurrentUserId(session))) {
-			throw new IllegalStateException("AdminController-donationDetail: User is not an admin.");
-		}
-		// use for nav bar and modals
-		SessionUtils.addLoginUserInfoToModel(session, theModel);
-
-		// get the donation for display detail
-		Donation theDonation = donationService.getDonation(theId);
-
-		Page<UserDonation> userDonations = userDonationService
-				.findByDonationCodeSortByCreatedDate(theDonation.getCode(), searchingValue, page, size);
-
-		donationService.setTotalConfirmedDonate(theId);
-		
-		// add to model
-		theModel.addAttribute("donation", theDonation);
-
-		theModel.addAttribute("userDonations", userDonations);
-
-		theModel.addAttribute("currentPage", page);
-
-		theModel.addAttribute("currentSize", size);
-
-		theModel.addAttribute("searchingValue", searchingValue);
-		
-		// for cancel userDonation model
-		UserDonation userDonation = new UserDonation();
-		
-		// if donation id !=0 then it is update
-		if (userDonationId != 0) {
-			userDonation = userDonationService.getUserDonation(userDonationId);
+		try {
 			
-		} 
+			// check authority (isLogined, isAdmin) (bao gồm phần header)
+			HttpSession session = request.getSession();
 
-		theModel.addAttribute("userDonation", userDonation);
+			// check current user is admin
+			if (!userService.isAdmin(SessionUtils.getCurrentUserId(session))) {
+				throw new IllegalStateException("AdminController-donationDetail: User is not an admin.");
+			}
+			// use for nav bar and modals
+			SessionUtils.addLoginUserInfoToModel(session, theModel);
 
-		SessionUtils.setCurrentEndpoint(request);
-		return ViewConstants.V_ADMIN_DONATION_DETAIL;
+			// get the donation for display detail
+			Donation theDonation = donationService.getDonation(theId);
 
+			Page<UserDonation> userDonations = userDonationService
+					.findByDonationCodeSortByCreatedDate(theDonation.getCode(), searchingValue, page, size);
+			
+			
+			donationService.setTotalConfirmedDonate(theId);
+			
+			// add to model
+			theModel.addAttribute("donation", theDonation);
+
+			theModel.addAttribute("userDonations", userDonations);
+
+			theModel.addAttribute("currentPage", page);
+
+			theModel.addAttribute("currentSize", size);
+
+			theModel.addAttribute("searchingValue", searchingValue);
+			
+			// for cancel userDonation model
+			UserDonation userDonation = new UserDonation();
+			
+			// if donation id !=0 then it is update
+			if (userDonationId != 0) {
+				userDonation = userDonationService.getUserDonation(userDonationId);
+				
+			} 
+
+			theModel.addAttribute("userDonation", userDonation);
+
+			SessionUtils.setCurrentEndpoint(request);
+			return ViewConstants.V_ADMIN_DONATION_DETAIL;
+			
+		} catch (IllegalStateException e) {
+
+			log.error("AdminController - donationlist - NO PERMISSION: {}", e);
+
+			return ViewConstants.V_ERROR_PERMISSION;
+
+		} catch (Exception e) {
+
+			log.error("AdminController - donationlist - ERROR FUNCTIONNAL: {}", e);
+
+			return ViewConstants.V_ERROR;
+		}
 	}
 	
 	
@@ -641,13 +649,13 @@ public class AdminController {
 			
 		} catch (IllegalStateException e) {
 			
-			log.error("NO PERMISSION: {}", e);
+			log.error("Admincontroller - userList - NO PERMISSION: {}", e);
 			
 			return ViewConstants.V_ERROR_PERMISSION;
 			
 		} catch (Exception e) {
 			
-			log.error("ERROR FUNCTIONNAL: {}", e);
+			log.error("Admincontroller - userList - ERROR FUNCTIONNAL: {}", e);
 			
 			return ViewConstants.V_ERROR;
 		}

@@ -15,6 +15,9 @@ import org.springframework.stereotype.Repository;
 import me.haitmq.spring.mvc.crud.entity.Donation;
 import me.haitmq.spring.mvc.crud.entity.Role;
 import me.haitmq.spring.mvc.crud.entity.User;
+import me.haitmq.spring.mvc.crud.entity.status.DonationStatus;
+import me.haitmq.spring.mvc.crud.entity.status.UserStatus;
+import me.haitmq.spring.mvc.crud.utils.FormatData;
 
 @Repository
 public class UserDAOImpl implements UserDAO {
@@ -52,8 +55,32 @@ public class UserDAOImpl implements UserDAO {
 		return theQuery.getResultList();
 	}
 
+	
+	
 	@Override
-	public Page<User> findByQuery(String theQueryString, String searchingValue, Pageable pageable) {
+	public Page<User> findAll(Pageable pageable) {
+		String theQueryString = "from User u where u.showing = 1";
+
+		Query<User> theQuery = getSession().createQuery(theQueryString, User.class);
+
+
+		theQuery.setFirstResult((int) pageable.getOffset());
+		theQuery.setMaxResults(pageable.getPageSize());
+
+		Query<Long> countQuery = getSession().createQuery("select count(u) " + theQueryString, Long.class);
+
+		return new PageImpl<>(theQuery.getResultList(), pageable, countQuery.uniqueResult());
+	}
+
+	// tìm theo username, email và số điện thoại (những user có showing =1)
+	@Override
+	public Page<User> findByEmailOrUserNameOrPhoneNumber(Pageable pageable, String searchingValue) {
+
+		String theQueryString = "from User u where " 
+				+ "u.showing = 1 and ("
+				+ " u.userName like concat(:searchingValue, '%') or" 
+				+ " u.email like concat(:searchingValue, '%') or"
+				+ " u.phoneNumber like concat(:searchingValue, '%'))";
 
 		Query<User> theQuery = getSession().createQuery(theQueryString, User.class);
 
@@ -69,39 +96,33 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public Page<User> findAll(Pageable pageable) {
-		String theQueryString = "from User u where " + "u.showing = 1 and ("
-				+ " u.userName like concat(:searchingValue, '%') or" + " u.email like concat(:searchingValue, '%')"
-				+ " u.phoneNumber like concat(:searchingValue, '%'))";
-
-		return findByQuery(theQueryString, "", pageable);
-	}
-
-	// tìm theo username, email và số điện thoại (những user có showing =1)
-	@Override
-	public Page<User> findByEmailOrUserNameOrPhoneNumber(Pageable pageable, String searchingValue) {
-
-		String theQueryString = "from User u where " + "u.showing = 1 and ("
-				+ " u.userName like concat(:searchingValue, '%') or" 
-				+ " u.email like concat(:searchingValue, '%') or"
-				+ " u.phoneNumber like concat(:searchingValue, '%'))";
-
-		return findByQuery(theQueryString, "", pageable);
-	}
-
-	@Override
 	public Page<User> findByEmailOrUserNameOrPhoneNumberOrStatus(String searchingValue, Pageable pageable) {
-
+		
+		UserStatus userStatus = FormatData.userStatusFormat(searchingValue);
+		
 		String theQueryString = 
 				"from User u where " 
 				+ "u.showing = 1 and ("
+				+ " u.status = :userStatus or"
 				+ " lower(u.userName) like lower(concat(:searchingValue, '%')) or" 
 				+ " lower(u.email) like lower(concat(:searchingValue, '%') ) or"
-				+ " lower(u.status) like lower(concat(:searchingValue, '%')) or"
 				+ " lower(u.role.roleName) like lower(concat(:searchingValue, '%')) or"
 				+ " lower(u.phoneNumber) like lower(concat(:searchingValue, '%')))";
 
-		return findByQuery(theQueryString, searchingValue, pageable);
+
+		Query<User> theQuery = getSession().createQuery(theQueryString, User.class);
+
+		theQuery.setParameter("searchingValue", searchingValue);
+		theQuery.setParameter("userStatus", userStatus);
+		theQuery.setFirstResult((int) pageable.getOffset());
+		theQuery.setMaxResults(pageable.getPageSize());
+
+		Query<Long> countQuery = getSession().createQuery("select count(u) " + theQueryString, Long.class);
+
+		countQuery.setParameter("searchingValue", searchingValue);
+		countQuery.setParameter("userStatus", userStatus);
+
+		return new PageImpl<>(theQuery.getResultList(), pageable, countQuery.uniqueResult());
 
 	}
 
@@ -138,7 +159,8 @@ public class UserDAOImpl implements UserDAO {
 
 	@Override
 	public User getUserByUserNameOrEmail(String userNameOrEmail) {
-		String theQueryString = "from User u where " + " u.userName =:userNameOrEmail or"
+		String theQueryString = "from User u where " 
+				+ " u.userName =:userNameOrEmail or"
 				+ " u.email =:userNameOrEmail";
 
 		Query<User> theQuery = getSession().createQuery(theQueryString, User.class);

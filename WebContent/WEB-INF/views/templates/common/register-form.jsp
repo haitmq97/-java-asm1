@@ -87,8 +87,8 @@
 </head>
 <body>
 
- <main class="main container">
-        <div class="register-form form-container d-block">
+ <main class="main container min-vh-100">
+        <div class="register-form form-container d-block align-self-center">
           <div class="form-head">
             <div class="form-title"><h3 class="text-align-center">Đăng ký</h3></div>
             <div class="form-head-decription"><p class="text-align-center">Nhanh chóng, tiện lợi</p></div>

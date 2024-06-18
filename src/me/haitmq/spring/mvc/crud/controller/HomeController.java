@@ -23,7 +23,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import me.haitmq.spring.mvc.crud.entity.UserDonation;
 import me.haitmq.spring.mvc.crud.entity.role.UserRole;
+import me.haitmq.spring.mvc.crud.entity.status.DonationStatus;
+import me.haitmq.spring.mvc.crud.entity.status.UserDonationStatus;
+import me.haitmq.spring.mvc.crud.common.InitDonation;
 import me.haitmq.spring.mvc.crud.common.InitUser;
+import me.haitmq.spring.mvc.crud.common.InitUserDonation;
 import me.haitmq.spring.mvc.crud.common.LoginUser;
 import me.haitmq.spring.mvc.crud.content_path.ViewConstants;
 import me.haitmq.spring.mvc.crud.entity.Donation;
@@ -124,14 +128,34 @@ public class HomeController {
 			theModel.addAttribute("donation", donation);
 			
 			
+			
 			// donate handle
 			// add donate obj for donate form
-			theModel.addAttribute("userDonation", new UserDonation());
+			
+			InitUserDonation theUserDonation = new InitUserDonation();
+			
+			String userDonationProcess = "processDonating";
+			
+			if(theModel.containsAttribute("errorUserDonation")) {
+				theUserDonation = (InitUserDonation) theModel.getAttribute("errorUserDonation");
+				
+				theModel.addAttribute("eDonationId", theModel.getAttribute("eDonationId"));
+				
+	            theModel.addAttribute("errorProcess",true);
+	            
+			}else if(theModel.containsAttribute("successDonate")) {
+	        	
+				theModel.addAttribute("successDonate", true);
+	        	
+	        } 
+			
+			
+			theModel.addAttribute("userDonation", theUserDonation);
 
-			theModel.addAttribute("processDonating", "processDonating");
+			theModel.addAttribute("processDonating", userDonationProcess);
 
 			// check if privious donate is success then add to model to showing message
-			theModel.addAttribute("successDonate", theModel.containsAttribute("successDonate") ? true : false);
+			
 
 			// for direct update donation status
 			donationService.autoUpdateStatusAll();
@@ -143,11 +167,63 @@ public class HomeController {
 			return ViewConstants.V_HOME;
 
 		} catch (Exception e) {
+			e.printStackTrace();
 			log.error("HomeController - homePage: {}", e);
 			return ViewConstants.V_ERROR;
 		}	
 	}
+	
+	
+	@PostMapping("/processDonating")
+	public String processDonating2(HttpServletRequest request, 
+			@Valid @ModelAttribute("userDonation") InitUserDonation userDonation,
+			BindingResult theBindingResult,
+			RedirectAttributes redirectAttributes) {
+		
 
+		
+		if (theBindingResult.hasErrors()) {
+
+			theBindingResult.getFieldErrors().forEach(error->{
+				System.out.println("the Bindding resul errort: " + error);
+				System.out.println("the Bindding resul errort (message: " + error.getDefaultMessage());
+			});
+			
+
+			// pass error data back donate form
+			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.userDonation", theBindingResult);
+			
+			redirectAttributes.addFlashAttribute("errorUserDonation", userDonation);
+			
+			redirectAttributes.addFlashAttribute("errorDonate", true);
+	    } else {
+	    	HttpSession session = request.getSession();
+	    	
+	    	// get current user and donation obj to set attribute for userDonation
+			Integer currentUserId = (Integer) session.getAttribute("currentUserId");
+			
+			if(currentUserId!= null) {
+				User user = userService.getUser(currentUserId);
+				
+				Donation donation = donationService.getDonation(userDonation.getDonationId());
+				
+				UserDonation theUserDonation = modelMapper.map(userDonation, UserDonation.class);
+				theUserDonation.setUser(user);
+				
+				theUserDonation.setDonation(donation);
+				
+				userDonationService.save(theUserDonation);
+
+				redirectAttributes.addFlashAttribute("successDonate", true);
+			} else {
+				throw new IllegalStateException("HomeController-processDonating: currentUserId equals null.");
+			}
+		
+	    }
+		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
+	}
+	
+	
 	
 	/*
 	 *	What donation-detail need to do? 
@@ -169,7 +245,7 @@ public class HomeController {
 			@RequestParam(name = "searchingValue", defaultValue = "", required = false) String searchingValue,
 			Model theModel) {
 		
-		
+		/*
 		try {
 			HttpSession session = request.getSession();
 			
@@ -185,7 +261,7 @@ public class HomeController {
 					theModel.containsAttribute("loginUser") ? theModel.getAttribute("loginUser") : new LoginUser());
 			// get users list to display
 			Page<UserDonation> userDonations = userDonationService
-					.findByDonationCodeSortByCreatedDate(theDonation.getCode(), searchingValue, page, size);
+					.findByDonationCodeAndStatusSortByCreatedDate(theDonation.getCode(), UserDonationStatus.CONFIRMED, searchingValue, page, size);
 			
 			// add to model
 			theModel.addAttribute("donation", theDonation);
@@ -200,12 +276,30 @@ public class HomeController {
 
 			// donate handle
 			// add donate obj for donate form
-			theModel.addAttribute("userDonation", new UserDonation());
+			InitUserDonation theUserDonation = new InitUserDonation();
 
-			theModel.addAttribute("processDonating", "processDonating");
+			String userDonationProcess = "processDonating";
+
+			if (theModel.containsAttribute("errorUserDonation")) {
+				theUserDonation = (InitUserDonation) theModel.getAttribute("errorUserDonation");
+
+				theModel.addAttribute("eDonationId", theModel.getAttribute("eDonationId"));
+
+				theModel.addAttribute("errorProcess", true);
+
+			} else if (theModel.containsAttribute("successDonate")) {
+
+				theModel.addAttribute("successDonate", true);
+				//theModel.addAttribute("successDonate", theModel.containsAttribute("successDonate") ? true : false);
+
+			}
+
+			theModel.addAttribute("userDonation", theUserDonation);
+
+			theModel.addAttribute("processDonating", userDonationProcess);
 
 			// check if privious donate is success then add to model to showing message
-			theModel.addAttribute("successDonate", theModel.containsAttribute("successDonate") ? true : false);
+			
 			
 			// save current url
 			SessionUtils.setCurrentEndpoint(request);
@@ -216,6 +310,66 @@ public class HomeController {
 			log.error("HomeController - homePage: {}", e);
 			return ViewConstants.V_ERROR;
 		}	
+		*/
+		
+		HttpSession session = request.getSession();
+		
+		// add to model loginUser information
+		SessionUtils.addLoginUserInfoToModel(session, theModel);
+		
+		// add donation info to the model
+		Donation theDonation = donationService.getDonation(theId);
+
+		// check if there are errors from last login then add to model the logined user
+		// with error, if not add new login user
+		theModel.addAttribute("loginUser",
+				theModel.containsAttribute("loginUser") ? theModel.getAttribute("loginUser") : new LoginUser());
+		// get users list to display
+		Page<UserDonation> userDonations = userDonationService
+				.findByDonationCodeAndStatusSortByCreatedDate(theDonation.getCode(), UserDonationStatus.CONFIRMED, searchingValue, page, size);
+		
+		// add to model
+		theModel.addAttribute("donation", theDonation);
+
+		theModel.addAttribute("userDonations", userDonations);
+
+		theModel.addAttribute("currentPage", page);
+
+		theModel.addAttribute("currentSize", size);
+
+		theModel.addAttribute("searchingValue", searchingValue);
+
+		// donate handle
+		// add donate obj for donate form
+		InitUserDonation theUserDonation = new InitUserDonation();
+
+		String userDonationProcess = "processDonating";
+
+		if (theModel.containsAttribute("errorUserDonation")) {
+			theUserDonation = (InitUserDonation) theModel.getAttribute("errorUserDonation");
+
+			theModel.addAttribute("eDonationId", theModel.getAttribute("eDonationId"));
+
+			theModel.addAttribute("errorProcess", true);
+
+		} else if (theModel.containsAttribute("successDonate")) {
+
+			theModel.addAttribute("successDonate", true);
+			//theModel.addAttribute("successDonate", theModel.containsAttribute("successDonate") ? true : false);
+
+		}
+
+		theModel.addAttribute("userDonation", theUserDonation);
+
+		theModel.addAttribute("processDonating", userDonationProcess);
+
+		// check if privious donate is success then add to model to showing message
+		
+		
+		// save current url
+		SessionUtils.setCurrentEndpoint(request);
+
+		return ViewConstants.V_PUBLIC_DONATION_DETAILS;
 
 	}
 
@@ -231,8 +385,7 @@ public class HomeController {
 	 */
 	@GetMapping(value = { "/registerForm", "/register" })
 	public String showFormForAdd(Model theModel) {
-		
-		/*
+
 		try {
 			InitUser newUser = new InitUser();
 			
@@ -240,7 +393,8 @@ public class HomeController {
 				
 				newUser = (InitUser) theModel.getAttribute("errorUser");
 
-	            BindingResult theBindingResult = (BindingResult) theModel.getAttribute("org.springframework.validation.BindingResult.user");
+	            BindingResult theBindingResult = 
+	            		(BindingResult) theModel.getAttribute("org.springframework.validation.BindingResult.user");
 	            theModel.addAttribute("errors", theBindingResult);
 
 	            theModel.addAttribute("errorProcess",true);
@@ -255,24 +409,8 @@ public class HomeController {
 			log.error("HomeController - showFormForAdd: {}", e);
 			return ViewConstants.V_ERROR;
 		}	
-		*/
-		InitUser newUser = new InitUser();
-		System.out.println("///////////////////////////test 1");
 		
-		if (theModel.containsAttribute("errorUser")) {
-			
-			newUser = (InitUser) theModel.getAttribute("errorUser");
-
-            BindingResult theBindingResult = (BindingResult) theModel.getAttribute("org.springframework.validation.BindingResult.user");
-            theModel.addAttribute("errors", theBindingResult);
-
-            theModel.addAttribute("errorProcess",true);
-        }
-
-		theModel.addAttribute("user", newUser);
-		theModel.addAttribute("process", "processRegister");
-
-		return ViewConstants.V_REGISTER;
+		
 	}
 	
 	/*
@@ -355,27 +493,17 @@ public class HomeController {
 	public String showLoginForm(HttpServletRequest request,
 			Model theModel) {
 		
-		
 		LoginUser theLoginUser = new LoginUser();
-		
-		Boolean errorLogin= false;
 		
 		// check if have errror
 		if (theModel.containsAttribute("loginUser")) {
 			theLoginUser = (LoginUser) theModel.getAttribute("loginUser");
-			errorLogin = true;
+			theModel.addAttribute("errorLogin", true);
         }
-		
 		
 		theModel.addAttribute("loginUser", theLoginUser);
 		theModel.addAttribute("process", "processLogin");
-		theModel.addAttribute("errorLogin", errorLogin);
-		
-		System.out.println("current page...................: " + request.getRequestURL().toString());
-		System.out.println("context path..................:" + request.getContextPath());
-		System.out.println("request uri......................: " + request.getRequestURI());
-		System.out.println("totalLink...........................:" + request.getContextPath() + request.getRequestURI());
-		
+
 		return ViewConstants.V_LOGIN;
 	}
 	
@@ -427,32 +555,62 @@ public class HomeController {
 			} 
 	    }
 		
-		
-		String currentUrl = request.getParameter("currentUrl");
-		
-		System.out.println("current url: ////////////////////////: " + currentUrl);
-		
-		/*
-		return ViewConstants.V_REDIRECT_HOME;
-		
-		
-		 */
-		
-		
 		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
 	}
 	
+	
+	/*
+	 *	What donateForm need to do? 
+	 * - request param:
+	 * 		+ HttpServletRequest
+	 * 		+ userDonation obj
+	 * 		+ donation id
+	 * 		+ BindingResult
+	 * 		+ RedirectAttributes (add error attribute or success messenge) 
+	 * - handle:
+	 * 		+ process login data
+	 * 			+ if has error add the error to model
+	 * 	
+	 * - return view 
+	 * 		+ return the privious page
+	 * 		
+	 * 
+	 */ 
+
+
+	// logout
+	/*
+	 *	What logout need to do? 
+	 * - request param:
+	 * 		+ HttpServletRequest
+	 * - handle:
+	 * 		+ remove all login user from session
+	 * 	
+	 * - return view 
+	 * 		
+	 * 
+	 */ 
+	@GetMapping(value = { "processLogout", "/logout" })
+	public String processLogout(HttpServletRequest request) {
+
+		HttpSession session = request.getSession();
+
+		SessionUtils.removeLoginUserInfoFromSesstion(session);
+
+		return ViewConstants.V_REDIRECT_HOME;
+	}
+	
+	
 	// clear error for click login or donate button again
 	@PostMapping("/clearErrors")
-    @ResponseBody
-    public String clearErrors(HttpSession session) {
-        session.removeAttribute("org.springframework.validation.BindingResult.loginUser");
-        session.removeAttribute("loginUser");
-        session.removeAttribute("errorLogin");
-        return "success";
-    }
-	
-	
+	@ResponseBody
+	public String clearErrors(HttpSession session) {
+		session.removeAttribute("org.springframework.validation.BindingResult.loginUser");
+		session.removeAttribute("loginUser");
+		session.removeAttribute("errorLogin");
+		return "success";
+	}
+
 	@GetMapping("donateForm")
 	public String userDonationForm(HttpServletRequest request, @RequestParam("id") int donationId, Model theModel) {
 		try {
@@ -483,97 +641,4 @@ public class HomeController {
 			return "common/error-page";
 		}
 	}
-	
-	/*
-	 *	What donateForm need to do? 
-	 * - request param:
-	 * 		+ HttpServletRequest
-	 * 		+ userDonation obj
-	 * 		+ donation id
-	 * 		+ BindingResult
-	 * 		+ RedirectAttributes (add error attribute or success messenge) 
-	 * - handle:
-	 * 		+ process login data
-	 * 			+ if has error add the error to model
-	 * 	
-	 * - return view 
-	 * 		+ return the privious page
-	 * 		
-	 * 
-	 */ 
-	@PostMapping("/processDonating")
-	public String processDonating(HttpServletRequest request, 
-			@ModelAttribute("userDonation") UserDonation userDonation,
-			@RequestParam("donationId") int donationId,
-			BindingResult theBindingResult,
-			RedirectAttributes redirectAttributes) {
-		try {
-			
-			if (theBindingResult.hasErrors()) {
-				// pass error data back donate form
-				redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.userDonation", theBindingResult);
-				
-				redirectAttributes.addFlashAttribute("loginUser", userDonation);
-				
-				redirectAttributes.addFlashAttribute("errorDonate", true);
-		    } else {
-		    	HttpSession session = request.getSession();
-		    	
-		    	// get current user and donation obj to set attribute for userDonation
-				Integer currentUserId = (Integer) session.getAttribute("currentUserId");
-				
-				User user = userService.getUser(currentUserId);
-				
-				Donation donation = donationService.getDonation(donationId);
-				
-				userDonation.setUser(user);
-				
-				userDonation.setDonation(donation);
-				
-				userDonationService.save(userDonation);
-
-				redirectAttributes.addFlashAttribute("successDonate", true);
-		    }
-			
-			
-	
-			
-			/*
-			return ViewConstants.V_REDIRECT_HOME;
-			*/
-			
-			System.out.println("...........................in setCurrentEndpoint processDonating: " + SessionUtils.getCurrentEndpoint(request));
-			return "redirect:" + SessionUtils.getCurrentEndpoint(request);
-			
-			
-			
-		} catch (Exception e) {
-			// log.error("UserDonationController ERROR - processDonating(): ", e);
-			return ViewConstants.V_ERROR;
-		}
-	}
-
-	// logout
-	/*
-	 *	What logout need to do? 
-	 * - request param:
-	 * 		+ HttpServletRequest
-	 * - handle:
-	 * 		+ remove all login user from session
-	 * 	
-	 * - return view 
-	 * 		
-	 * 
-	 */ 
-	@GetMapping(value = { "processLogout", "/logout" })
-	public String processLogout(HttpServletRequest request) {
-
-		HttpSession session = request.getSession();
-
-		SessionUtils.removeLoginUserInfoFromSesstion(session);
-
-		return ViewConstants.V_REDIRECT_HOME;
-	}
-	
-
 }

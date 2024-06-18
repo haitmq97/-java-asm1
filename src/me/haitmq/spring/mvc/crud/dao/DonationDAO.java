@@ -39,10 +39,6 @@ public interface DonationDAO {
 
 
 	// + get donation list (pageable)
-
-	public Page<Donation> findByQuery(String theQueryString, Pageable pageable);
-	
-	public Page<Donation> findByQuery(String theQueryString, String searchingValue, Pageable pageable);
 	
 	public Page<Donation> findByPhoneNumberOrOrganizationOrCodeOrStatus(String searchString, Pageable pageable);
 
