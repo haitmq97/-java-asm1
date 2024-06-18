@@ -88,115 +88,101 @@
 <body>
 
  <main class="main container">
-        <div class="register-form form-container">
+        <div class="register-form form-container d-block">
           <div class="form-head">
-            <div class="form-title"><h3>Đăng ký</h3></div>
-            <div class="form-head-decription"><p>Nhanh chóng, tiện lợi</p></div>
+            <div class="form-title"><h3 class="text-align-center">Đăng ký</h3></div>
+            <div class="form-head-decription"><p class="text-align-center">Nhanh chóng, tiện lợi</p></div>
           </div>
-          <div class="form-main">
+          <div class="container form-main">
             <form:form action="${process}" method="POST" modelAttribute="user">
-              <div class="f-row">
-                <div class="f-field">
-                  <div class="label-d">
-                    <label class="field-label">
-                      <span class="label-text">Họ và tên:</span>
-                    </label>
-                  </div>
-                  <div class="input-d">
-                    <div class="field-input">
-                      <form:input type="text" class="input-p form-control" path="fullName" />
-                    </div>
-                    <div class=""></div>
-                  </div>
-                </div>
+              
+				<div class="row">
+					<div class="form-group form-group-custom col-12 col-md-6">
+						<label class="field-label" for="fullName">Họ và tên:</label>
+						<form:input type="text" class="form-control" id="fullName"
+							path="fullName" />
 
-                <div class="f-field">
-                  <div class="label-d">
-                    <label class="field-label">
-                      <span class="label-text">Email:</span>
-                    </label>
-                  </div>
-                  <div class="input-d">
-                    <div class="field-input">
-                      <form:input type="email" class="input-p form-control" path="email" />
-                      
-                      <form:errors path="email" />
-                    </div>
-                    <div class=""></div>
-                  </div>
-                </div>
-              </div>
+						<c:if test="${not empty errors}">
+							<p class="error-msg">${errors.getFieldError('fullName').defaultMessage}</p>
 
-              <div class="f-row">
-                <div class="f-field">
-                  <div class="label-d">
-                    <label class="field-label">
-                      <span class="label-text">Số điện thoại (tùy chọn):</span>
-                      
-                    </label>
-                  </div>
-                  <div class="input-d">
-                    <div class="field-input">
-                      <form:input type="number" class="input-p form-control" path="phoneNumber"/>
-                      <form:errors path="phoneNumber" />
-                    </div>
-                    <div class=""></div>
-                  </div>
-                </div>
+						</c:if>
+					</div>
 
-                <div class="f-field">
-                  <div class="label-d">
-                    <label class="field-label">
-                      <span class="label-text">Địa chỉ (tùy chọn):</span>
-                    </label>
-                  </div>
-                  <div class="input-d">
-                    <div class="field-input">
-                      <form:input type="text" class="input-p form-control" path="address"/>
-                    </div>
-                    <div class=""></div>
-                  </div>
-                </div>
-              </div>
+					<div class="form-group form-group-custom col-12 col-md-6">
+						<label class="field-label" for="email">Email:</label>
+						<form:input type="text" class="form-control" id="email"
+							path="email"/>
+						<c:if test="${not empty errors}">
+							<p class="error-msg">${errors.getFieldError('email').defaultMessage}</p>
+						</c:if>
+					</div>
 
-              <div class="f-row">
-                <div class="f-field">
-                  <div class="label-d">
-                    <label class="field-label">
-                      <span class="label-text">Tài khoản:</span>
-                    </label>
-                  </div>
-                  <div class="input-d">
-                    <div class="field-input">
-                      <form:input type="text" class="input-p form-control" path="userName" autocomplete="off"/>
-                      
-                      <form:errors path="userName" />
-                    </div>
-                    <div class=""></div>
-                  </div>
-                </div>
+				</div>
 
-                <div class="f-field">
-                  <div class="label-d">
-                    <label class="field-label">
-                      <span class="label-text">Mật khẩu:</span>
-                    </label>
-                  </div>
-                  <div class="input-d">
-                    <div class="field-input">
-                      <form:input type="password" id="passwordInput" class="input-p form-control pw-field-custom-fix" path="password" autocomplete="new-password"/>
-                      <button type="button" class="button no-b-btn toggle-pass-btn" onclick="togglePassword()" title="Hiện mật khẩu">
-                        <i id="eyeIcon" class="fa-regular fa-eye"></i>
-                      </button>
-                      
-                      <form:errors path="password" />
-                    </div>
+				<div class="row">
+					<div class="form-group form-group-custom col-12 col-md-6">
+						<label class="field-label" for="phoneNumber">Số điện
+							thoại:</label>
+						<form:input type="number" class="form-control" id="phoneNumber"
+							path="phoneNumber" />
 
-                 
-                  </div>
-                </div>
-              </div>
-              <div class="d-flex justify-content-center align-items-center">
+						<c:if test="${not empty errors}">
+							<p class="error-msg">${errors.getFieldError('phoneNumber').defaultMessage}</p>
+
+						</c:if>
+					</div>
+
+					<div class="form-group form-group-custom col-12 col-md-6">
+						<label class="field-label" for="address">Địa chỉ:</label>
+						<form:input type="text" class="form-control" id="address"
+							path="address" />
+						<c:if test="${not empty errors}">
+							<p class="error-msg">${errors.getFieldError('address').defaultMessage}</p>
+						</c:if>
+					</div>
+
+				</div>
+
+					<div class="row">
+						<div class="form-group form-group-custom col-12 col-md-6">
+							<label class="field-label" for="userName">Tài khoản:</label>
+							<form:input type="text" class="form-control" id="userName"
+								path="userName" />
+
+							<c:if test="${not empty errors}">
+								<p class="error-msg">${errors.getFieldError('userName').defaultMessage}</p>
+
+							</c:if>
+						</div>
+
+				
+						<div class="form-group form-group-custom col-12 col-md-6">
+							<label class="field-label" for="password">Mật khẩu:</label>
+							<div class="field-input">
+								<form:input type="password" id="password"
+									class="input-p form-control pw-field-custom-fix"
+									path="password" autocomplete="new-password" />
+								<button type="button" class="button no-b-btn toggle-pass-btn"
+									onclick="togglePassword()" title="Hiện mật khẩu">
+									<i id="eyeIcon" class="fa-regular fa-eye"></i>
+								</button>
+
+
+							</div>
+
+			
+							<c:if test="${not empty errors}">
+								<p class="error-msg">${errors.getFieldError('password').defaultMessage}</p>
+							</c:if>
+
+						</div>
+
+
+
+					</div>
+
+					<div class="row">
+						<div class="d-flex justify-content-center align-items-center px-5">
 							<p class="term-in" style="display: inline;">
 								Bằng cách nhấp vào Đăng ký, bạn đồng ý với <a href="">Điều
 									khoản, Chính sách quyền riêng tư và Chính sách cookie</a> của chúng
@@ -205,7 +191,13 @@
 
 						</div>
 
-              <div class="submit-p">
+					</div>
+
+
+
+
+
+					<div class="submit-p">
                 <button type="button" class="cancel-btn " onclick="window.location.href='${pageContext.request.contextPath}/v1/home'">Hủy</button>
                 <button type="submit" class="submit-btn">Đăng ký</button>
               </div>
@@ -217,8 +209,16 @@
         </div>
         <div></div>
       </main>
-<script src="<c:url value='/static/common/assets/js/form.js' />"></script>
 
+
+
+	<script src="<c:url value='https://code.jquery.com/jquery-3.6.4.min.js' />"
+		crossorigin="anonymous"></script>
+
+	
+
+	<script
+		src="<c:url value='/static/common/assets/js/layout-script.js' />"></script>
 
 </body>
 </html>

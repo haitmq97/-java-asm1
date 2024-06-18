@@ -7,7 +7,10 @@
 <%@ page import="me.haitmq.spring.mvc.crud.utils.JSPDataFormat"%>
 <%@ page import="me.haitmq.spring.mvc.crud.utils.Time"%>
 <%@ page import="me.haitmq.spring.mvc.crud.entity.status.DonationStatus"%>
-<%@ page import="me.haitmq.spring.mvc.crud.entity.status.UserDonationStatus"%>
+<%@ page
+	import="me.haitmq.spring.mvc.crud.entity.status.UserDonationStatus"%>
+<%@ page import="javax.servlet.http.HttpServletRequest"%>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -22,8 +25,7 @@
 <link rel="icon" type="image/x-icon"
 	href="<c:url value='/static/common/assets/img/icon/heart.ico' />">
 
-<link rel="stylesheet"
-	href="<c:url value='/static/common/assets/css/content-style.css' />">
+
 
 <link rel="stylesheet"
 	href="<c:url value='/static/user/assets/css/custom-bs.css' />">
@@ -104,11 +106,11 @@
 			<div class="row mb-5 justify-content-center">
 				<div class="col-md-7 text-center">
 					<h2 class="section-title mb-2">Chi tiết đợt quyên góp</h2>
-					
-					
+
+
 
 				</div>
-				
+
 
 			</div>
 
@@ -119,12 +121,13 @@
 					<div class="col-md-6">
 						<div class="p-3">
 							<div class="">
-							
-								<p class="font-weight-bold mb-1 text-align-left">Mã đợt quyên góp:</p>
-								
+
+								<p class="font-weight-bold mb-1 text-align-left">Mã đợt
+									quyên góp:</p>
+
 							</div>
 							<div class="border rounded bg-light">
-							
+
 								<p class="p-1 m-1">${donation.code}</p>
 							</div>
 						</div>
@@ -132,16 +135,17 @@
 					<div class="col-md-6">
 						<div class="p-3">
 							<div class="">
-								<p class="font-weight-bold mb-1 text-align-left">Tên đợt quyên góp:</p>
+								<p class="font-weight-bold mb-1 text-align-left">Tên đợt
+									quyên góp:</p>
 							</div>
 							<div class="border rounded bg-light">
 								<p class="p-1 m-1">${donation.name}</p>
 							</div>
-						
+
 						</div>
 					</div>
 				</div>
-				
+
 				<div class="row">
 					<!-- Row 2 -->
 					<div class="col-md-6">
@@ -157,12 +161,13 @@
 					<div class="col-md-6">
 						<div class="p-3">
 							<div class="">
-								<p class="font-weight-bold mb-1 text-align-left">Số điện thoại:</p>
+								<p class="font-weight-bold mb-1 text-align-left">Số điện
+									thoại:</p>
 							</div>
 							<div class="border rounded bg-light">
 								<p class="p-1 m-1">${donation.phoneNumber}</p>
 							</div>
-						
+
 						</div>
 					</div>
 				</div>
@@ -186,17 +191,18 @@
 							<div class="border rounded bg-light">
 								<p class="p-1 m-1">${JSPDataFormat.donationStatusFormat(donation.status)}</p>
 							</div>
-						
+
 						</div>
 					</div>
 				</div>
-				
+
 				<div class="row">
 					<!-- Row 2 -->
 					<div class="col-md-6">
 						<div class="p-3">
 							<div class="">
-								<p class="font-weight-bold mb-1 text-align-left">Ngày bắt đầu:</p>
+								<p class="font-weight-bold mb-1 text-align-left">Ngày bắt
+									đầu:</p>
 							</div>
 							<div class="border rounded bg-light">
 								<p class="p-1 m-1">${JSPDataFormat.dateFormat(donation.startDate)}</p>
@@ -206,12 +212,13 @@
 					<div class="col-md-6">
 						<div class="p-3">
 							<div class="">
-								<p class="font-weight-bold mb-1 text-align-left">Ngày kết thúc:</p>
+								<p class="font-weight-bold mb-1 text-align-left">Ngày kết
+									thúc:</p>
 							</div>
 							<div class="border rounded bg-light">
 								<p class="p-1 m-1">${JSPDataFormat.dateFormat(donation.endDate)}</p>
 							</div>
-						
+
 						</div>
 					</div>
 				</div>
@@ -230,16 +237,17 @@
 					<div class="col-md-6">
 						<div class="p-3">
 							<div class="">
-								<p class="font-weight-bold mb-1 text-align-left">Số lượng lượt quyên góp đã xác nhận:</p>
+								<p class="font-weight-bold mb-1 text-align-left">Số lượng
+									lượt quyên góp đã xác nhận:</p>
 							</div>
 							<div class="border rounded bg-light">
 								<p class="p-1 m-1">${donation.donationQuantity}</p>
 							</div>
-						
+
 						</div>
 					</div>
 				</div>
-				
+
 				<div class="row">
 					<!-- Row 5 with full width -->
 					<div class="col-md-12">
@@ -250,20 +258,181 @@
 							<div class="border rounded bg-light">
 								<p class="p-1 m-1">${donation.description}</p>
 							</div>
-						
+
 						</div>
 					</div>
 				</div>
 			</div>
-			
-			<div class= "row mt-5">
+
+			<div class="row mt-5">
 				<div class="col-12">
+
+					<div>
+						<h3 class="text-align-center">Danh sách các lượt quyên góp</h3>
+					</div>
 					
-							<div>
-								<h3 class="text-align-center">Danh sách các lượt quyên góp</h3>
+					
+					<div class="main-content">
+					<div>
+
+						<input type="hidden" id="userDonation-total"
+							value="${userDonations.totalElements}" />
+						<p id="table-script" class="mt-4 text-align-center font-italic">Hiện đợt quyên góp này chưa có lượt quyên góp nào</p>	
+					</div>
+					<div class="h-content">
+						
+					</div>
+					</div>
+					
+					
+					<div class="table-container" id="table-container">
+
+						<div
+							class="sp-tool d-flex flex-column flex-sm-row justify-content-between mt-3">
+							<div class="page-selector">
+
+
+								<label for="size">Rows per page:</label> <select id="pageSize"
+									name="size" class="entries-select rounded form-control">
+									<option value="3" ${userDonations.size == 3 ? 'selected' : ''}>3</option>
+									<option value="4" ${userDonations.size == 4 ? 'selected' : ''}>4</option>
+									<option value="5" ${userDonations.size == 5 ? 'selected' : ''}>5</option>
+									<option value="10"
+										${userDonations.size == 10 ? 'selected' : ''}>10</option>
+									<option value="15"
+										${userDonations.size == 15 ? 'selected' : ''}>15</option>
+									<option value="20"
+										${userDonations.size == 20 ? 'selected' : ''}>20</option>
+
+								</select>
+
+							</div>
+							<div class="search-box">
+								<label for="searching-input">Search:</label> <input type="text"
+									name="searching-input" id="searchingValue"
+									class="searching-input rounded p-2 form-control"
+									placeholder="by Code or by status ..."
+									value="${searchingValue}" />
 							</div>
 
-					<c:choose>
+						</div>
+
+						<div class="m-content list" id="data-list">
+							<div class="table-div">
+								<table class="table table-striped table-content">
+									<thead class="tb-head-title bg-secondary">
+										<tr>
+											<th scope="col" class="th-custom"><p>Ngày quyên góp</p></th>
+											<th scope="col" class="th-custom col-2"><p>Số tiền</p></th>
+											
+											<th scope="col" class="th-custom col-1 col-lg-2"><p>Username</p></th>
+											<th scope="col" class="th-custom col-1 col-lg-2"><p>Email</p></th>
+											<th scope="col" class="th-custom col-1 col-lg-2"><p>Trạng
+													thái</p></th>
+											<th scope="col" class="th-custom"><p>Hành động</p></th>
+										</tr>
+									</thead>
+
+
+
+									<tbody id="scrollableRows">
+										<c:forEach var="tempUserDonation"
+											items="${userDonations.content}">
+
+
+											<c:url var="confirmLink" value="/admin/update_user_donations">
+												<c:param name="id" value="${tempUserDonation.id}" />
+												<c:param name="status"
+													value="${UserDonationStatus.CONFIRMED}" />
+											</c:url>
+
+											<c:url var="cancelLink" value="/admin/update_user_donations">
+												<c:param name="id" value="${tempUserDonation.id}" />
+												<c:param name="status"
+													value="${UserDonationStatus.CANCELED}" />
+											</c:url>
+
+
+
+											<tr>
+												<td><p>${tempUserDonation.createdDate}</p></td>
+												<td><p>${tempUserDonation.money}</p></td>
+												
+												<td><p>${tempUserDonation.user.userName}</p></td>
+												<td><p>${tempUserDonation.user.email}</p></td>
+												<td><p>${JSPDataFormat.userDonationStatusFormat(tempUserDonation.status)}</p></td>
+
+												<td class="action-c"><c:if
+														test="${tempUserDonation.status == UserDonationStatus.WAITING}">
+														<button
+															class="btn btn-success donation-btn donation-update-btn"
+															title="Chi tiết"
+															onclick="window.location.href='${confirmLink}'">
+															<span class="content-btn-text">Xác nhận</span>
+														</button>
+
+														<button class="btn btn-danger donation-btn"
+															title="Chi tiết"
+															onclick="toDelete('${tempUserDonation.id}','#user-donation-cancel')">
+															<span class="content-btn-text">Hủy</span>
+														</button>
+													</c:if></td>
+											</tr>
+
+
+
+
+										</c:forEach>
+
+
+									</tbody>
+								</table>
+								<div>
+									<c:if test="${userDonations.totalElements != 0}">
+										<p class="font-weight-light font-italic text-muted">Showing
+											${userDonations.number*userDonations.size +1} to
+											${userDonations.number*userDonations.size +userDonations.numberOfElements}
+											of ${userDonations.totalElements} entries</p>
+									</c:if>
+
+									<c:if test="${userDonations.totalElements == 0}">
+										<p>There are no entries to show</p>
+									</c:if>
+								</div>
+
+								<div>
+									<div>
+										<input id="currentPage1" type="hidden" value="${currentPage}" />
+
+										<br> <input id="totalPages1" type="hidden"
+											value="${userDonations.totalPages}" /> <br> <input id="size1"
+											type="hidden" value="${currentSize}" /> <br> <input
+											id="searchingValue1" type="hidden" value="${searchingValue}" />
+
+										<br> <input id="importUrl1" type="hidden"
+											value="${searchingValue}" />
+
+
+										<c:set var="testValue1" value="<c:url value='/v1/donations'/>" />
+
+										<input id="currentPage" type="hidden" name="currentPage"
+											value="${userDonations.pageable.pageNumber+1}" />
+
+									</div>
+									<div id="pagination-container"></div>
+
+
+
+								</div>
+
+							</div>
+
+
+						</div>
+
+					</div>
+
+					<%-- <c:choose>
 
 						<c:when test="${userDonations.totalElements == 0}">
 							<p class="mt-4 text-align-center font-italic">Hiện đợt quyên góp này chưa có lượt quyên góp nào</p>
@@ -414,24 +583,7 @@
 						</div>
 							
 						</c:otherwise>
-					</c:choose>
-
-
-
-
-
-
-					
-				
-				
-				
-				</div>
-		
-						
-						
-						
-						
-					</div>
+					</c:choose> --%>
 
 
 
@@ -440,34 +592,52 @@
 
 
 
-
-					
 
 
 				</div>
-			
-			
-			
-			
-			
-			
-			
-			
-			
-	
+
+
+
+
+
+			</div>
+
+
+
+
+
+
+
+
+
+
+
+
+		</div>
+
+
+
+
+
+
+
+
+
+
 
 
 
 	</section>
-	
-	
+
+
 	<div class="overlay-container">
 		<div class="row">
 			<div id="overlay" onclick="closeAllModal()"></div>
 			<div class="popup col-12 col-sm-8 col-md-4">
 
-				<jsp:include page="../common/form-modal/user-donation-cancel-modal.jsp" />
-				
+				<jsp:include
+					page="../common/form-modal/user-donation-cancel-modal.jsp" />
+
 
 
 			</div>

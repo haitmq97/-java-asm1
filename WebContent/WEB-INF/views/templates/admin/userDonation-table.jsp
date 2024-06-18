@@ -96,13 +96,7 @@
 	<jsp:include page="../common/header-layout-test.jsp">
 		<jsp:param name="includePart" value="headerSection" />
 	</jsp:include>
-	
-	
 
-
-
-
-	
 	<section class="site-section content">
 	<input type="hidden" id="isLogined" value="${isLogined}" />
 		<div class="container" id="content-table">
@@ -110,13 +104,8 @@
 				<div class="col-md-7 text-center">
 					<h2 class="section-title mb-2">Các đợt quyên góp</h2>
 					
-					
-
 				</div>
 			</div>
-
-
-
 
 			<div class="">
 				<div class="main-content">
