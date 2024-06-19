@@ -281,19 +281,19 @@
 						</div>
 						
 								<div>
-									<c:if test="${userDonations.totalElements != 0}">
+									<c:if test="${users.totalElements != 0}">
 										<p class="font-weight-light font-italic text-muted">Showing
-											${userDonations.number*userDonations.size +1} to
-											${userDonations.number*userDonations.size +userDonations.numberOfElements}
-											of ${userDonations.totalElements} entries</p>
+											${users.number*users.size +1} to
+											${users.number*users.size +users.numberOfElements}
+											of ${users.totalElements} entries</p>
 
 										<div>
 											<div>
 
 												<input id="totalPages" type="hidden"
-													value="${userDonations.totalPages}" /> <input
+													value="${users.totalPages}" /> <input
 													id="currentPage" type="hidden" name="currentPage"
-													value="${userDonations.pageable.pageNumber+1}" />
+													value="${users.pageable.pageNumber+1}" />
 
 											</div>
 
@@ -304,7 +304,7 @@
 										</div>
 									</c:if>
 
-									<c:if test="${userDonations.totalElements == 0}">
+									<c:if test="${users.totalElements == 0}">
 										<p class="font-weight-light font-italic text-muted">There
 											are no entries to show</p>
 									</c:if>
@@ -343,7 +343,7 @@
 	
 	<div class="overlay-container">
 		<div class="row">
-			<div id="overlay" onclick="closeAllPopup()"></div>
+			<div id="overlay" onclick="closeAllModal()"></div>
 			
 			<!-- for add or update modal -->
 			<jsp:include

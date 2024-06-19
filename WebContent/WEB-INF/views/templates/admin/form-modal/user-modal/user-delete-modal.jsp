@@ -24,7 +24,7 @@
 				username: <span class="font-weight-bold">${user.userName}</span>
 			</p>
 			<div class="submit-p">
-				<button type="button" class="cancel-btn " onclick="closeAllPopup()">Hủy</button>
+				<button type="button" class="cancel-btn " onclick="closeAllModal()">Hủy</button>
 				<button type="submit" class="submit-btn" id="confirm-delete-btn"
 					onclick="window.location.href='${pageContext.request.contextPath}/admin/deleteUser?id=${user.id}'">Xóa</button>
 			</div>

@@ -182,7 +182,7 @@ public class InitUser {
 		return user;
 	}
 	
-	public void getPropertiesFromDonationObj(User user) {
+	public void getPropertiesFromUserObj(User user) {
 		this.setId(user.getId());
 		this.setFullName(user.getFullName());
 		this.setUserName(user.getUserName());

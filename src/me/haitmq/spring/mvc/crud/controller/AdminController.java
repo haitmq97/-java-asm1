@@ -601,7 +601,7 @@ public class AdminController {
 			// if donation id !=0 then it is update
 			if (userId != 0) {
 				
-				user.getPropertiesFromDonationObj(userService.getUser(userId));
+				user.getPropertiesFromUserObj(userService.getUser(userId));
 				userProcess = "processUpdateUser";
 			} 
 			
@@ -685,7 +685,7 @@ public class AdminController {
 			@Valid @ModelAttribute("user") InitUser theUser,
 			BindingResult theBindingResult,
 			RedirectAttributes redirectAttributes) {
-		
+		System.out.println("............... test: " + theUser.getRole());
 		if (BinddingResultsCustomFunction.isErrorForAddUser(theBindingResult)) {
 			// truyền dữ liệu lỗi mà người dùng đăng nhập về lại trang đăng nhập
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", theBindingResult);
@@ -711,7 +711,7 @@ public class AdminController {
 			@Valid @ModelAttribute("user") InitUser theUser,
 			BindingResult theBindingResult,
 			RedirectAttributes redirectAttributes) {
-		
+		System.out.println("............... test: " + theUser.getRole());
 		if(BinddingResultsCustomFunction.isErrorForUpdateUser(theBindingResult, userService, theUser)) {
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", theBindingResult);
 			

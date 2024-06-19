@@ -103,7 +103,7 @@
 
 			<div class="row">
 
-				<div class="col-lg-6">
+				<div class="col-lg-6 pt-3">
 					<div class="bg-light p-3 border rounded mb-4">
 						<h3 class="text-primary  mt-3 h5 pl-3 mb-3 ">Thông tin</h3>
 						<ul class="list-unstyled pl-3 mb-0">
@@ -141,7 +141,7 @@
 
 				<div class="col-lg-6">
 
-					<div class="pt-3">
+					<div class="">
 						<div>
 							<h3 class="text-align-center">Danh sách các lượt quyên góp</h3>
 						</div>

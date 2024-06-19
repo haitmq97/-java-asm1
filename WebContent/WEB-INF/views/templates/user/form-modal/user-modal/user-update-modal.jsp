@@ -13,7 +13,7 @@
 <div class="popup col-12 col-sm-8">
 	<input type="hidden" id="errorProcess" value="${errorProcess}" />
 
-	<div class="form-container donate-form " id="user-addOrUpdate">
+	<div class="form-container donate-form " id="user-update">
 		<div class="container form-head">
 			<div class="form-title">
 				<div class="d-flex justify-content-between">
@@ -99,13 +99,8 @@
 
 
 					<div class="form-group form-group-custom col-12 col-md-6">
-
-						<c:choose>
-
-							<c:when test="${user.id == 0}">
-
-								<label class="field-label" for="password">Mật khẩu:</label>
-								<div class="field-input">
+							<label class="field-label" for="password">Mật khẩu:</label>
+							<div class="field-input">
 								<form:input type="password" id="password"
 									class="input-p form-control pw-field-custom-fix"
 									path="password" autocomplete="new-password" />
@@ -116,51 +111,19 @@
 
 
 							</div>
-								<c:if test="${not empty errors}">
-									<p class="error-msg">${errors.getFieldError('password').defaultMessage}</p>
-								</c:if>
 
-							</c:when>
-
-							<c:otherwise>
-								<form:input type="hidden" class="form-control" id="password"
-									path="password" />
-							</c:otherwise>
-						</c:choose>
-
-					</div>
-
-
-
-				</div>
-				
-				<div class="row">
-					<c:choose>
-					<c:when test="${user.role.roleName != UserRole.ADMIN}" >
-					
-					<div class="form-group form-group-custom col-12 col-md-6">
-							<label class="field-label" for="role">Vai trò:</label>
-							<form:select id="role" class="form-control" path="role.roleName">
-								<form:option value="${UserRole.USER}">USER</form:option>
-								<form:option value="${UserRole.ADMIN}">ADMIN</form:option>
-							</form:select>
+			
 							<c:if test="${not empty errors}">
-								<p class="error-msg">${errors.getFieldError('role').defaultMessage}</p>
-
+								<p class="error-msg">${errors.getFieldError('password').defaultMessage}</p>
 							</c:if>
+
 						</div>
-					
-					</c:when>
-					
-					<c:otherwise>
-						<form:input type="hidden" path="role.roleName"/>
-					
-					</c:otherwise>
-				
-				</c:choose>
+
+
+
 				</div>
 				
-
+				<form:input type="hidden" path="role.roleName"/>
 
 				<div class="submit-p">
 					<button type="button" class="cancel-btn " onclick="closeAllModal()">Hủy</button>

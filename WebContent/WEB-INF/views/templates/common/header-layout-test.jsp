@@ -9,7 +9,8 @@
 <%@ page import="me.haitmq.spring.mvc.crud.entity.status.DonationStatus" %>
 <div id="header-sec">
 	<!-- import login form -->
-	<c:import url="${ViewConstants.E_LOGIN}" />
+	<% Boolean isLogined = ((Boolean)request.getAttribute("isLogined")) != null ? (Boolean)request.getAttribute("isLogined") : false; %>
+	<% Boolean isAdmin = ((Boolean)request.getAttribute("isAdmin")) != null ? (Boolean)request.getAttribute("isAdmin") : false; %>
 
 	<c:choose>
 		<c:when test="${param.includePart eq 'headerSection'}">
@@ -34,8 +35,7 @@
 										class="fa fa-home" aria-hidden="true"></i></span>
 								</button> 
 								
-								<% Boolean isLogined = ((Boolean)request.getAttribute("isLogined")) != null ? (Boolean)request.getAttribute("isLogined") : false; %>
-								<% Boolean isAdmin = ((Boolean)request.getAttribute("isAdmin")) != null ? (Boolean)request.getAttribute("isAdmin") : false; %>
+								
 
 								<% if (isAdmin) { %>
 								<div class="user-l-btn d-inline-block">
@@ -127,6 +127,10 @@
 
 		</c:otherwise>
 	</c:choose>
-
+	
+	<% if (!isAdmin) { %>
+		<c:import url="${ViewConstants.E_LOGIN}" />
+	<% } %>
+	
 
 </div>
