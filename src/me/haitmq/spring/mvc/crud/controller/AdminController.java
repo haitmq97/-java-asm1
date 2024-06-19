@@ -867,6 +867,7 @@ public class AdminController {
 
 			theModel.addAttribute("userDonation", userDonation);
 			
+			SessionUtils.setCurrentEndpoint(request);
 
 			return ViewConstants.V_ADMIN_USERDONATION;
 		} catch (Exception e) {

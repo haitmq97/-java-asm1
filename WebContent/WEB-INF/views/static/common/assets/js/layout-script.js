@@ -100,7 +100,7 @@ function togglePassword() {
 	}
 	}
 
-	console.log("...............passwordInput" + passwordInput);
+
 	/*if (passwordInput.type === "password") {
 		passwordInput.type = "text";
 		eyeIcon.classList.add("fa-eye-slash");
@@ -230,9 +230,7 @@ function changeColorText() {
 
 function checkUrl() {
 	var pathName = window.location.pathname;
-	
-	console.log("....................current url: " + window.location.href);
-	console.log("....................current pathname: " + window.location.pathname);
+
 	
 	var homeBtn = document.getElementById("nav-home-btn");
 	var managerBtn= document.getElementById("nav-manager-btn");
@@ -261,7 +259,7 @@ function showUserDonationTable() {
 	let tableContainer = document.getElementById("table-container");
 	if(userDonationTotal!=null) {
 		
-		console.log("//////////////////////// total Element: " + userDonationTotal.value);
+		
 		if(userDonationTotal.value!=0) {
 			tableScript.classList.add("d-none");
 			tableContainer.classList.remove("d-none");

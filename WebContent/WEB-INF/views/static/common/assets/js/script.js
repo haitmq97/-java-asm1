@@ -17,53 +17,6 @@ function redirectToUserProfile() {
 
 
 
-$(document).ready(function() {
-	var authorities = $("#authorities").val();
-
-	console.log(authorities);
-	/* 
-	switch(authorities) {
-	  case "admin":
-		  $("#manager-btn").css("display", "block");
-			  $("#user-btn").css("display", "block");
-			$("#rs-b").css("display", "none");
-		break;
-	  case "user":
-		  $("#user-btn").css("display", "block");
-		  $("#rs-b").css("display", "none");
-		break;
-	  default:
-		  $("#manager-btn").css("display", "none");
-			  $("#user-btn").css("display", "none");
-	}
-	 */
-
-
-	/*		
-			if(authorities !== "none") {
-				$("#rs-b").css("display", "none");
-				$("#user-btn").css("display", "inline-block");
-				if(authorities === "admin") {
-					
-					
-					$("#manager-btn").css("display", "inline-block");
-					
-					
-				} else {
-					$("#manager-btn").css("display", "none");
-				}
-			} else {
-				$("#manager-btn").css("display", "none");
-					  $("#user-btn").css("display", "none");
-					$("#rs-b").css("display", "inline-block");  
-			}
-			
-				
-		*/
-
-
-
-});
 
 
 
@@ -74,36 +27,10 @@ function isAbleToDonate(authorities) {
 	return false;
 }
 
-/*	
-	function toDonateForm(donationId, authorities) {
-		console.log("donation id:" + donationId);
-		console.log("authorities:" + authorities);
-		if(isAbleToDonate(authorities)) {
-			$.ajax({
-				type: "GET",
-				url: window.location.href,
-				data: {
-
-					donationId: donationId
-				},
-				success: function(data) {
-					$('#donate').html(
-						$(data).find('#donate').html());
-				}
-			});
-			
-			openModal('donate');
-		} else {
-			openModal('loginWarning')
-		}
-		
-	}
-	*/
-
 
 function toDonateForm(donationId, isLogined) {
 	
-	console.log("donation id is: " + donationId);
+
 	var currentUrl = new URL(window.location.href);
     
     // Cập nhật hoặc thêm các tham số query mới
@@ -111,7 +38,7 @@ function toDonateForm(donationId, isLogined) {
     currentUrl.searchParams.set('page', $('#currentPage').val());
     currentUrl.searchParams.set('searchingValue', $('#searchingValue').val());
     currentUrl.searchParams.set('donationId', donationId);
-    console.log("current urllll: " + currentUrl);
+
 	if (isLogined) {
 		$.ajax({
 			type: "GET",
@@ -122,10 +49,10 @@ function toDonateForm(donationId, isLogined) {
 					$(data).find("#donate").html());
 			}
 		});
-		console.log("donation id is(test): " + donationId);
+
 		
 	} else {
-		console.log("eeeeeeeeeeee");
+
 	}
 	openModal('#donate');
 
@@ -134,8 +61,7 @@ function toDonateForm(donationId, isLogined) {
 
 
 function toDeletePopup(donationId, authorities) {
-	console.log("donation id:" + donationId);
-	console.log("authorities:" + authorities);
+
 	var currentUrl = new URL(window.location.href);
     
     // Cập nhật hoặc thêm các tham số query mới
@@ -143,7 +69,7 @@ function toDeletePopup(donationId, authorities) {
     currentUrl.searchParams.set('page', $('#currentPage').val());
     currentUrl.searchParams.set('searchingValue', $('#searchingValue').val());
     currentUrl.searchParams.set('donationId', donationId);
-    console.log("current urllll: " + currentUrl);
+
 	
 	if (isAbleToDonate(authorities)) {
 		$.ajax({
@@ -191,7 +117,7 @@ function donationStatusFormat(status) {
 
 
 function generatePaginationButtons(currentPage, totalPages, size, searchingValue, tableContent) {
-	console.log("hello");
+
 
 	
 	const paginationContainer = document.getElementById('pagination-container');
@@ -237,7 +163,7 @@ function addButton(pageNumber, currentPage, size, searchingValue, parentElement,
 	const listItem = document.createElement('li');
 	const button = document.createElement('button');
 	button.className = 'page-btn';
-	console.log("page number: "+pageNumber);
+
 	button.textContent = buttonContent;
 	button.addEventListener('click', () => onPageButtonClick(pageNumber, size, searchingValue, tableContent));
 
@@ -260,70 +186,9 @@ function addGap(parentElement) {
 	parentElement.appendChild(gapItem);
 }
 
-/*
-function onPageButtonClick(pageNumber, size, searchingValue, tableContent) {
-
-	// cần thay đổi link và div container
-
-	console.log('Navigating to page ', pageNumber);
-	console.log('Navigating to page (type of) ', typeof pageNumber);
-	console.log('Navigating to link ', window.location.href);
-
-	$.ajax({
-		type: "GET",
-		url: window.location.href,
-		data: {
-			size: size,
-			page: pageNumber,
-			searchingValue: searchingValue
-		},
-		success: function(data) {
-			$(tableContent).html(
-				$(data).find(tableContent).html());
-		}
-	});
-
-}
-*/
-/*
 
 function onPageButtonClick(pageNumber, size, searchingValue, tableContent) {
-    console.log('Navigating to page ', pageNumber);
-    console.log('Navigating to page (type of) ', typeof pageNumber);
-    console.log('Navigating to link ', window.location.href);
 
-    $.ajax({
-        type: "GET",
-        url: window.location.href,
-        data: {
-            size: size,
-            page: pageNumber,
-            searchingValue: searchingValue
-        },
-        success: function(data) {
-            $(tableContent).html($(data).find(tableContent).html());
-            
-            // Cập nhật lại các nút chuyển trang sau khi thay đổi nội dung bảng
-            var currentPage = parseInt(document.getElementById("currentPage1").value, 10);
-            var totalPages = parseInt(document.getElementById("totalPages1").value, 10);
-            generatePaginationButtons(currentPage, totalPages, $('#pageSize').val(), $('#searchingValue').val(), tableContent);
-            
-            // Đảm bảo rằng div "pagination-container" không bị mất đi sau khi thay đổi nội dung
-            var paginationContainer = document.getElementById('pagination-container');
-            if (!paginationContainer) {
-                paginationContainer = document.createElement('div');
-                paginationContainer.id = 'pagination-container';
-                document.body.appendChild(paginationContainer);
-            }
-        }
-    });
-}
-*/
-
-function onPageButtonClick(pageNumber, size, searchingValue, tableContent) {
-    console.log('Navigating to page ', pageNumber);
-    console.log('Navigating to page (type of) ', typeof pageNumber);
-    console.log('Navigating to link ', window.location.href);
 	 var currentUrl = new URL(window.location.href);
     
     // Cập nhật hoặc thêm các tham số query mới
@@ -355,37 +220,6 @@ function onPageButtonClick(pageNumber, size, searchingValue, tableContent) {
     });
 }
 
-
-/*
-
-function onPageButtonClick(pageNumber, size, searchingValue, tableContent) {
-    console.log('Navigating to page ', pageNumber);
-    console.log('Navigating to page (type of) ', typeof pageNumber);
-    console.log('Navigating to link ', window.location.href);
-	var newUrl = window.location.pathname + "?size=" + size + "&page="+ pageNumber + "&searchingValue=" + encodeURIComponent(searchingValue);
-    $.ajax({
-        type: "GET",
-        url: newUrl,
-        
-        success: function(data) {
-            $(tableContent).html($(data).find(tableContent).html());
-            
-            // Cập nhật lại các nút chuyển trang sau khi thay đổi nội dung bảng
-            var currentPage = parseInt(document.getElementById("currentPage1").value, 10);
-            var totalPages = parseInt(document.getElementById("totalPages1").value, 10);
-            generatePaginationButtons(currentPage, totalPages, $('#pageSize').val(), $('#searchingValue').val(), tableContent);
-            
-            // Đảm bảo rằng div "pagination-container" không bị mất đi sau khi thay đổi nội dung
-            var paginationContainer = document.getElementById('pagination-container');
-            if (!paginationContainer) {
-                paginationContainer = document.createElement('div');
-                paginationContainer.id = 'pagination-container';
-                document.body.appendChild(paginationContainer);
-            }
-        }
-    });
-}
-*/
 
 
 // update table cho searching value và số entries mỗi trang
@@ -533,7 +367,7 @@ $(document).ready(function() {
 	});
 	
 	$('#searchingValue').on('input', function() {
-		console.log("searching value: " +  $('#searchingValue').val());
+
 		clearTimeout(timer);
 		timer = setTimeout(function() {
 			updateShowingTable($('#pageSize').val(), $('#searchingValue').val(), "#data-list")
@@ -563,8 +397,7 @@ $(document).ready(function() {
 */	
 	 var currentPageElement = document.getElementById("currentPage");
     var totalPagesElement = document.getElementById("totalPages1");
-    console.log("current page123: " + parseInt(currentPageElement.value, 10));
-    console.log("total page123: " + parseInt(totalPagesElement.value, 10));
+
 
     if (currentPageElement && totalPagesElement) {
         var currentPage = parseInt(currentPageElement.value, 10);
@@ -594,26 +427,23 @@ function toDelete(id, divId) {
 	var size = document.getElementById("pageSize").value;
 	var page = document.getElementById("currentPage").value;
 	var searchingValue = document.getElementById("searchingValue").value;
-	
-	console.log("...................... pageSize: " +size);
-	console.log("...................... currentPage: " +page);
-	console.log("...................... searchingValue: " +searchingValue);
+
 	// Cập nhật hoặc thêm các tham số query mới
 	currentUrl.searchParams.set('size', size);
 	currentUrl.searchParams.set('page', page);
 	currentUrl.searchParams.set('searchingValue', searchingValue);
 	
 	if(currentUrl.pathname.includes("/admin/donation-detail")) {
-		console.log("..................................test url donation-details");
+
 		currentUrl.searchParams.set('userDonationId', id);
 	} else if(currentUrl.pathname.includes("/admin/user-detail")) {
-		console.log("..................................test url user-details");
+
 		currentUrl.searchParams.set('userDonationId', id);
 	} else {
 		currentUrl.searchParams.set('id', id);
 	}
 		
-		console.log("..................................test url: " + currentUrl);
+
 		$.ajax({
 			type: "GET",
 			url: currentUrl,
@@ -636,10 +466,7 @@ function toAddOrUpdate(id, divId) {
 	var size = document.getElementById("pageSize").value;
 	var page = document.getElementById("currentPage").value;
 	var searchingValue = document.getElementById("searchingValue").value;
-	
-	console.log("...................... pageSize: " +size);
-	console.log("...................... currentPage: " +page);
-	console.log("...................... searchingValue: " +searchingValue);
+
 	// Cập nhật hoặc thêm các tham số query mới
 	currentUrl.searchParams.set('size', size);
 	currentUrl.searchParams.set('page', page);

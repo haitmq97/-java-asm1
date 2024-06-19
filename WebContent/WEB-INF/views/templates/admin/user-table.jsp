@@ -228,7 +228,7 @@
 												
 												<button class="btn btn-danger donation-btn d-delete-btn"
 														title="Xóa"
-														onclick="toDelete('${tempUser.id}', '#user-delete')"
+														onclick="openModal('${tempUser.id}', '#user-delete')"
 														data-url="${deleteLink}">
 														Xóa
 													</button>
@@ -241,7 +241,7 @@
 
 														<button class="btn btn-warning donation-btn d-delete-btn"
 																title="Khóa"
-																onclick="toDelete('${tempUser.id}', '#user-lockOrUnlock')">
+																onclick="openModal('${tempUser.id}', '#user-lockOrUnlock')">
 															Khóa
 														</button>
 
@@ -250,7 +250,7 @@
 													<c:when test="${tempUser.status == UserStatus.LOCKED}">
 
 														<button class="btn btn-primary donation-btn" title="Mở"
-															onclick="toDelete('${tempUser.id}', '#user-lockOrUnlock')">
+															onclick="openModal('${tempUser.id}', '#user-lockOrUnlock')">
 															Mở
 														</button>
 

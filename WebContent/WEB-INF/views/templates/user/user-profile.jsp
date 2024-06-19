@@ -22,8 +22,7 @@
 <link rel="icon" type="image/x-icon"
 	href="<c:url value='/static/common/assets/img/icon/heart.ico' />">
 
-<link rel="stylesheet"
-	href="<c:url value='/static/common/assets/css/content-style.css' />">
+
 
 <link rel="stylesheet"
 	href="<c:url value='/static/user/assets/css/custom-bs.css' />">

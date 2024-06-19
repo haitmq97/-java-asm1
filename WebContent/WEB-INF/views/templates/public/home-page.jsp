@@ -255,12 +255,12 @@
 							</div>
 							<div>
 								<div>
-									<input id="currentPage1" type="hidden" value="${currentPage}" />
+									<input id="currentPage1" type="hidden" value="${currentPage}" /> 
 
 									<br> <input id="totalPages1" type="hidden"
-										value="${totalPage}" /> <br> <input id="size1"
-										type="hidden" value="${currentSize}" /> <br> <input
-										id="searchingValue1" type="hidden" value="${searchingValue}" />
+										value="${donations.totalPages}" /> <br> <input id="size1"
+										type="text" value="${donations.size}" /> <br> <input
+										id="searchingValue1" type="text" value="${searchingValue}" />
 
 									<br> <input id="importUrl1" type="hidden"
 										value="${searchingValue}" />
@@ -268,8 +268,9 @@
 
 									<c:set var="testValue1" value="<c:url value='/v1/donations'/>" />
 
-<input id="currentPage" type="hidden" name="currentPage"
-										value="${donations.pageable.pageNumber+1}" /> 
+										
+										<input id="currentPage" type="hidden" name="currentPage"
+										value="${donations.pageable.pageNumber+1}" />
 
 								</div>
 								<c:if test="${donations.totalElements != 0}">
