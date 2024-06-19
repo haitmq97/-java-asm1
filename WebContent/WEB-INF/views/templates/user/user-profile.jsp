@@ -402,26 +402,24 @@
 								</tbody>
 							</table>
 						</div>
+						<div>
+							<c:if test="${userDonations.totalElements != 0}">
+									<p class="font-weight-light font-italic">Showing ${userDonations.number*userDonations.size +1} to
+										${userDonations.number*userDonations.size +userDonations.numberOfElements}
+										of ${userDonations.totalElements} entries</p>
+								</c:if>
 
+								<c:if test="${donations.totalElements == 0}">
+									<p>There are no entries to show</p>
+								</c:if>
+						</div>
 
 						<div>
 							<div>
-								
-								<input id="currentPage1" type="hidden" value="${currentPage}" />
-
-								<input id="totalPages1" type="hidden"
-									value="${userDonations.totalPages}" /> <br> <input id="size1"
-									type="hidden" value="${currentSize}" /> <br> <input
-									id="searchingValue1" type="hidden" value="${searchingValue}" />
-
-								<input id="importUrl1" type="hidden"
-									value="${searchingValue}" />
-
-
-									
-									<input id="currentPage" type="hidden" name="currentPage"
-										value="${userDonations.pageable.pageNumber+1}" /> 
-
+								<input id="totalPages" type="hidden"
+										value="${userDonations.totalPages}" />
+										<input id="currentPage" type="hidden" name="currentPage"
+										value="${userDonations.pageable.pageNumber+1}" />
 
 							</div>
 							<div id="pagination-container"></div>

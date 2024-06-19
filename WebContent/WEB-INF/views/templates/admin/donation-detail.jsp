@@ -280,11 +280,11 @@
 
 							<input type="hidden" id="userDonation-total"
 								value="${userDonations.totalElements}" />
-							<p id="table-script" class="mt-4 text-align-center font-italic">Hiện
+							<p id="table-script" class="mt-4 text-align-center  font-italic text-muted">Hiện
 								đợt quyên góp này chưa có lượt quyên góp nào</p>
 						</div>
 
-						<div class="table-container" id="table-container">
+						<div class="table-container" id="list-container">
 
 							<div
 								class="sp-tool d-flex flex-column flex-sm-row justify-content-between mt-3">
@@ -392,7 +392,7 @@
 									<script>
 										changeColorText();
 									</script>
-									<div>
+									<%-- <div>
 										<c:if test="${userDonations.totalElements != 0}">
 											<p class="font-weight-light font-italic text-muted">Showing
 												${userDonations.number*userDonations.size +1} to
@@ -407,31 +407,50 @@
 
 									<div>
 										<div>
-											<input id="currentPage1" type="hidden" value="${currentPage}" />
-
-											<br> <input id="totalPages1" type="hidden"
-												value="${userDonations.totalPages}" /> <br> <input
-												id="size1" type="hidden" value="${currentSize}" /> <br>
-											<input id="searchingValue1" type="hidden"
-												value="${searchingValue}" /> <br> <input
-												id="importUrl1" type="hidden" value="${searchingValue}" />
-
-
-											<c:set var="testValue1"
-												value="<c:url value='/v1/donations'/>" />
-
-											<input id="currentPage" type="hidden" name="currentPage"
-												value="${userDonations.pageable.pageNumber+1}" />
+											<input id="totalPages" type="hidden"
+										value="${userDonations.totalPages}" />
+										<input id="currentPage" type="hidden" name="currentPage"
+										value="${userDonations.pageable.pageNumber+1}" />
 
 										</div>
 										<div id="pagination-container"></div>
 
 
 
-									</div>
+									</div> --%>
 
 								</div>
+								<div>
+									<c:if test="${userDonations.totalElements != 0}">
+										<p class="font-weight-light font-italic text-muted">Showing
+											${userDonations.number*userDonations.size +1} to
+											${userDonations.number*userDonations.size +userDonations.numberOfElements}
+											of ${userDonations.totalElements} entries</p>
 
+										<div>
+											<div>
+
+												<input id="totalPages" type="hidden"
+													value="${userDonations.totalPages}" /> <input
+													id="currentPage" type="hidden" name="currentPage"
+													value="${userDonations.pageable.pageNumber+1}" />
+
+											</div>
+
+											<div id="pagination-container"></div>
+
+
+
+										</div>
+									</c:if>
+
+									<c:if test="${userDonations.totalElements == 0}">
+										<p class="font-weight-light font-italic text-muted">There
+											are no entries to show</p>
+									</c:if>
+
+
+								</div>
 
 							</div>
 

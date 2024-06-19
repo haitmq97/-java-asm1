@@ -205,8 +205,8 @@ function onPageButtonClick(pageNumber, size, searchingValue, tableContent) {
             $(tableContent).html($(data).find(tableContent).html());
             
             // Cập nhật lại các nút chuyển trang sau khi thay đổi nội dung bảng
-            var currentPage = parseInt(document.getElementById("currentPage1").value, 10);
-            var totalPages = parseInt(document.getElementById("totalPages1").value, 10);
+            var currentPage = parseInt(document.getElementById("currentPage").value, 10);
+            var totalPages = parseInt(document.getElementById("totalPages").value, 10);
             generatePaginationButtons(currentPage, totalPages, $('#pageSize').val(), $('#searchingValue').val(), tableContent);
             
             // Đảm bảo rằng div "pagination-container" không bị mất đi sau khi thay đổi nội dung
@@ -318,8 +318,8 @@ function updateShowingTable(size, searchingValue, tableContent) {
             success: function(data) {
                 $(tableContent).html($(data).find(tableContent).html());
                 
-                var currentPage = parseInt(document.getElementById("currentPage1").value, 10);
-            var totalPages = parseInt(document.getElementById("totalPages1").value, 10);
+                var currentPage = parseInt(document.getElementById("currentPage").value, 10);
+            var totalPages = parseInt(document.getElementById("totalPages").value, 10);
             generatePaginationButtons(currentPage, totalPages, $('#pageSize').val(), $('#searchingValue').val(), tableContent);
             
             // Đảm bảo rằng div "pagination-container" không bị mất đi sau khi thay đổi nội dung
@@ -396,7 +396,7 @@ $(document).ready(function() {
 
 */	
 	 var currentPageElement = document.getElementById("currentPage");
-    var totalPagesElement = document.getElementById("totalPages1");
+    var totalPagesElement = document.getElementById("totalPages");
 
 
     if (currentPageElement && totalPagesElement) {

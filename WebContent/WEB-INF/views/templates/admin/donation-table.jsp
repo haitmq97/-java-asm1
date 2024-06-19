@@ -336,41 +336,36 @@
 						</div>
 						<div>
 							<c:if test="${donations.totalElements != 0}">
-									<p class="font-weight-light font-italic">Showing ${donations.number*donations.size +1} to
-										${donations.number*donations.size +donations.numberOfElements}
-										of ${donations.totalElements} entries</p>
-								</c:if>
+								<p class="font-weight-light font-italic text-muted">Showing
+									${donations.number*donations.size +1} to
+									${donations.number*donations.size +donations.numberOfElements}
+									of ${donations.totalElements} entries</p>
 
-								<c:if test="${donations.totalElements == 0}">
-									<p>There are no entries to show</p>
-								</c:if>
+								<div>
+									<div>
+
+										<input id="totalPages" type="hidden"
+											value="${donations.totalPages}" /> 
+										<input id="currentPage"
+											type="hidden" name="currentPage"
+											value="${donations.pageable.pageNumber+1}" />
+
+									</div>
+									
+									<div id="pagination-container"></div>
+									
+
+
+								</div>
+							</c:if>
+
+							<c:if test="${donations.totalElements == 0}">
+								<p class="font-weight-light font-italic text-muted">There
+									are no entries to show</p>
+							</c:if>
+
+
 						</div>
-						
-						<div>
-							<div>
-								<input id="currentPage1" type="hidden" value="${currentPage}" />
-
-								<br> 
-								<input id="totalPages1" type="hidden"
-									value="${totalPage}" /> 
-								<br> 
-								<input id="size1"
-									type="hidden" value="${currentSize}" /> 
-								<br> 
-								<input
-									id="searchingValue1" type="hidden" value="${searchingValue}" />
-
-								<br> <input id="importUrl1" type="hidden"
-									value="${searchingValue}" />
-
-
-								<c:set var="testValue1" value="<c:url value='/v1/donations'/>" />
-<input id="currentPage" type="hidden" name="currentPage"
-										value="${donations.pageable.pageNumber+1}" /> 
-
-
-							</div>
-							<div id="pagination-container"></div>
 						
 						
 						

@@ -148,116 +148,124 @@
 					<div class="m-content list" id="data-list">
 						<div class="table-div">
 							<table class="table table-striped table-content">
-							<thead class="tb-head-title">
-								<tr>
-									<th scope="col" class="th-custom"><p >Ngày tạo</p></th>
-									<th scope="col" class="th-custom col-2 col-md-3"><p class="">Họ và tên</p></th>
-									
-									<th scope="col" class="th-custom col-2"><p class="">Số tiền</p></th>
-									<th scope="col" class="th-custom col-2 col-md-3"><p class="">Ghi chú</p></th>
-									<th scope="col" class="th-custom"><p class="">UserName</p></th>
-									<th scope="col" class="th-custom col-1 col-md-2"><p class="">Mã đợt</p></th>
-									<th scope="col" class="th-custom "><p class="font-weight-bold color-text">Trạng thái đợt</p></th>
-									<th scope="col" class="th-custom col-2 col-md-3"><p class="">Trạng thái</p></th>
-									<th scope="col" class="th-custom col-2 col-md-3"><p class ="">Hành động</p></th>
-								</tr>
-							</thead>
-							<tbody>
-								<c:forEach var="tempUserDonation" items="${userDonations.content}">
-
-									<c:url var="donateLink" value="/v1/donateForm">
-										<c:param name="id" value="${tempUserDonation.id}" />
-									</c:url>
-
-									<c:url var="detailLink" value="/v1/donate-detail">
-										<c:param name="id" value="${tempUserDonation.id}" />
-									</c:url>
-									
-									<c:url var="confirmLink" value="/admin/donateStatusComfirm">
-										<c:param name="id" value="${tempUserDonation.id}" />
-									</c:url>
-									
-									
-									<c:url var="deleteLink" value="/admin/donateDelete">
-										<c:param name="id" value="${tempUserDonation.id}" />
-									</c:url>
-									
-									
-									<c:url var="confirmStatusLink" value="/admin/update_user_donations">
-										<c:param name="id" value="${tempUserDonation.id}" />
-										<c:param name="status" value="${UserDonationStatus.CONFIRMED}" />
-									</c:url>
-									
-								
-
+								<thead class="tb-head-title">
 									<tr>
-										<td><p>${tempUserDonation.createdDate}</p></td>
-										<td><p>${tempUserDonation.name}</p></td>
-										<td><p class="font-weight-bold">${JSPDataFormat.moneyFormat(tempUserDonation.money)}</p></td>
-										<td><p>${tempUserDonation.note}</p></td>
-										<td><p class="font-weight-bold">${tempUserDonation.user.userName}</p></td>
-										<td><p class="font-weight-bold">${tempUserDonation.donation.code}</p></td>
-										<td><p class="font-weight-bold color-text">${JSPDataFormat.donationStatusFormat(tempUserDonation.donation.status)}</p></td>
-										<td><p class="font-weight-bold color-text">${JSPDataFormat.userDonationStatusFormat(tempUserDonation.status)}</p></td>
-										<td class="action-c">
-											<c:if test="${tempUserDonation.status == UserDonationStatus.WAITING}">
-												<button class="btn btn-success donate-btn" title="Chi tiết" onclick="window.location.href='${confirmStatusLink}'">
-												<span class="content-btn-text">Xác nhận</span><span
-													class="content-btn-icon"></span>
-											</button>
-											
-											<button class="btn btn-danger donate-btn" title="Chi tiết" onclick="toDelete('${tempUserDonation.id}', '#delete')">
-												<span class="content-btn-text">Xóa</span><span
-													class="content-btn-icon"></span>
-											</button>
-											
-											</c:if>
-											
-											
-											
-											
-											
-										</td>
+										<th scope="col" class="th-custom"><p>Ngày tạo</p></th>
+										<th scope="col" class="th-custom col-2 col-md-3"><p
+												class="">Họ và tên</p></th>
+
+										<th scope="col" class="th-custom col-2"><p class="">Số
+												tiền</p></th>
+										<th scope="col" class="th-custom col-2 col-md-3"><p
+												class="">Ghi chú</p></th>
+										<th scope="col" class="th-custom"><p class="">UserName</p></th>
+										<th scope="col" class="th-custom col-1 col-md-2"><p
+												class="">Mã đợt</p></th>
+										<th scope="col" class="th-custom "><p
+												class="font-weight-bold color-text">Trạng thái đợt</p></th>
+										<th scope="col" class="th-custom col-2 col-md-3"><p
+												class="">Trạng thái</p></th>
+										<th scope="col" class="th-custom col-2 col-md-3"><p
+												class="">Hành động</p></th>
 									</tr>
-								</c:forEach>
+								</thead>
+								<tbody>
+									<c:forEach var="tempUserDonation"
+										items="${userDonations.content}">
+
+										<c:url var="donateLink" value="/v1/donateForm">
+											<c:param name="id" value="${tempUserDonation.id}" />
+										</c:url>
+
+										<c:url var="detailLink" value="/v1/donate-detail">
+											<c:param name="id" value="${tempUserDonation.id}" />
+										</c:url>
+
+										<c:url var="confirmLink" value="/admin/donateStatusComfirm">
+											<c:param name="id" value="${tempUserDonation.id}" />
+										</c:url>
 
 
-							</tbody>
-						</table>
+										<c:url var="deleteLink" value="/admin/donateDelete">
+											<c:param name="id" value="${tempUserDonation.id}" />
+										</c:url>
+
+
+										<c:url var="confirmStatusLink"
+											value="/admin/update_user_donations">
+											<c:param name="id" value="${tempUserDonation.id}" />
+											<c:param name="status"
+												value="${UserDonationStatus.CONFIRMED}" />
+										</c:url>
+
+
+
+										<tr>
+											<td><p>${tempUserDonation.createdDate}</p></td>
+											<td><p>${tempUserDonation.name}</p></td>
+											<td><p class="font-weight-bold">${JSPDataFormat.moneyFormat(tempUserDonation.money)}</p></td>
+											<td><p>${tempUserDonation.note}</p></td>
+											<td><p class="font-weight-bold">${tempUserDonation.user.userName}</p></td>
+											<td><p class="font-weight-bold">${tempUserDonation.donation.code}</p></td>
+											<td><p class="font-weight-bold color-text">${JSPDataFormat.donationStatusFormat(tempUserDonation.donation.status)}</p></td>
+											<td><p class="font-weight-bold color-text">${JSPDataFormat.userDonationStatusFormat(tempUserDonation.status)}</p></td>
+											<td class="action-c"><c:if
+													test="${tempUserDonation.status == UserDonationStatus.WAITING}">
+													<button class="btn btn-success donate-btn" title="Chi tiết"
+														onclick="window.location.href='${confirmStatusLink}'">
+														<span class="content-btn-text">Xác nhận</span><span
+															class="content-btn-icon"></span>
+													</button>
+
+													<button class="btn btn-danger donate-btn" title="Chi tiết"
+														onclick="toDelete('${tempUserDonation.id}', '#delete')">
+														<span class="content-btn-text">Xóa</span><span
+															class="content-btn-icon"></span>
+													</button>
+
+												</c:if></td>
+										</tr>
+									</c:forEach>
+
+
+								</tbody>
+							</table>
+
+						</div>
 						<div>
-							<div>
-								<input id="currentPage1" type="hidden" value="${currentPage}" />
+							<c:if test="${userDonations.totalElements != 0}">
+								<p class="font-weight-light font-italic text-muted">Showing
+									${userDonations.number*userDonations.size +1} to
+									${userDonations.number*userDonations.size +userDonations.numberOfElements}
+									of ${userDonations.totalElements} entries</p>
 
-								<br> 
-								<input id="totalPages1" type="hidden"
-									value="${totalPage}" /> 
-								<br> 
-								<input id="size1"
-									type="hidden" value="${currentSize}" /> 
-								<br> 
-								<input
-									id="searchingValue1" type="hidden" value="${searchingValue}" />
+								<div>
+									<div>
 
-								<br> <input id="importUrl1" type="hidden"
-									value="${searchingValue}" />
+										<input id="totalPages" type="hidden"
+											value="${userDonations.totalPages}" /> <input
+											id="currentPage" type="hidden" name="currentPage"
+											value="${userDonations.pageable.pageNumber+1}" />
+
+									</div>
+
+									<div id="pagination-container"></div>
 
 
-								<c:set var="testValue1" value="<c:url value='/v1/donations'/>" />
 
-	<input id="currentPage" type="hidden" name="currentPage"
-										value="${userDonations.pageable.pageNumber+1}" />
+								</div>
+							</c:if>
 
-							</div>
-							<div id="pagination-container"></div>
-						
-							
+							<c:if test="${userDonations.totalElements == 0}">
+								<p class="font-weight-light font-italic text-muted">There
+									are no entries to show</p>
+							</c:if>
+
 
 						</div>
 
+
 					</div>
-					
-					
-				</div>
 
 			</div>
 		</div>

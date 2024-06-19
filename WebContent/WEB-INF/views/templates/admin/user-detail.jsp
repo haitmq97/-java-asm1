@@ -232,10 +232,10 @@
 
 							<input type="hidden" id="userDonation-total"
 								value="${userDonations.totalElements}" />
-							<p id="table-script" class="mt-4 text-align-center font-italic">Hiện người dùng này chưa quyên góp</p>
+							<p id="table-script" class="mt-4 text-align-center font-weight-light font-italic text-muted">Hiện người dùng này chưa quyên góp</p>
 						</div>
 
-						<div class="table-container" id="table-container">
+						<div class="table-container" id="list-container">
 
 							<div
 								class="sp-tool d-flex flex-column flex-sm-row justify-content-between mt-3">
@@ -271,17 +271,19 @@
 								<div class="table-div">
 									<table class="table table-striped table-content">
 										<thead class="tb-head-title bg-secondary">
-										
-										
+
+
 											<tr>
 												<th scope="col" class="th-custom col-2"><p>Ngày
 														quyên góp</p></th>
 												<th scope="col" class="th-custom col-2"><p>Số tiền</p></th>
 												<th scope="col" class="th-custom "><p>Ghi chú</p></th>
 												<th scope="col" class="th-custom col-2"><p>Tên đợt</p></th>
-												<th scope="col" class="th-custom col-2 col-md-3"><p>Mã đợt</p></th>
-												<th scope="col" class="th-custom col-2 col-md-3"><p>Trạng thái đợt</p></th>
-												
+												<th scope="col" class="th-custom col-2 col-md-3"><p>Mã
+														đợt</p></th>
+												<th scope="col" class="th-custom col-2 col-md-3"><p>Trạng
+														thái đợt</p></th>
+
 												<th scope="col" class="th-custom col-2 col-md-3"><p>Trạng
 														thái</p></th>
 												<th scope="col" class="th-custom col-2"><p>Hành
@@ -348,43 +350,38 @@
 									<script>
 										changeColorText();
 									</script>
-									<div>
-										<c:if test="${userDonations.totalElements != 0}">
-											<p class="font-weight-light font-italic text-muted">Showing
-												${userDonations.number*userDonations.size +1} to
-												${userDonations.number*userDonations.size +userDonations.numberOfElements}
-												of ${userDonations.totalElements} entries</p>
-										</c:if>
 
-										<c:if test="${userDonations.totalElements == 0}">
-											<p>There are no entries to show</p>
-										</c:if>
-									</div>
 
-									<div>
+								</div>
+								<div>
+									<c:if test="${userDonations.totalElements != 0}">
+										<p class="font-weight-light font-italic text-muted">Showing
+											${userDonations.number*userDonations.size +1} to
+											${userDonations.number*userDonations.size +userDonations.numberOfElements}
+											of ${userDonations.totalElements} entries</p>
+
 										<div>
-											<input id="currentPage1" type="hidden" value="${currentPage}" />
+											<div>
 
-											<br> <input id="totalPages1" type="hidden"
-												value="${userDonations.totalPages}" /> <br> <input
-												id="size1" type="hidden" value="${currentSize}" /> <br>
-											<input id="searchingValue1" type="hidden"
-												value="${searchingValue}" /> <br> <input
-												id="importUrl1" type="hidden" value="${searchingValue}" />
+												<input id="totalPages" type="hidden"
+													value="${userDonations.totalPages}" /> <input
+													id="currentPage" type="hidden" name="currentPage"
+													value="${userDonations.pageable.pageNumber+1}" />
+
+											</div>
+
+											<div id="pagination-container"></div>
 
 
-											<c:set var="testValue1"
-												value="<c:url value='/v1/donations'/>" />
-
-											<input id="currentPage" type="hidden" name="currentPage"
-												value="${userDonations.pageable.pageNumber+1}" />
 
 										</div>
-										<div id="pagination-container"></div>
+									</c:if>
 
+									<c:if test="${userDonations.totalElements == 0}">
+										<p class="font-weight-light font-italic text-muted">There
+											are no entries to show</p>
+									</c:if>
 
-
-									</div>
 
 								</div>
 

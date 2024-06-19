@@ -280,45 +280,37 @@
 						</script>
 						</div>
 						
-						<div>
-							<div>
-								<p class="font-weight-light font-italic">showing ${users.number*users.size +1} to ${users.number*users.size +users.numberOfElements} of ${users.totalElements}</p>
-							</div>
-							
-							<div>
 								<div>
-								<input id="currentPage1" type="hidden" value="${currentPage}" />
+									<c:if test="${userDonations.totalElements != 0}">
+										<p class="font-weight-light font-italic text-muted">Showing
+											${userDonations.number*userDonations.size +1} to
+											${userDonations.number*userDonations.size +userDonations.numberOfElements}
+											of ${userDonations.totalElements} entries</p>
 
-								<br> 
-								<input id="totalPages1" type="hidden"
-									value="${totalPage}" /> 
-								<br> 
-								<input id="size1"
-									type="hidden" value="${currentSize}" /> 
-								<br> 
-								<input
-									id="searchingValue1" type="hidden" value="${searchingValue}" />
+										<div>
+											<div>
 
-								<br> <input id="importUrl1" type="hidden"
-									value="${searchingValue}" />
+												<input id="totalPages" type="hidden"
+													value="${userDonations.totalPages}" /> <input
+													id="currentPage" type="hidden" name="currentPage"
+													value="${userDonations.pageable.pageNumber+1}" />
 
+											</div>
 
-								<c:set var="testValue1" value="<c:url value='/v1/donations'/>" />
-								<input id="currentPage" type="hidden" name="currentPage"
-										value="${users.pageable.pageNumber+1}" />  
-										
-										
-											<input id="currentPage" type="hidden" name="currentPage"
-										value="${userDonations.pageable.pageNumber+1}" />
+											<div id="pagination-container"></div>
 
 
-							</div>
-							<div id="pagination-container"></div>
-							</div>
-						
-						
 
-						</div>
+										</div>
+									</c:if>
+
+									<c:if test="${userDonations.totalElements == 0}">
+										<p class="font-weight-light font-italic text-muted">There
+											are no entries to show</p>
+									</c:if>
+
+
+								</div>
 
 					</div>
 

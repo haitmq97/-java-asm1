@@ -256,7 +256,7 @@ function checkUrl() {
 function showUserDonationTable() {
 	let userDonationTotal = document.getElementById("userDonation-total");
 	let tableScript = document.getElementById("table-script");
-	let tableContainer = document.getElementById("table-container");
+	let tableContainer = document.getElementById("list-container");
 	if(userDonationTotal!=null) {
 		
 		
