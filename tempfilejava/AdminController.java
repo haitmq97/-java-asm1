@@ -831,8 +831,7 @@ public class AdminController {
 	// userDonation manager
 
 	@GetMapping("/user_donations")
-	public String userDonationlist(HttpServletRequest request, 
-			@RequestParam(defaultValue = "1") int page,
+	public String userDonationlist(HttpServletRequest request, @RequestParam(defaultValue = "1") int page,
 			@RequestParam(name = "size", defaultValue = "5") int size,
 			@RequestParam(name = "searchingValue", defaultValue = "", required = false) String searchingValue,
 			@RequestParam(name = "id", defaultValue = "0") int userdonationId, Model theModel) {
@@ -842,10 +841,6 @@ public class AdminController {
 			// kiểm tra quyền (isLogined, isAdmin) (bao gồm phần header)
 
 			HttpSession session = request.getSession();
-			
-			if(!userService.isAdmin(SessionUtils.getCurrentUserId(session))) {
-				throw new IllegalStateException("AdminController-donationList: User is not an admin.");
-			}
 			
 			SessionUtils.addLoginUserInfoToModel(session, theModel);
 			
@@ -868,33 +863,13 @@ public class AdminController {
 			if (userdonationId != 0) {
 				userDonation = userDonationService.getUserDonation(userdonationId);
 			}
-			
-			if(theModel.containsAttribute("successConfirm")) {
-		        
-	        	theModel.addAttribute("successConfirm", true);
-	        	
-	        } else if(theModel.containsAttribute("successCancel")) {
-	        
-	        	theModel.addAttribute("successCancel", true);
-	        	
-	        }
 
 			theModel.addAttribute("userDonation", userDonation);
 			
 			SessionUtils.setCurrentEndpoint(request);
 
 			return ViewConstants.V_ADMIN_USERDONATION;
-			
-		} catch (IllegalStateException e) {
-
-			log.error("AdminController - userDonationlist - NO PERMISSION: {}", e);
-
-			return ViewConstants.V_ERROR_PERMISSION;
-
 		} catch (Exception e) {
-
-			log.error("AdminController - userDonationlist - ERROR FUNCTIONNAL: {}", e);
-
 			return ViewConstants.V_ERROR;
 		}
 
@@ -903,22 +878,12 @@ public class AdminController {
 	@GetMapping("/update_user_donations")
 	public String updateUserDonationStatus(HttpServletRequest request,
 			@RequestParam(name = "status") UserDonationStatus status,
-			@RequestParam(name = "id", defaultValue = "0") int userdonationId,
-			RedirectAttributes redirectAttributes) {
+			@RequestParam(name = "id", defaultValue = "0") int userdonationId) {
 		
 		if(status==UserDonationStatus.CONFIRMED) {
 			donationService.setTotalConfirmedDonate(userDonationService.getDonation(userdonationId).getId());
 		}
 		userDonationService.changeUserDonationStatus(userdonationId, status);
-		
-		if(status==UserDonationStatus.CONFIRMED) {
-			
-			redirectAttributes.addFlashAttribute("successConfirm", true);
-			
-		} else if(status==UserDonationStatus.CANCELED) {
-			
-			redirectAttributes.addFlashAttribute("successCancel", true);
-		}
 
 		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
 

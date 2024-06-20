@@ -142,6 +142,7 @@ function openSuccessProccessMgs() {
 	var successUpdate = document.getElementById("successUpdate");
 	var successDelete = document.getElementById("successDelete");
 	var successChangeStatus = document.getElementById("successChangeStatus");
+	var successRegister = document.getElementById("successRegister");
 	
 	if(successDonate != null) {
 		if (successDonate.value == "true") {
@@ -174,6 +175,14 @@ function openSuccessProccessMgs() {
 		
 		if(successChangeStatus.value == "true"){
 			openModal("#success-changeStatus");
+		}
+		
+	}
+	
+	if(successRegister != null) {
+
+		if(successRegister.value == "true"){
+			openModal("#success-register");
 		}
 		
 	}

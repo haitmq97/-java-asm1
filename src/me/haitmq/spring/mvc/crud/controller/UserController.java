@@ -82,6 +82,10 @@ public class UserController {
 			if (theModel.containsAttribute("errorUser")) {
 				updateUser = (InitUser) theModel.getAttribute("errorUser");
 	            errorProcess = true;
+	        } else if(theModel.containsAttribute("successUpdate")) {
+	        
+	        	theModel.addAttribute("successUpdate", true);
+	        	
 	        }
 			
 			// get userDonationList to display
@@ -109,53 +113,31 @@ public class UserController {
 	}
 
 	
-	
 	@PostMapping("/processUpdateUser")
-	public String processUpdate(HttpServletRequest request, 
-			@ModelAttribute("user") InitUser theUser,
-			BindingResult theBindingResult,
-			RedirectAttributes redirectAttributes) {
-		
-		/*
+	public String processUpdate(HttpServletRequest request, @ModelAttribute("user") InitUser theUser,
+			BindingResult theBindingResult, RedirectAttributes redirectAttributes) {
+
 		try {
-			HttpSession session = request.getSession();
-			theUser.setId(SessionUtils.getCurrentUserId(session));
-			
-			if(BinddingResultsCustomFunction.isErrorForUpdateUser(theBindingResult, userService, theUser)) {
-				redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", theBindingResult);
-				
+			if (BinddingResultsCustomFunction.isErrorForUpdateUser(theBindingResult, userService, theUser)) {
+				redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user",
+						theBindingResult);
+
 				redirectAttributes.addFlashAttribute("errorUser", theUser);
-				
+
 				redirectAttributes.addFlashAttribute("errorForm", true);
-				
+
 			} else {
-		    	
-		    	userService.update(theUser.copyPropertiesToUserObj(userService.getUser(theUser.getId())), UserRole.ADMIN);
+
+				userService.update(theUser.copyPropertiesToUserObj(userService.getUser(theUser.getId())),
+						UserRole.USER);
 				redirectAttributes.addFlashAttribute("successUpdate", true);
-		    }
+			}
 
 			return "redirect:" + SessionUtils.getCurrentEndpoint(request);
 		} catch (Exception e) {
 			return ViewConstants.V_ERROR;
 		}
-		*/
-		
-		
-		System.out.println("............... test: " + theUser.getRole());
-		if(BinddingResultsCustomFunction.isErrorForUpdateUser(theBindingResult, userService, theUser)) {
-			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", theBindingResult);
-			
-			redirectAttributes.addFlashAttribute("errorUser", theUser);
-			
-			redirectAttributes.addFlashAttribute("errorForm", true);
-			
-		} else {
-	    	
-	    	userService.update(theUser.copyPropertiesToUserObj(userService.getUser(theUser.getId())), UserRole.ADMIN);
-			redirectAttributes.addFlashAttribute("successUpdate", true);
-	    }
 
-		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
 	}
 
 }

@@ -309,6 +309,8 @@
 						
 						
 					<% } %>
+					<input type="hidden" id="successRegister" value="${successRegister}" />
+					<jsp:include page="../public/form-modal/user-donation-modal/register-success-modal.jsp" />
 				
 				<% } else { %>
 					<jsp:include page="../common/form-modal/user-modal/user-no-login-modal.jsp" />

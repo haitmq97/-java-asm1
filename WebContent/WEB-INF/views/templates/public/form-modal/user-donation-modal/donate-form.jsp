@@ -33,8 +33,7 @@
 					<form:errors cssClass="error-msg" path="name" />
 				</div>
 				<div class="form-group form-group-custom">
-					<label class="field-label" for="donationAmount">Số Tiền
-						Quyên Góp:</label>
+					<label class="field-label" for="donationAmount">Số tiền quyên góp (<span class="font-italic">đơn vị vnđ</span>):</label>
 					<form:input type="number" class="form-control" id="donationAmount"
 						path="money" />
 						<form:errors cssClass="error-msg" path="money" />

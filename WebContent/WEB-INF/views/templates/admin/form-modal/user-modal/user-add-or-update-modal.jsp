@@ -161,7 +161,6 @@
 				</div>
 				
 
-
 				<div class="submit-p">
 					<button type="button" class="cancel-btn " onclick="closeAllModal()">Hủy</button>
 					<button type="submit" class="submit-btn">${output1}</button>

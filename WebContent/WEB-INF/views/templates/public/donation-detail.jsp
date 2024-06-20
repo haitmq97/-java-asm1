@@ -259,47 +259,28 @@
 		<div class="row">
 			<div id="overlay" onclick="closeAllModal()"></div>
 
-			<%
-			Boolean isLogined = ((Boolean) request.getAttribute("isLogined")) != null ? (Boolean) request.getAttribute("isLogined")
-					: false;
-			%>
-			<%
-			Boolean isActive = ((Boolean) request.getAttribute("isActive")) != null ? (Boolean) request.getAttribute("isActive")
-					: false;
-			%>
+			<% Boolean isLogined = ((Boolean) request.getAttribute("isLogined")) != null 
+			? (Boolean) request.getAttribute("isLogined") : false; %>
+			
+			<% Boolean isActive = ((Boolean) request.getAttribute("isActive")) != null 
+			? (Boolean) request.getAttribute("isActive") : false; %>
 
-			<%
-			if (isLogined) {
-			%>
-			<%
-			if (isActive) {
-			%>
+			<% if (isLogined) { %>
+				<% if (isActive) { %>
 
-			<jsp:include
-				page="../public/form-modal/user-donation-modal/donate-form.jsp" />
+					<jsp:include page="../public/form-modal/user-donation-modal/donate-form.jsp" />
+					
+					<jsp:include page="../public/form-modal/user-donation-modal/donate-success-modal.jsp" />
+				<% } else { %>
 
-			<jsp:include
-				page="../public/form-modal/user-donation-modal/donate-success-modal.jsp" />
-			<%
-			} else {
-			%>
+					<jsp:include page="../common/form-modal/user-modal/user-no-permission-modal.jsp" />
+				<% } %>
+				<jsp:include page="../public/form-modal/user-donation-modal/register-success-modal.jsp" />
 
-			<jsp:include
-				page="../common/form-modal/user-modal/user-no-permission-modal.jsp" />
+			<% } else { %>
+					<jsp:include page="../common/form-modal/user-modal/user-no-login-modal.jsp" />
 
-			<%
-			}
-			%>
-
-			<%
-			} else {
-			%>
-			<jsp:include
-				page="../common/form-modal/user-modal/user-no-login-modal.jsp" />
-
-			<%
-			}
-			%>
+			<% } %>
 
 		</div>
 

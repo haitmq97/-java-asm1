@@ -502,7 +502,7 @@
 				<jsp:include
 					page="../common/form-modal/user-donation-cancel-modal.jsp" />
 
-
+				
 
 			</div>
 

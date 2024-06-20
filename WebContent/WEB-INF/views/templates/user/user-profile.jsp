@@ -382,88 +382,10 @@
 			
 			<jsp:include page="../user/form-modal/user-modal/user-update-modal.jsp" />
 			
+			<input type="hidden" id="successUpdate" value="${successUpdate}">
+			<jsp:include
+				page="../admin/form-modal/user-modal/user-success-update-modal.jsp" />
 			
-			
-			
-			<div class="popup col-12 col-sm-8 col-md-4">
-
-				<div class="form-container donate-form " id="userUpdate">
-					<div class="container form-head">
-						<div class="form-title">
-							<div class="d-flex justify-content-between">
-
-								<h4 class="d-inline-block mx-auto">Cập nhật</h4>
-
-							</div>
-
-						</div>
-					</div>
-					<div class="container form-main">
-						<form:form modelAttribute="user" action="${process}" method="POST">
-
-							
-
-							<div class="form-group form-group-custom">
-								<label class="field-label" for="fullName">Họ và tên</label>
-								<form:input type="text" class="form-control" id="fullName"
-									path="fullName" />
-
-							</div>
-							<div class="form-group form-group-custom">
-								<label class="field-label" for="email">Email:</label>
-								<form:input type="text" class="form-control" id="email"
-									path="email" readonly="${user.id != 0 ? 'true' : 'false'}" />
-							</div>
-
-							<div class="form-group form-group-custom">
-								<label class="field-label" for="phoneNumber">Số điện
-									thoại:</label>
-								<form:input type="text" class="form-control" id="phoneNumber"
-									path="phoneNumber" />
-							</div>
-							<div class="form-group form-group-custom">
-								<label class="field-label" for="address">Địa chỉ:</label>
-								<form:input type="text" class="form-control" id="address"
-									path="address" />
-							</div>
-							<div class="form-group form-group-custom">
-								<label class="field-label" for="userName">Tài khoản:</label>
-								<form:input type="text" class="form-control" id="userName"
-									path="userName" readonly="${user.id != 0 ? 'true' : 'false'}" />
-							</div>
-
-							<c:if test="${user.id == 0}">
-								<div class="form-group form-group-custom">
-									<label class="field-label" for="password">Mật khẩu:</label>
-									<form:input type="text" class="form-control" id="password"
-										path="password" />
-								</div>
-							</c:if>
-
-
-							<div class="submit-p">
-								<button type="button" class="cancel-btn "
-									onclick="closeAllPopup()">Hủy</button>
-								<button type="submit" class="submit-btn">
-									<c:choose>
-										<c:when test="${user.id != 0}">
-											Cập nhật
-										</c:when>
-										<c:otherwise>
-											Thêm mới
-										</c:otherwise>
-									</c:choose>
-
-								</button>
-							</div>
-						</form:form>
-					</div>
-
-				</div>
-
-
-
-			</div>
 
 
 		</div>

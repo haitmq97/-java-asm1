@@ -150,22 +150,22 @@
 							<table class="table table-striped table-content">
 								<thead class="tb-head-title">
 									<tr>
-										<th scope="col" class="th-custom"><p>Ngày tạo</p></th>
-										<th scope="col" class="th-custom col-2 col-md-3"><p
+										<th scope="col" class="th-custom col-2" ><p>Ngày tạo</p></th>
+<!-- 										<th scope="col" class="th-custom col-2 col-md-3"><p
 												class="">Họ và tên</p></th>
-
+ -->
 										<th scope="col" class="th-custom col-2"><p class="">Số
 												tiền</p></th>
-										<th scope="col" class="th-custom col-2 col-md-3"><p
+										<th scope="col" class="th-custom col-2 col-lg-3"><p
 												class="">Ghi chú</p></th>
 										<th scope="col" class="th-custom"><p class="">UserName</p></th>
-										<th scope="col" class="th-custom col-1 col-md-2"><p
+										<th scope="col" class="th-custom col-1 col-lg-2"><p
 												class="">Mã đợt</p></th>
-										<th scope="col" class="th-custom "><p
+										<th scope="col" class="th-custom col-2 col-lg-3"><p
 												class="font-weight-bold color-text">Trạng thái đợt</p></th>
-										<th scope="col" class="th-custom col-2 col-md-3"><p
+										<th scope="col" class="th-custom col-2 col-lg-3"><p
 												class="">Trạng thái</p></th>
-										<th scope="col" class="th-custom col-2 col-md-3"><p
+										<th scope="col" class="th-custom col-1"><p
 												class="">Hành động</p></th>
 									</tr>
 								</thead>
@@ -202,25 +202,23 @@
 
 										<tr>
 											<td><p>${tempUserDonation.createdDate}</p></td>
-											<td><p>${tempUserDonation.name}</p></td>
-											<td><p class="font-weight-bold">${JSPDataFormat.moneyFormat(tempUserDonation.money)}</p></td>
+											<%-- <td><p>${tempUserDonation.name}</p></td> --%>
+											<td><p class="col-2">${JSPDataFormat.moneyFormat(tempUserDonation.money)}</p></td>
 											<td><p>${tempUserDonation.note}</p></td>
-											<td><p class="font-weight-bold">${tempUserDonation.user.userName}</p></td>
+											<td><p class="font-weight-bold ">${tempUserDonation.user.userName}</p></td>
 											<td><p class="font-weight-bold">${tempUserDonation.donation.code}</p></td>
-											<td><p class="font-weight-bold color-text">${JSPDataFormat.donationStatusFormat(tempUserDonation.donation.status)}</p></td>
-											<td><p class="font-weight-bold color-text">${JSPDataFormat.userDonationStatusFormat(tempUserDonation.status)}</p></td>
+											<td><p class="font-weight-bold color-text ">${JSPDataFormat.donationStatusFormat(tempUserDonation.donation.status)}</p></td>
+											<td><p class="font-weight-bold color-text ">${JSPDataFormat.userDonationStatusFormat(tempUserDonation.status)}</p></td>
 											<td class="action-c"><c:if
 													test="${tempUserDonation.status == UserDonationStatus.WAITING}">
 													<button class="btn btn-success donate-btn" title="Chi tiết"
 														onclick="window.location.href='${confirmStatusLink}'">
-														<span class="content-btn-text">Xác nhận</span><span
-															class="content-btn-icon"></span>
+														<span class="">Xác nhận</span>
 													</button>
 
 													<button class="btn btn-danger donate-btn" title="Chi tiết"
-														onclick="toDelete('${tempUserDonation.id}', '#delete')">
-														<span class="content-btn-text">Xóa</span><span
-															class="content-btn-icon"></span>
+														onclick="toDelete('${tempUserDonation.id}', '#userDonation-cancel')">
+														<span class="">Hủy</span>
 													</button>
 
 												</c:if></td>
@@ -230,8 +228,12 @@
 
 								</tbody>
 							</table>
-
+					
 						</div>
+						<script>
+							changeColorText();
+						</script>
+
 						<div>
 							<c:if test="${userDonations.totalElements != 0}">
 								<p class="font-weight-light font-italic text-muted">Showing
@@ -287,62 +289,14 @@
 	<div class="overlay-container">
 		<div class="row">
 			<div id="overlay" onclick="closeAllPopup()"></div>
-			<div class="popup col-12 col-sm-8 col-md-4">
-			
-			<% Boolean isLogined = ((Boolean)request.getAttribute("isLogined")) != null ? (Boolean)request.getAttribute("isLogined") : false; %>
-			<% Boolean isAdmin = ((Boolean)request.getAttribute("isAdmin")) != null ? (Boolean)request.getAttribute("isAdmin") : false; %>
-			
-		<%-- 
-			<% boolean isLogined = (Boolean)request.getAttribute("isLogined"); %>
-			<% boolean isAdmin = (Boolean)request.getAttribute("isAdmin"); %>
-    		 --%>
-    		<% if (isAdmin) { %>
-    			<div class="form-container donate-form" id="delete">
-					<div class="container form-head">
-						<h3>Bạn có chắc chắn xóa?</h3>
-					</div>
-					<div class="container form-main">
-						<p>
-							Đợt quyên góp: <span>${userDonation.donation.name}</span>
-						</p>
-						<p>
-							Mã quyên góp: <span>${userDonation.donation.code}</span>
-						</p>
-						
-						<p>
-							Người quyên góp: <span>${userDonation.user.userName}</span>
-						</p>
-						
-						<p>
-							Số tiền quyên góp: <span>${userDonation.money}</span>
-						</p>
-						
-						<div class="submit-p">
-							<button type="button" class="cancel-btn "
-								onclick="closeAllPopup()">Hủy</button>
-							<button type="submit" class="submit-btn" id="confirm-delete-btn"
-								onclick="window.location.href='${pageContext.request.contextPath}/admin/deleteUserDonation?id=${userDonation.id}'">Xóa</button>
-						</div>
-
-					</div>
-				</div>
-				
-				
-				
-    		
-    		 <% } else { %>
-    		 
-    		 <% } %>
-    		
-    		
-
 		
-    		
-    		
-
-			
-
-		</div>
+				<jsp:include page="../admin/form-modal/user-donation-modal/user-donation-cancel-modal.jsp" />
+						
+				<jsp:include page="../admin/form-modal/user-donation-modal/user-donation-success-confirm-modal.jsp" />
+				
+				<jsp:include page="../admin/form-modal/user-donation-modal/user-donation-success-cancel-modal.jsp" />
+		
+\
 		
 		
 		</div>
@@ -369,23 +323,6 @@
 
 
 
-
-<script>
-$(document).ready(function() {
-	  $(".d-delete-btn").click(function() {
-	    var url = $(this).data("url");
-	    console.log(url);
-	    
-	   	$("#confirm-delete-btn").click(function() {
-	      window.location.href = url;
-	    });
-	     
-	     openModal("delete");
-
-	  });
-	});
-
-</script>
 
 </body>
 </html>

@@ -23,9 +23,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import me.haitmq.spring.mvc.crud.entity.UserDonation;
 import me.haitmq.spring.mvc.crud.entity.role.UserRole;
-import me.haitmq.spring.mvc.crud.entity.status.DonationStatus;
 import me.haitmq.spring.mvc.crud.entity.status.UserDonationStatus;
-import me.haitmq.spring.mvc.crud.common.InitDonation;
 import me.haitmq.spring.mvc.crud.common.InitUser;
 import me.haitmq.spring.mvc.crud.common.InitUserDonation;
 import me.haitmq.spring.mvc.crud.common.LoginUser;
@@ -143,11 +141,14 @@ public class HomeController {
 				
 	            theModel.addAttribute("errorProcess",true);
 	            
-			}else if(theModel.containsAttribute("successDonate")) {
+			} else if(theModel.containsAttribute("successDonate")) {
 	        	
 				theModel.addAttribute("successDonate", true);
 	        	
-	        } 
+	        } else if(theModel.containsAttribute("successRegister")) {
+	      
+	        	theModel.addAttribute("successRegister", true);
+	        }
 			
 			
 			theModel.addAttribute("userDonation", theUserDonation);
@@ -185,11 +186,10 @@ public class HomeController {
 		if (theBindingResult.hasErrors()) {
 
 			theBindingResult.getFieldErrors().forEach(error->{
-				System.out.println("the Bindding resul errort: " + error);
-				System.out.println("the Bindding resul errort (message: " + error.getDefaultMessage());
+				System.err.println("the Bindding resul error: " + error);
+				System.err.println("the Bindding resul error (message: " + error.getDefaultMessage());
 			});
 			
-
 			// pass error data back donate form
 			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.userDonation", theBindingResult);
 			
@@ -245,74 +245,9 @@ public class HomeController {
 			@RequestParam(name = "searchingValue", defaultValue = "", required = false) String searchingValue,
 			Model theModel) {
 		
-		/*
+
 		try {
 			HttpSession session = request.getSession();
-			
-			// add to model loginUser information
-			SessionUtils.addLoginUserInfoToModel(session, theModel);
-			
-			// add donation info to the model
-			Donation theDonation = donationService.getDonation(theId);
-
-			// check if there are errors from last login then add to model the logined user
-			// with error, if not add new login user
-			theModel.addAttribute("loginUser",
-					theModel.containsAttribute("loginUser") ? theModel.getAttribute("loginUser") : new LoginUser());
-			// get users list to display
-			Page<UserDonation> userDonations = userDonationService
-					.findByDonationCodeAndStatusSortByCreatedDate(theDonation.getCode(), UserDonationStatus.CONFIRMED, searchingValue, page, size);
-			
-			// add to model
-			theModel.addAttribute("donation", theDonation);
-
-			theModel.addAttribute("userDonations", userDonations);
-
-			theModel.addAttribute("currentPage", page);
-
-			theModel.addAttribute("currentSize", size);
-
-			theModel.addAttribute("searchingValue", searchingValue);
-
-			// donate handle
-			// add donate obj for donate form
-			InitUserDonation theUserDonation = new InitUserDonation();
-
-			String userDonationProcess = "processDonating";
-
-			if (theModel.containsAttribute("errorUserDonation")) {
-				theUserDonation = (InitUserDonation) theModel.getAttribute("errorUserDonation");
-
-				theModel.addAttribute("eDonationId", theModel.getAttribute("eDonationId"));
-
-				theModel.addAttribute("errorProcess", true);
-
-			} else if (theModel.containsAttribute("successDonate")) {
-
-				theModel.addAttribute("successDonate", true);
-				//theModel.addAttribute("successDonate", theModel.containsAttribute("successDonate") ? true : false);
-
-			}
-
-			theModel.addAttribute("userDonation", theUserDonation);
-
-			theModel.addAttribute("processDonating", userDonationProcess);
-
-			// check if privious donate is success then add to model to showing message
-			
-			
-			// save current url
-			SessionUtils.setCurrentEndpoint(request);
-
-			return ViewConstants.V_PUBLIC_DONATION_DETAILS;
-
-		} catch (Exception e) {
-			log.error("HomeController - homePage: {}", e);
-			return ViewConstants.V_ERROR;
-		}	
-		*/
-		
-		HttpSession session = request.getSession();
 		
 		// add to model loginUser information
 		SessionUtils.addLoginUserInfoToModel(session, theModel);
@@ -357,7 +292,10 @@ public class HomeController {
 			theModel.addAttribute("successDonate", true);
 			//theModel.addAttribute("successDonate", theModel.containsAttribute("successDonate") ? true : false);
 
-		}
+		} else if(theModel.containsAttribute("successRegister")) {
+	        
+        	theModel.addAttribute("successRegister", true);
+        }
 
 		theModel.addAttribute("userDonation", theUserDonation);
 
@@ -370,6 +308,14 @@ public class HomeController {
 		SessionUtils.setCurrentEndpoint(request);
 
 		return ViewConstants.V_PUBLIC_DONATION_DETAILS;
+
+		} catch (Exception e) {
+			log.error("HomeController - homePage: {}", e);
+			return ViewConstants.V_ERROR;
+		}	
+
+		
+		
 
 	}
 
@@ -450,6 +396,7 @@ public class HomeController {
 			// get id user from database
 			int userId = userService.getIdIfUserExisted(new LoginUser(theUser.getUserName(), theUser.getPassword()));
 			
+
 			if (userId != -1) {
 				
 				boolean isActive = false;
@@ -465,7 +412,7 @@ public class HomeController {
 				SessionUtils.setLoginUserInfoToSesstion(session, true, isActive, isAdmin, userId);
 			}
 			
-			redirectAttributes.addFlashAttribute("sucessRegister", true);
+			redirectAttributes.addFlashAttribute("successRegister", true);
 
 			return ViewConstants.V_REDIRECT_HOME;
 			
@@ -526,8 +473,7 @@ public class HomeController {
 	public String processLogin(HttpServletRequest request,
 								@Valid @ModelAttribute("loginUser") LoginUser loginUser, 
 								BindingResult theBindingResult,
-								RedirectAttributes redirectAttributes
-			) {
+								RedirectAttributes redirectAttributes) {
 		
 		HttpSession session = request.getSession();
 		
@@ -559,23 +505,7 @@ public class HomeController {
 	}
 	
 	
-	/*
-	 *	What donateForm need to do? 
-	 * - request param:
-	 * 		+ HttpServletRequest
-	 * 		+ userDonation obj
-	 * 		+ donation id
-	 * 		+ BindingResult
-	 * 		+ RedirectAttributes (add error attribute or success messenge) 
-	 * - handle:
-	 * 		+ process login data
-	 * 			+ if has error add the error to model
-	 * 	
-	 * - return view 
-	 * 		+ return the privious page
-	 * 		
-	 * 
-	 */ 
+
 
 
 	// logout
@@ -610,7 +540,25 @@ public class HomeController {
 		session.removeAttribute("errorLogin");
 		return "success";
 	}
-
+	
+	
+	/*
+	 *	What donateForm need to do? 
+	 * - request param:
+	 * 		+ HttpServletRequest
+	 * 		+ userDonation obj
+	 * 		+ donation id
+	 * 		+ BindingResult
+	 * 		+ RedirectAttributes (add error attribute or success messenge) 
+	 * - handle:
+	 * 		+ process login data
+	 * 			+ if has error add the error to model
+	 * 	
+	 * - return view 
+	 * 		+ return the privious page
+	 * 		
+	 * 
+	 */ 
 	@GetMapping("donateForm")
 	public String userDonationForm(HttpServletRequest request, @RequestParam("id") int donationId, Model theModel) {
 		try {
