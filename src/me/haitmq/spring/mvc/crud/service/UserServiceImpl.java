@@ -11,9 +11,12 @@ import org.springframework.stereotype.Service;
 
 import me.haitmq.spring.mvc.crud.common.LoginUser;
 import me.haitmq.spring.mvc.crud.dao.UserDAO;
+import me.haitmq.spring.mvc.crud.dao.UserDonationDAO;
+import me.haitmq.spring.mvc.crud.dto.UserDTO;
 import me.haitmq.spring.mvc.crud.entity.Donation;
 import me.haitmq.spring.mvc.crud.entity.Role;
 import me.haitmq.spring.mvc.crud.entity.User;
+import me.haitmq.spring.mvc.crud.entity.UserDonation;
 import me.haitmq.spring.mvc.crud.entity.role.UserRole;
 import me.haitmq.spring.mvc.crud.utils.Time;
 import me.haitmq.spring.mvc.crud.entity.status.DonationStatus;
@@ -24,6 +27,9 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserDAO userDAO;
+	
+	@Autowired
+	private UserDonationDAO userDonationDAO;
 
 	// save user (update)
 
@@ -147,7 +153,11 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	@Transactional
-	public boolean isAdmin(int theId) {
+	public boolean isAdmin(Integer theId) {
+		if(theId == null || theId <=0) {
+			return false;
+		}
+		
 		if (userDAO.getUser(theId).getRole().getRoleName() == UserRole.ADMIN) {
 			return true;
 		}
@@ -157,6 +167,10 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional
 	public boolean isAdmin(User user) {
+		if(user == null) {
+			return false;
+		}
+		
 		if (user.getRole().getRoleName() == UserRole.ADMIN) {
 			return true;
 		}
@@ -165,7 +179,11 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	@Transactional
-	public boolean isActive(int theId) {
+	public boolean isActive(Integer theId) {
+		if(theId == null) {
+			return false;
+		}
+		
 		boolean result = false;
 		User theUser = userDAO.getUser(theId);
 		if (theUser.getStatus() == UserStatus.ACTIVE) {
@@ -250,4 +268,12 @@ public class UserServiceImpl implements UserService {
 		userDAO.delete(theId);
 
 	}
+
+	@Override
+	public User getUserJoinFetch(int theId) {
+
+		return userDAO.getUserJoinFetch(theId);
+	}
+
+	
 }

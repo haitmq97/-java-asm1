@@ -110,5 +110,16 @@ public class DonationDAOImpl implements DonationDAO {
 		theQuery.executeUpdate();
 
 	}
-
+	
+	@Override
+	public Donation getDontaionJoinFetch(int theId) {
+		Query<Donation> theQuery = getSession().createQuery("from Donation d join fetch d.userDonations where d.id=:donationId", Donation.class);
+		Donation result = theQuery.setParameter("donationId", theId).getSingleResult();
+		return result;
+	}
+	
+	@Override
+	public void merge(Donation donation) {
+		getSession().merge(donation);
+	}
 }

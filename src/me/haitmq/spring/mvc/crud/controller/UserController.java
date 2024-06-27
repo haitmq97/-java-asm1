@@ -105,9 +105,17 @@ public class UserController {
 			SessionUtils.setCurrentEndpoint(request);
 
 			return ViewConstants.V_USER_PROFILE;
-		} catch (IllegalStateException ie) {
+			
+		} catch (IllegalStateException e) {
+
+			log.error("AdminController - donationlist - NO PERMISSION: {}", e);
+
 			return ViewConstants.V_ERROR_LOGIN;
+
 		} catch (Exception e) {
+
+			log.error("AdminController - donationlist - ERROR FUNCTIONNAL: {}", e);
+
 			return ViewConstants.V_ERROR;
 		}
 	}

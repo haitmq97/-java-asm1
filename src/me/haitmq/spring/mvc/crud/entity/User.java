@@ -44,26 +44,18 @@ public class User {
 	
 	
 	@Column(name = "full_name")
-	@NotBlank(message = "is required")
 	private String fullName;
 	
 	@Column(name="user_name")
-	@NotBlank(message = "is required")
-	@Pattern(regexp = "^[^\\s]*$", message = "Không được chứa khoảng trắng")
 	private String userName;
 	
 	@Column(name = "password")
-	@NotBlank(message = "is required")
-	@Pattern(regexp = "^[^\\s]*$", message = "Không được chứa khoảng trắng")
 	private String password;
 	
 	@Column(name = "email")
-	@NotBlank
-	@EmailFormat
 	private String email;
 	
 	@Column(name = "phone_number")
-	@PhoneNumberFormat
 	private String phoneNumber;
 	
 	@Column(name = "address")
@@ -79,20 +71,12 @@ public class User {
 	@Column(name = "showing")
 	private boolean showing;
 	
-
-	//@OneToOne(cascade = CascadeType.ALL, optional = false)
 	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinColumn(name = "role_id")
 	private Role role;
 	
-	/*
-	@ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-	@JoinTable(name="user_donation", joinColumns = { @JoinColumn(name= "donation_id") })
-	Set<Donation> donations = new HashSet<Donation>();
-	*/
 	
-	
-	@OneToMany(mappedBy = "user", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "user", cascade = 
+		{CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, fetch = FetchType.LAZY)
 	private List<UserDonation> userDonations = new ArrayList<>();
 	
 	
@@ -191,8 +175,6 @@ public class User {
 	public void setRole(Role role) {
 		this.role = role;
 	}
-	
-	
 	
 
 	public List<UserDonation> getUserDonations() {

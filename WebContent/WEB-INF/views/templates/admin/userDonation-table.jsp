@@ -76,13 +76,10 @@
 	integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
 	crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-
 <!-- customer style -->
 
 <link rel="stylesheet"
 	href="<c:url value='/static/common/assets/css/style.css'/>" />
-
-
 
 <!-- customer js -->
 
@@ -93,7 +90,7 @@
 </head>
 <body>
 	<!-- Header layout -->
-	<jsp:include page="../common/header-layout-test.jsp">
+	<jsp:include page="../common/header-layout.jsp">
 		<jsp:param name="includePart" value="headerSection" />
 	</jsp:include>
 
@@ -127,8 +124,6 @@
 									<option value="20" ${userDonations.size == 20 ? 'selected' : ''}>20</option>
 									
 								</select>
-							
-			
 
 							</div>
 							<div class="search-box">
@@ -141,9 +136,6 @@
 						
 						</div>
 					</div>
-					
-					
-					
 					
 					<div class="m-content list" id="data-list">
 						<div class="table-div">
@@ -217,7 +209,7 @@
 													</button>
 
 													<button class="btn btn-danger donate-btn" title="Chi tiết"
-														onclick="toDelete('${tempUserDonation.id}', '#userDonation-cancel')">
+														onclick="openModalId('${tempUserDonation.id}', '#userDonation-cancel')">
 														<span class="">Hủy</span>
 													</button>
 
@@ -253,8 +245,6 @@
 
 									<div id="pagination-container"></div>
 
-
-
 								</div>
 							</c:if>
 
@@ -275,17 +265,6 @@
 	</section>
 
 
-
-	<script src="<c:url value='/static/common/assets/js/script.js' />"></script> 
-
-
-	
-	<jsp:include page="../common/footer-layout2.jsp">
-		<jsp:param name="includePart" value="footerSection" />
-	</jsp:include>
-	
-	
-	
 	<div class="overlay-container">
 		<div class="row">
 			<div id="overlay" onclick="closeAllPopup()"></div>
@@ -295,19 +274,14 @@
 				<jsp:include page="../admin/form-modal/user-donation-modal/user-donation-success-confirm-modal.jsp" />
 				
 				<jsp:include page="../admin/form-modal/user-donation-modal/user-donation-success-cancel-modal.jsp" />
-		
-\
-		
-		
+
 		</div>
 	
 	</div>
-	
-	
-	
-	
-	
 
+	<jsp:include page="../common/footer-layout.jsp">
+		<jsp:param name="includePart" value="footerSection" />
+	</jsp:include>
 
 	<script src="https://code.jquery.com/jquery-3.6.4.min.js"
 		crossorigin="anonymous"></script>

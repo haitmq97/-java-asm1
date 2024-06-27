@@ -58,5 +58,8 @@ public interface UserDAO {
 
 	public User getUserByUserNameOrEmail(String userNameOrEmail);
 	
-
+	// join fetch
+	
+	public User getUserJoinFetch(int theId);
+	
 }

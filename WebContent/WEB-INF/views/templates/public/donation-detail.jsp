@@ -87,7 +87,7 @@
 </head>
 <body>
 
-	<jsp:include page="../common/header-layout-test.jsp">
+	<jsp:include page="../common/header-layout.jsp">
 		<jsp:param name="includePart" value="headerSection" />
 	</jsp:include>
 
@@ -286,7 +286,7 @@
 
 	</div>
 
-	<jsp:include page="../common/footer-layout2.jsp">
+	<jsp:include page="../common/footer-layout.jsp">
 		<jsp:param name="includePart" value="footerSection" />
 	</jsp:include>
 

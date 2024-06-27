@@ -82,7 +82,6 @@
 <link rel="stylesheet"
 	href="<c:url value='/static/common/assets/css/style.css'/>" />
 
-
 <!-- customer js -->
 
 <script src="<c:url value='/static/common/assets/js/script.js' />"></script>
@@ -91,7 +90,7 @@
 
 </head>
 <body>
-	<jsp:include page="../common/header-layout-test.jsp">
+	<jsp:include page="../common/header-layout.jsp">
 		<jsp:param name="includePart" value="headerSection" />
 	</jsp:include>
 
@@ -370,30 +369,30 @@
 
 	</section>
 
-
-	<jsp:include page="../common/footer-layout2.jsp">
-		<jsp:param name="includePart" value="footerSection" />
-	</jsp:include>
-
-
 	<div class="overlay-container">
 		<div class="row">
 			<div id="overlay" onclick="closeAllModal()"></div>
 			
 			<jsp:include page="../user/form-modal/user-modal/user-update-modal.jsp" />
 			
-			<input type="hidden" id="successUpdate" value="${successUpdate}">
 			<jsp:include
 				page="../admin/form-modal/user-modal/user-success-update-modal.jsp" />
 			
-
-
 		</div>
-
-
 
 	</div>
 
+	<jsp:include page="../common/footer-layout.jsp">
+		<jsp:param name="includePart" value="footerSection" />
+	</jsp:include>
+	
+	<script src="<c:url value='https://code.jquery.com/jquery-3.6.4.min.js' />"
+		crossorigin="anonymous"></script>
+
+	<script src="<c:url value='/static/common/assets/js/script.js' />"></script>
+
+	<script
+		src="<c:url value='/static/common/assets/js/layout-script.js' />"></script>
 
 
 </body>

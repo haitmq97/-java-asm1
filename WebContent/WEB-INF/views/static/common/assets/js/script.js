@@ -421,7 +421,7 @@ $(document).ready(function() {
 
 // donation delete popup
 
-function toDelete(id, divId) {
+function openModalId(id, divId) {
 	var currentUrl = new URL(window.location.href);
 	
 	var size = document.getElementById("pageSize").value;

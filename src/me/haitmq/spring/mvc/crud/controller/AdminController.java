@@ -1,6 +1,8 @@
 package me.haitmq.spring.mvc.crud.controller;
 
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -30,6 +32,7 @@ import me.haitmq.spring.mvc.crud.entity.status.UserStatus;
 import me.haitmq.spring.mvc.crud.common.InitDonation;
 import me.haitmq.spring.mvc.crud.common.InitUser;
 import me.haitmq.spring.mvc.crud.content_path.ViewConstants;
+import me.haitmq.spring.mvc.crud.dto.UserDTO;
 import me.haitmq.spring.mvc.crud.entity.Donation;
 import me.haitmq.spring.mvc.crud.entity.User;
 import me.haitmq.spring.mvc.crud.service.UserDonationService;
@@ -85,84 +88,7 @@ public class AdminController {
 	 * 	
 	 * - return view
 	 * 
-	 * 
-	 
-	@GetMapping("/donations1")
-	public String donationlist1(HttpServletRequest request, @RequestParam(defaultValue = "1") int page,
-			@RequestParam(name = "size", defaultValue = "5") int size,
-			@RequestParam(name = "searchingValue", defaultValue = "", required = false) String searchingValue,
-			@RequestParam(name = "id", defaultValue = "0") int donationId, 
-			Model theModel) {
-
-		try {
-
-			// check authority (isLogined, isAdmin) (bao gồm phần header)
-			HttpSession session = request.getSession();
-			
-			// check current user is admin
-			if(!userService.isAdmin(SessionUtils.getCurrentUserId(session))) {
-				throw new IllegalStateException("AdminController-donationList: User is not an admin.");
-			}
-			// use for nav bar and modals
-			SessionUtils.addLoginUserInfoToModel(session, theModel);
-			
-			
-			// Donations table
-			Page<Donation> donations = 
-					donationService.findByPhoneNumberOrOrganizationOrCodeOrStatus(searchingValue, page, size);
-			// 		+ add to model
-			theModel.addAttribute("donations", donations);
-
-			theModel.addAttribute("currentPage", page);
-			
-			theModel.addAttribute("currentSize", size);
-			
-			theModel.addAttribute("searchingValue", searchingValue);
-			
-			theModel.addAttribute("totalPage", donations.getTotalPages());
-
-			// donation model attribute
-			// default is add donation
-			String donationProcess = "processAddDonation";
-
-			Donation donation = new Donation();
-			
-			// if donation id !=0 then it is update
-			if (donationId != 0) {
-				donation = donationService.getDonation(donationId);
-				donationProcess = "processUpdateDonation";
-			}
-			
-			// if there are donaion error then get donation obj and add to model 
-			if (theModel.containsAttribute("donation")) {
-	            donation = (Donation) theModel.getAttribute("donation");
-	        }
-			
-			// check if the last add donation is success
-			if (theModel.containsAttribute("successAdd")) {
-	            theModel.addAttribute("successAdd", true);
-	        } else {
-	            theModel.addAttribute("successAdd", false);
-	        }
-			
-			
-			theModel.addAttribute("donation", donation);
-
-			theModel.addAttribute("process", donationProcess);
-			
-			// update donation status directly
-			donationService.autoUpdateStatusAll();
-			
-			// set current endpoint for view return in process function
-			SessionUtils.setCurrentEndpoint(request);
-
-			return ViewConstants.V_ADMIN_DONATIONS;
-		} catch (Exception e) {
-			return ViewConstants.V_ERROR;
-		}
-	}
-	*/
-	
+	 */
 	@GetMapping("/donations")
 	public String donationlist(HttpServletRequest request, 
 			@RequestParam(defaultValue = "1") int page,
@@ -180,9 +106,12 @@ public class AdminController {
 			HttpSession session = request.getSession();
 			
 			// check current user is admin
-			if(!userService.isAdmin(SessionUtils.getCurrentUserId(session))) {
+			if(!userService.isAdmin(SessionUtils.getCurrentUserId(session)) || SessionUtils.getCurrentUserId(session)== null) {
+				System.out.println("//////////////////////test1");
 				throw new IllegalStateException("AdminController-donationList: User is not an admin.");
 			}
+			
+			System.out.println("//////////////////////test2");
 			// use for nav bar and modals
 			SessionUtils.addLoginUserInfoToModel(session, theModel);
 			
@@ -229,7 +158,7 @@ public class AdminController {
 	            
 	            theModel.addAttribute("errorProcess",true);
 	            
-
+	            // for success popup
 	        } else if(theModel.containsAttribute("successAdd")) {
 	        	
 	        	theModel.addAttribute("successAdd", true);
@@ -272,57 +201,92 @@ public class AdminController {
 	}
 	
 	@PostMapping("/processAddDonation")
-	public String processAdd(HttpServletRequest request,
+	public String processAddDonation(HttpServletRequest request,
 			@Valid @ModelAttribute("donation") InitDonation theDonation,
 			BindingResult theBindingResult,
 			RedirectAttributes redirectAttributes) {
 		
-		if (BinddingResultsCustomFunction.isErrorForAddDonation(theBindingResult)) {
+		try {
+			HttpSession session = request.getSession();
 			
-			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.donation", theBindingResult);
-			redirectAttributes.addFlashAttribute("errorDonation", theDonation);
-			//redirectAttributes.addFlashAttribute("errorLoginOrRegister", true);
-			redirectAttributes.addFlashAttribute("errorForm", true);
+			if(!userService.isAdmin(SessionUtils.getCurrentUserId(session))) {
+				throw new IllegalStateException("AdminController-donationList: User is not an admin.");
+			}
 			
-			return "redirect:" + SessionUtils.getCurrentEndpoint(request);
-	
-	    }
+			if (BinddingResultsCustomFunction.isErrorForAddDonation(theBindingResult)) {
+				
+				redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.donation", theBindingResult);
+				redirectAttributes.addFlashAttribute("errorDonation", theDonation);
+				//redirectAttributes.addFlashAttribute("errorLoginOrRegister", true);
+				redirectAttributes.addFlashAttribute("errorForm", true);
+				
+				return "redirect:" + SessionUtils.getCurrentEndpoint(request);
 		
-		donationService.add(modelMapper.map(theDonation,Donation.class));
-    	redirectAttributes.addFlashAttribute("successAdd", true);
+		    }
+			
+			donationService.add(modelMapper.map(theDonation,Donation.class));
+	    	redirectAttributes.addFlashAttribute("successAdd", true);
 
-		
-		//return "redirect:" + SessionUtils.getCurrentEndpoint(request);
-		
-		//return ViewConstants.V_REDIRECT_ADMIN_DONATIONS;
-		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
+			return "redirect:" + SessionUtils.getCurrentEndpoint(request);
+			
+		}  catch (IllegalStateException e) {
+
+			log.error("AdminController - processAddDonation - NO PERMISSION: {}", e);
+
+			return ViewConstants.V_ERROR_PERMISSION;
+
+		} catch (Exception e) {
+
+			log.error("AdminController - processAddDonation - ERROR FUNCTIONNAL: {}", e);
+
+			return ViewConstants.V_ERROR;
+		}
 	}
 	
 	
 	@PostMapping("/processUpdateDonation")
-	public String processUpdate(HttpServletRequest request, 
+	public String processUpdateDonation(HttpServletRequest request, 
 			@Valid @ModelAttribute("donation") InitDonation theDonation,
 			BindingResult theBindingResult,
 			RedirectAttributes redirectAttributes) {
 		
-		if(BinddingResultsCustomFunction.isErrorForUpdateDonation(theBindingResult, donationService, theDonation)) {
+		try {
+			HttpSession session = request.getSession();
 			
-			// check if code, startdate, enddate change is chnage or not
-			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.donation",
-					theBindingResult);
-
-			redirectAttributes.addFlashAttribute("errorDonation", theDonation);
-
-			redirectAttributes.addFlashAttribute("errorForm", true);
+			if(!userService.isAdmin(SessionUtils.getCurrentUserId(session))) {
+				throw new IllegalStateException("AdminController-donationList: User is not an admin.");
+			}
 			
+			if(BinddingResultsCustomFunction.isErrorForUpdateDonation(theBindingResult, donationService, theDonation)) {
+				
+				// check if code, startdate, enddate change is chnage or not
+				redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.donation",
+						theBindingResult);
+
+				redirectAttributes.addFlashAttribute("errorDonation", theDonation);
+
+				redirectAttributes.addFlashAttribute("errorForm", true);
+				
+				return "redirect:" + SessionUtils.getCurrentEndpoint(request);
+			}
+			
+			donationService.update(theDonation.copyPropertiesToDonationObj(donationService.getDonation(theDonation.getId())));
+			redirectAttributes.addFlashAttribute("successUpdate", true);
+
 			return "redirect:" + SessionUtils.getCurrentEndpoint(request);
-		}
-		
-		donationService.update(theDonation.copyPropertiesToDonationObj(donationService.getDonation(theDonation.getId())));
-		redirectAttributes.addFlashAttribute("successUpdate", true);
+			
+		} catch (IllegalStateException e) {
 
-		//return ViewConstants.V_REDIRECT_ADMIN_DONATIONS;
-		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
+			log.error("AdminController - processUpdateDonation - NO PERMISSION: {}", e);
+
+			return ViewConstants.V_ERROR_PERMISSION;
+
+		} catch (Exception e) {
+
+			log.error("AdminController - processUpdateDonation - ERROR FUNCTIONNAL: {}", e);
+
+			return ViewConstants.V_ERROR;
+		}
 	}
 	
 	
@@ -381,7 +345,6 @@ public class AdminController {
 			// if donation id !=0 then it is update
 			if (userDonationId != 0) {
 				userDonation = userDonationService.getUserDonation(userDonationId);
-				
 			} 
 
 			theModel.addAttribute("userDonation", userDonation);
@@ -391,13 +354,13 @@ public class AdminController {
 			
 		} catch (IllegalStateException e) {
 
-			log.error("AdminController - donationlist - NO PERMISSION: {}", e);
+			log.error("AdminController - donationDetails - NO PERMISSION: {}", e);
 
 			return ViewConstants.V_ERROR_PERMISSION;
 
 		} catch (Exception e) {
 
-			log.error("AdminController - donationlist - ERROR FUNCTIONNAL: {}", e);
+			log.error("AdminController - donationDetails - ERROR FUNCTIONNAL: {}", e);
 
 			return ViewConstants.V_ERROR;
 		}
@@ -405,6 +368,7 @@ public class AdminController {
 	
 	
 	// no need
+	/*
 	@GetMapping("/updateDonation")
 	public String updateDonation(@RequestParam("id") int donationId, Model theModel) {
 		Donation donation = donationService.getDonation(donationId);
@@ -416,7 +380,7 @@ public class AdminController {
 		return "admin/donation-form";
 	}
 	
-	
+	*/
 	// ? -------------------------------------------------------------------
 	@GetMapping("/updateDonationStatus")
 	public String updateDonationStatus(HttpServletRequest request,
@@ -424,77 +388,32 @@ public class AdminController {
 			@RequestParam(name = "status") DonationStatus status,
 			RedirectAttributes redirectAttributes) {
 
-		donationService.changeDonationStatus(status, donationId);
-		
-		redirectAttributes.addFlashAttribute("successChangeStatus", true);
-		//return ViewConstants.V_REDIRECT_ADMIN_DONATIONS;
-		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
-	}
-	
-	
-	// ? -------------------------------------------------------------------
-	/*
-	@PostMapping("/processUpdateDonation")
-	public String processUpdate(HttpServletRequest request, @ModelAttribute("donation") Donation theDonation) {
+		try {
+			// check authority (isLogined, isAdmin) (bao gồm phần header)
+			HttpSession session = request.getSession();
 
-		donationService.update(theDonation);
+			// check current user is admin
+			if (!userService.isAdmin(SessionUtils.getCurrentUserId(session))) {
+				throw new IllegalStateException("AdminController-donationDetail: User is not an admin.");
+			}
 
-		return ViewConstants.V_ADMIN_DONATIONS;
-	}
-	*/
-	
-	/*
-	@PostMapping("/processUpdateDonation")
-	public String processUpdate(HttpServletRequest request, 
-			@Valid @ModelAttribute("donation") InitDonation theDonation,
-			BindingResult theBindingResult,
-			RedirectAttributes redirectAttributes) {
-		
-		System.out.println("....................................in admincontroller- processUpdateDonation the id: " + theDonation.getId());
-		
-		Donation theExistingDonation = donationService.getDonation(theDonation.getId());
-		if(theExistingDonation!= null) {
-			boolean codeChanged = !theDonation.getCode().equals(theExistingDonation.getCode());
-	        boolean startDateChanged = !theDonation.getStartDate().equals(theExistingDonation.getStartDate());
-	        boolean endDateChanged = !theDonation.getEndDate().equals(theExistingDonation.getEndDate());
-
-		}
-		
-		if(theBindingResult.hasErrors()) {
+			donationService.changeDonationStatus(status, donationId);
 			
-			theBindingResult.getFieldErrors().forEach(fieldError ->  {
-				log.error("AdminController - processAdd - error field (validator) {}", fieldError);
-				log.error("AdminController - processAdd - error field (validator) {}", fieldError.getDefaultMessage());
-			});
-			theBindingResult.getGlobalErrors().forEach(globalError ->  {
-				log.error("AdminController - processAdd - error field (validator) {}", globalError);
-				System.out.println("test123................is global error from @UniquedDonationCode:" + globalError.getCode().equals("UniquedDonationCode"));
-				log.error("AdminController - processAdd - error field (validator) {}", globalError.getDefaultMessage());
-			});
-			
-			
-			// check if code, startdate, enddate change is chnage or not
-			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.donation", theBindingResult);
-			
-			redirectAttributes.addFlashAttribute("errorDonation", theDonation);
-			
-			redirectAttributes.addFlashAttribute("errorForm", true);
-			
-			
+			redirectAttributes.addFlashAttribute("successChangeStatus", true);
 			return "redirect:" + SessionUtils.getCurrentEndpoint(request);
-		}
-		
-		donationService.update(theDonation.copyPropertiesToDonationObj(donationService.getDonation(theDonation.getId())));
-		redirectAttributes.addFlashAttribute("successProcess", true);
+		} catch (IllegalStateException e) {
 
-		//return ViewConstants.V_REDIRECT_ADMIN_DONATIONS;
-		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
+			log.error("AdminController - updateDonationStatus - NO PERMISSION: {}", e);
+
+			return ViewConstants.V_ERROR_PERMISSION;
+
+		} catch (Exception e) {
+
+			log.error("AdminController - updateDonationStatus - ERROR FUNCTIONNAL: {}", e);
+
+			return ViewConstants.V_ERROR;
+		}
 	}
-	
-	*/
-	
-	
-	
 	
 	
 	
@@ -502,61 +421,38 @@ public class AdminController {
 	public String delete(HttpServletRequest request, 
 			@RequestParam("id") int donationId,
 			RedirectAttributes redirectAttributes) {
+		
+		try {
+			HttpSession session = request.getSession();
 
-		donationService.changeDonationShowingStatus(donationId);
-		
-		redirectAttributes.addFlashAttribute("successDelete", true);
-		
-		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
-		//return ViewConstants.V_REDIRECT_ADMIN_DONATIONS;
+			// check current user is admin
+			if (!userService.isAdmin(SessionUtils.getCurrentUserId(session))) {
+				throw new IllegalStateException("AdminController-donationDetail: User is not an admin.");
+			}
+
+			donationService.changeDonationShowingStatus(donationId);
+			
+			redirectAttributes.addFlashAttribute("successDelete", true);
+			
+			return "redirect:" + SessionUtils.getCurrentEndpoint(request);
+		} catch (IllegalStateException e) {
+
+			log.error("AdminController - updateDonationStatus - NO PERMISSION: {}", e);
+
+			return ViewConstants.V_ERROR_PERMISSION;
+
+		} catch (Exception e) {
+
+			log.error("AdminController - updateDonationStatus - ERROR FUNCTIONNAL: {}", e);
+
+			return ViewConstants.V_ERROR;
+		}
 
 	}
 
-	@GetMapping("/addDonation")
-	public String addDonation(Model theModel) {
-		Donation donation = new Donation();
-
-		theModel.addAttribute("process", "processAdd");
-
-		theModel.addAttribute("donation", donation);
-
-		return "admin/donation-form-for-add";
-	}
-	
-	/*
-	@PostMapping("/processAddDonation")
-	public String processAdd(HttpServletRequest request, @ModelAttribute("donation") Donation theDonation,
-			BindingResult theBindingResult,
-			RedirectAttributes redirectAttributes) {
-		
-		if (theBindingResult.hasErrors()) {
-			// truyền dữ liệu lỗi mà người dùng đăng nhập về lại trang đăng nhập
-			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.donation", theBindingResult);
-			redirectAttributes.addFlashAttribute("donation", theDonation);
-			//redirectAttributes.addFlashAttribute("errorLoginOrRegister", true); 
-			redirectAttributes.addFlashAttribute("errorForm", true);
-	            
-	    } else {
-	    	donationService.add(theDonation);
-	    	redirectAttributes.addFlashAttribute("successAdd", true);
-	    }
-		
-		
-
-		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
-	}
-	
-	*/
-	
-	
-	
-	
 
 	// user manager
 	
-	
-	
-
 	@GetMapping("/users")
 	public String userList(HttpServletRequest request, 
 			@RequestParam(defaultValue = "1") int page,
@@ -660,104 +556,129 @@ public class AdminController {
 			return ViewConstants.V_ERROR;
 		}
 		
-		
-
 	}
-
-	@GetMapping("/addUser")
-	public String addUser(Model theModel) {
-		User user = new User();
-
-		theModel.addAttribute("process", "processUserAdd");
-
-		theModel.addAttribute("user", user);
-
-		return "admin/user-form-for-add";
-	}
-	
-	
-	
-	
 	
 	
 	@PostMapping("/processAddUser")
-	public String processAdd(HttpServletRequest request,
+	public String processAddUser(HttpServletRequest request,
 			@Valid @ModelAttribute("user") InitUser theUser,
 			BindingResult theBindingResult,
 			RedirectAttributes redirectAttributes) {
-		System.out.println("............... test: " + theUser.getRole());
-		if (BinddingResultsCustomFunction.isErrorForAddUser(theBindingResult)) {
-			// truyền dữ liệu lỗi mà người dùng đăng nhập về lại trang đăng nhập
-			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", theBindingResult);
-			redirectAttributes.addFlashAttribute("errorUser", theUser);
-			/* redirectAttributes.addFlashAttribute("errorLoginOrRegister", true); */
-			redirectAttributes.addFlashAttribute("errorForm", true);
-	            
-	    } else {
-	    	
-	    	userService.add(modelMapper.map(theUser ,User.class), UserRole.ADMIN);
-	    	redirectAttributes.addFlashAttribute("successAdd", true);
-	    }
 		
-		
-		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
+		try {
+			HttpSession session = request.getSession();
+			
+			// check current user is admin
+			if(!userService.isAdmin(SessionUtils.getCurrentUserId(session))) {
+				throw new IllegalStateException("AdminController-donationList: User is not an admin.");
+			}
+
+			if (BinddingResultsCustomFunction.isErrorForAddUser(theBindingResult)) {
+				// truyền dữ liệu lỗi mà người dùng đăng nhập về lại trang đăng nhập
+				redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", theBindingResult);
+				redirectAttributes.addFlashAttribute("errorUser", theUser);
+				/* redirectAttributes.addFlashAttribute("errorLoginOrRegister", true); */
+				redirectAttributes.addFlashAttribute("errorForm", true);
+		            
+		    } else {
+		    	
+		    	userService.add(modelMapper.map(theUser ,User.class), UserRole.ADMIN);
+		    	redirectAttributes.addFlashAttribute("successAdd", true);
+		    }
+			
+			
+			return "redirect:" + SessionUtils.getCurrentEndpoint(request);
+		} catch (IllegalStateException e) {
+			
+			log.error("Admincontroller - processAddUser - NO PERMISSION: {}", e);
+			
+			return ViewConstants.V_ERROR_PERMISSION;
+			
+		} catch (Exception e) {
+			
+			log.error("Admincontroller - processAddUser - ERROR FUNCTIONNAL: {}", e);
+			
+			return ViewConstants.V_ERROR;
+		}
 	}
 	
 	
 	
 	
 	@PostMapping("/processUpdateUser")
-	public String processUpdate(HttpServletRequest request, 
+	public String processUpdateUser(HttpServletRequest request, 
 			@Valid @ModelAttribute("user") InitUser theUser,
 			BindingResult theBindingResult,
 			RedirectAttributes redirectAttributes) {
-		System.out.println("............... test: " + theUser.getRole());
-		if(BinddingResultsCustomFunction.isErrorForUpdateUser(theBindingResult, userService, theUser)) {
-			redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", theBindingResult);
+		
+		try {
+			HttpSession session = request.getSession();
 			
-			redirectAttributes.addFlashAttribute("errorUser", theUser);
+			// check current user is admin
+			if(!userService.isAdmin(SessionUtils.getCurrentUserId(session))) {
+				throw new IllegalStateException("AdminController-donationList: User is not an admin.");
+			}
 			
-			redirectAttributes.addFlashAttribute("errorForm", true);
-			
-		} else {
-	    	
-	    	userService.update(theUser.copyPropertiesToUserObj(userService.getUser(theUser.getId())), UserRole.ADMIN);
-			redirectAttributes.addFlashAttribute("successUpdate", true);
-	    }
+			if(BinddingResultsCustomFunction.isErrorForUpdateUser(theBindingResult, userService, theUser)) {
+				redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user", theBindingResult);
+				
+				redirectAttributes.addFlashAttribute("errorUser", theUser);
+				
+				redirectAttributes.addFlashAttribute("errorForm", true);
+				
+			} else {
+		    	
+		    	userService.update(theUser.copyPropertiesToUserObj(userService.getUser(theUser.getId())), UserRole.ADMIN);
+				redirectAttributes.addFlashAttribute("successUpdate", true);
+		    }
 
-		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
+			return "redirect:" + SessionUtils.getCurrentEndpoint(request);
+		} catch (IllegalStateException e) {
+			
+			log.error("Admincontroller - processUpdateUser - NO PERMISSION: {}", e);
+			
+			return ViewConstants.V_ERROR_PERMISSION;
+			
+		} catch (Exception e) {
+			
+			log.error("Admincontroller - processUpdateUser - ERROR FUNCTIONNAL: {}", e);
+			
+			return ViewConstants.V_ERROR;
+		}
 	}
-	
-	
-
-
-	@GetMapping("/updateUser")
-	public String updateUser(@RequestParam("userId") int userId, Model theModel) {
-		User theUser = userService.getUser(userId);
-
-		theModel.addAttribute("process", "processUpdate");
-
-		theModel.addAttribute("user", theUser);
-
-		return "admin/user-form";
-	}
-
-
-	
-	
-	
+		
 
 	@GetMapping("/updateUserStatus")
 	public String updateUserStatus(HttpServletRequest request,
 			@RequestParam("id") int userId, 
 			@RequestParam(name = "status") UserStatus status,
 			RedirectAttributes redirectAttributes) {
+		
+		try {
+			HttpSession session = request.getSession();
+			
+			// check current user is admin
+			if(!userService.isAdmin(SessionUtils.getCurrentUserId(session))) {
+				throw new IllegalStateException("AdminController-donationList: User is not an admin.");
+			}
 
-		userService.changeUserStatus(status, userId);
-		
-		redirectAttributes.addFlashAttribute("successChangeStatus", true);
-		
-		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
+			userService.changeUserStatus(status, userId);
+			
+			redirectAttributes.addFlashAttribute("successChangeStatus", true);
+			
+			return "redirect:" + SessionUtils.getCurrentEndpoint(request);
+		} catch (IllegalStateException e) {
+			
+			log.error("Admincontroller - updateUserStatus - NO PERMISSION: {}", e);
+			
+			return ViewConstants.V_ERROR_PERMISSION;
+			
+		} catch (Exception e) {
+			
+			log.error("Admincontroller - updateUserStatus - ERROR FUNCTIONNAL: {}", e);
+			
+			return ViewConstants.V_ERROR;
+		}
 	}
 	
 
@@ -769,11 +690,32 @@ public class AdminController {
 	public String deleteUser(HttpServletRequest request, @RequestParam("id") int theId,
 			@RequestParam(name = "currentUrl", defaultValue = "/admin/users") String currentUrl,
 			RedirectAttributes redirectAttributes) {
-		userService.changeUserShowingStatus(theId);
 		
-		redirectAttributes.addFlashAttribute("successDelete", true);
-		
-		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
+		try {
+			HttpSession session = request.getSession();
+			
+			// check current user is admin
+			if(!userService.isAdmin(SessionUtils.getCurrentUserId(session))) {
+				throw new IllegalStateException("AdminController-donationList: User is not an admin.");
+			}
+			
+			userService.changeUserShowingStatus(theId);
+			
+			redirectAttributes.addFlashAttribute("successDelete", true);
+			
+			return "redirect:" + SessionUtils.getCurrentEndpoint(request);
+		} catch (IllegalStateException e) {
+			
+			log.error("Admincontroller - deleteUser - NO PERMISSION: {}", e);
+			
+			return ViewConstants.V_ERROR_PERMISSION;
+			
+		} catch (Exception e) {
+			
+			log.error("Admincontroller - deleteUser - ERROR FUNCTIONNAL: {}", e);
+			
+			return ViewConstants.V_ERROR;
+		}
 	}
 	
 	
@@ -785,47 +727,61 @@ public class AdminController {
 			@RequestParam(name = "userDonationId", defaultValue = "0") int userDonationId,
 			Model theModel) {
 
-		HttpSession session = request.getSession();
+		try {
+			HttpSession session = request.getSession();
 
-		// check current user is admin
-		if (!userService.isAdmin(SessionUtils.getCurrentUserId(session))) {
-			throw new IllegalStateException("AdminController-donationDetail: User is not an admin.");
+			// check current user is admin
+			if (!userService.isAdmin(SessionUtils.getCurrentUserId(session))) {
+				throw new IllegalStateException("AdminController-donationDetail: User is not an admin.");
+			}
+
+			SessionUtils.addLoginUserInfoToModel(session, theModel);
+
+			// get the user for display detail
+			User theUser = userService.getUser(theId);
+
+			Page<UserDonation> userDonations = userDonationService.findByUserNameSortByCreatedDate(theUser.getUserName(),
+					searchingValue, page, size);
+
+
+			// add to model
+			theModel.addAttribute("user", theUser);
+
+			theModel.addAttribute("userDonations", userDonations);
+
+			theModel.addAttribute("currentPage", page);
+
+			theModel.addAttribute("currentSize", size);
+
+			theModel.addAttribute("searchingValue", searchingValue);
+
+			UserDonation userDonation = new UserDonation();
+
+			// if donation id !=0 then it is update
+			if (userDonationId != 0) {
+				userDonation = userDonationService.getUserDonation(userDonationId);
+
+			}
+
+			theModel.addAttribute("userDonation", userDonation);
+			
+
+			SessionUtils.setCurrentEndpoint(request);
+
+			return ViewConstants.V_ADMIN_USER_DETAIL;
+			
+		}  catch (IllegalStateException e) {
+			
+			log.error("Admincontroller - userDetail - NO PERMISSION: {}", e);
+			
+			return ViewConstants.V_ERROR_PERMISSION;
+			
+		} catch (Exception e) {
+			
+			log.error("Admincontroller - userDetail - ERROR FUNCTIONNAL: {}", e);
+			
+			return ViewConstants.V_ERROR;
 		}
-
-		SessionUtils.addLoginUserInfoToModel(session, theModel);
-
-		// get the user for display detail
-		User theUser = userService.getUser(theId);
-
-		Page<UserDonation> userDonations = userDonationService.findByUserNameSortByCreatedDate(theUser.getUserName(),
-				searchingValue, page, size);
-
-
-		// add to model
-		theModel.addAttribute("user", theUser);
-
-		theModel.addAttribute("userDonations", userDonations);
-
-		theModel.addAttribute("currentPage", page);
-
-		theModel.addAttribute("currentSize", size);
-
-		theModel.addAttribute("searchingValue", searchingValue);
-
-		UserDonation userDonation = new UserDonation();
-
-		// if donation id !=0 then it is update
-		if (userDonationId != 0) {
-			userDonation = userDonationService.getUserDonation(userDonationId);
-
-		}
-
-		theModel.addAttribute("userDonation", userDonation);
-		
-
-		SessionUtils.setCurrentEndpoint(request);
-
-		return ViewConstants.V_ADMIN_USER_DETAIL;
 	}
 
 	// userDonation manager
@@ -906,21 +862,42 @@ public class AdminController {
 			@RequestParam(name = "id", defaultValue = "0") int userdonationId,
 			RedirectAttributes redirectAttributes) {
 		
-		if(status==UserDonationStatus.CONFIRMED) {
-			donationService.setTotalConfirmedDonate(userDonationService.getDonation(userdonationId).getId());
-		}
-		userDonationService.changeUserDonationStatus(userdonationId, status);
 		
-		if(status==UserDonationStatus.CONFIRMED) {
+		try {
+			HttpSession session = request.getSession();
 			
-			redirectAttributes.addFlashAttribute("successConfirm", true);
+			if(!userService.isAdmin(SessionUtils.getCurrentUserId(session))) {
+				throw new IllegalStateException("AdminController-donationList: User is not an admin.");
+			}
 			
-		} else if(status==UserDonationStatus.CANCELED) {
+			if(status==UserDonationStatus.CONFIRMED) {
+				donationService.setTotalConfirmedDonate(userDonationService.getDonation(userdonationId).getId());
+			}
 			
-			redirectAttributes.addFlashAttribute("successCancel", true);
-		}
+			userDonationService.changeUserDonationStatus(userdonationId, status);
+			
+			if(status==UserDonationStatus.CONFIRMED) {
+				
+				redirectAttributes.addFlashAttribute("successConfirm", true);
+				
+			} else if(status==UserDonationStatus.CANCELED) {
+				
+				redirectAttributes.addFlashAttribute("successCancel", true);
+			}
 
-		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
+			return "redirect:" + SessionUtils.getCurrentEndpoint(request);
+		} catch (IllegalStateException e) {
+
+			log.error("AdminController - updateUserDonationStatus - NO PERMISSION: {}", e);
+
+			return ViewConstants.V_ERROR_PERMISSION;
+
+		} catch (Exception e) {
+
+			log.error("AdminController - updateUserDonationStatus - ERROR FUNCTIONNAL: {}", e);
+
+			return ViewConstants.V_ERROR;
+		}
 
 	}
 
@@ -928,12 +905,32 @@ public class AdminController {
 	@GetMapping("/deleteUserDonation")
 	public String deleteUserDonation(HttpServletRequest request,
 			@RequestParam("userDonationId") int userDonationId) {
-
-		userDonationService.changeUserDonationStatus(userDonationId, UserDonationStatus.CANCELED);
 		
-		System.out.println("//////////////////////in deleteUserDonation url: " + SessionUtils.getCurrentEndpoint(request));
-		return "redirect:" + SessionUtils.getCurrentEndpoint(request);
+		try {
+			HttpSession session = request.getSession();
+			
+			if(!userService.isAdmin(SessionUtils.getCurrentUserId(session))) {
+				throw new IllegalStateException("AdminController-donationList: User is not an admin.");
+			}
+
+			userDonationService.changeUserDonationStatus(userDonationId, UserDonationStatus.CANCELED);
+
+			return "redirect:" + SessionUtils.getCurrentEndpoint(request);
+			
+		} catch (IllegalStateException e) {
+
+			log.error("AdminController - deleteUserDonation - NO PERMISSION: {}", e);
+
+			return ViewConstants.V_ERROR_PERMISSION;
+
+		} catch (Exception e) {
+
+			log.error("AdminController - deleteUserDonation - ERROR FUNCTIONNAL: {}", e);
+
+			return ViewConstants.V_ERROR;
+		}
 
 	}
-
+	
+	
 }

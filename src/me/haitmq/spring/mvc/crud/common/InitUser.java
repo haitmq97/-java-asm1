@@ -5,6 +5,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -25,6 +27,8 @@ import me.haitmq.spring.mvc.crud.validation.UniquedUserName;
 @UniquedEmail
 @UniquedUserName
 public class InitUser {
+	
+	private static final Logger log = LoggerFactory.getLogger(InitUser.class);
 	
 	private int id;
 	
@@ -168,30 +172,42 @@ public class InitUser {
 
 	
 	public User copyPropertiesToUserObj(User user) {
-		user.setId(this.getId());
-		user.setFullName(this.getFullName());
-		user.setUserName(this.getUserName());
-		user.setPassword(this.getPassword());
-		user.setEmail(this.getEmail());
-		user.setAddress(this.getAddress());
-		user.setPhoneNumber(this.getPhoneNumber());
-		user.getRole().setRoleName(this.getRole().getRoleName());
-		user.setStatus(this.getStatus());
+		try {
+			user.setId(this.getId());
+			user.setFullName(this.getFullName());
+			user.setUserName(this.getUserName());
+			user.setPassword(this.getPassword());
+			user.setEmail(this.getEmail());
+			user.setAddress(this.getAddress());
+			user.setPhoneNumber(this.getPhoneNumber());
+			user.getRole().setRoleName(this.getRole().getRoleName());
+			user.setStatus(this.getStatus());
+			return user;
+		} catch (Exception e) {
+			log.error("InitUser - copyPropertiesToUserObj: {}", e);
+			
+			return new User();
+		}
 		
 		
-		return user;
+		
 	}
 	
 	public void getPropertiesFromUserObj(User user) {
-		this.setId(user.getId());
-		this.setFullName(user.getFullName());
-		this.setUserName(user.getUserName());
-		this.setPassword(user.getPassword());
-		this.setEmail(user.getEmail());
-		this.setAddress(user.getAddress());
-		this.setPhoneNumber(user.getPhoneNumber());
-		this.setRole(user.getRole());
-		this.setStatus(user.getStatus());
+		
+		try {
+			this.setId(user.getId());
+			this.setFullName(user.getFullName());
+			this.setUserName(user.getUserName());
+			this.setPassword(user.getPassword());
+			this.setEmail(user.getEmail());
+			this.setAddress(user.getAddress());
+			this.setPhoneNumber(user.getPhoneNumber());
+			this.setRole(user.getRole());
+			this.setStatus(user.getStatus());
+		} catch (Exception e) {
+			log.error("InitUser - copyPropertiesToUserObj: {}", e);
+		}
 	}
 	
 

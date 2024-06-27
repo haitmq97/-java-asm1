@@ -7,8 +7,6 @@
 <head>
 
 
-<%-- 	<link rel="stylesheet"
-	href="<c:url value='/static/common/assets/css/login-style.css' />"> --%>
 </head>
 <body>
 	<input id="errorLogin" type="hidden" value="${errorLogin}" />

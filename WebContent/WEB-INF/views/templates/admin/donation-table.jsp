@@ -91,7 +91,7 @@
 </head>
 <body>
 	<!-- Header layout -->
-	<jsp:include page="../common/header-layout-test.jsp">
+	<jsp:include page="../common/header-layout.jsp">
 		<jsp:param name="includePart" value="headerSection" />
 	</jsp:include>
 	
@@ -282,13 +282,13 @@
 												
 													<button class="btn btn-success donation-btn"
 															title="Quyên góp"
-															onclick="toDelete('${tempDonation.id}', '#update-status')">
+															onclick="openModalId('${tempDonation.id}', '#update-status')">
 														<span>Quyên góp</span>
 													</button>
 													
 													<button class="btn btn-danger donation-btn d-delete-btn"
 														title="Xóa"
-														onclick="toDelete('${tempDonation.id}', '#closedOrDelete')"
+														onclick="openModalId('${tempDonation.id}', '#closedOrDelete')"
 														data-url="${deleteLink}">
 														<span>Xóa</span>
 													</button>
@@ -300,7 +300,7 @@
             										
             										<button class="btn btn-danger donation-btn"
 															title="Quyên góp"
-															onclick="toDelete('${tempDonation.id}', '#update-status')">
+															onclick="openModalId('${tempDonation.id}', '#update-status')">
 														<span>Kết thúc</span><span
 															class="content-btn-icon"></span>
 													</button>
@@ -310,7 +310,7 @@
 												<c:when test="${tempDonation.status == DonationStatus.END}">
             										<button class="btn btn-danger donation-btn" 
 															title="Chi tiết"
-															onclick="toDelete('${tempDonation.id}', '#closedOrDelete')">
+															onclick="openModalId('${tempDonation.id}', '#closedOrDelete')">
 													<span >Đóng</span>
 													</button>
          										</c:when>
@@ -382,11 +382,9 @@
 	</section>
 	
 
-	<script src="<c:url value='/static/common/assets/js/script.js' />"></script> 
-
 
 	
-	<jsp:include page="../common/footer-layout2.jsp">
+	<jsp:include page="../common/footer-layout.jsp">
 		<jsp:param name="includePart" value="footerSection" />
 	</jsp:include>
 
@@ -402,32 +400,22 @@
 			<!-- for close or delete donation modal -->
 			<jsp:include
 				page="../admin/form-modal/donation-modal/donation-closed-or-delete-modal.jsp" />
-<%-- 
-			<% Boolean isLogined = ((Boolean)request.getAttribute("isLogined")) != null ? (Boolean)request.getAttribute("isLogined") : false; %>
-				<% Boolean isAdmin = ((Boolean)request.getAttribute("isAdmin")) != null ? (Boolean)request.getAttribute("isAdmin") : false; %>
-			
-			 --%>
+
 			<!-- for donating or end donation modal -->
 			<jsp:include
 				page="../admin/form-modal/donation-modal/donation-update-status-modal.jsp" />
 			
 				<!-- Hien thị thông báo tạo thành công -->
 
-			<input type="hidden" id="successAdd" value="${successAdd}">
 			<jsp:include
 				page="../admin/form-modal/donation-modal/donation-success-add-modal.jsp" />
-
-
-			<input type="hidden" id="successUpdate" value="${successUpdate}">
+		
 			<jsp:include
 				page="../admin/form-modal/donation-modal/donation-success-update-modal.jsp" />
 
-			<input type="hidden" id="successDelete" value="${successDelete}">
 			<jsp:include
 				page="../admin/form-modal/donation-modal/donation-success-delete-modal.jsp" />
-
-			<input type="hidden" id="successChangeStatus"
-				value="${successChangeStatus}">
+			
 			<jsp:include
 				page="../admin/form-modal/donation-modal/donation-success-change-status-modal.jsp" />
 
@@ -435,9 +423,13 @@
 	
 	</div>
 
+	<script src="<c:url value='https://code.jquery.com/jquery-3.6.4.min.js' />"
+		crossorigin="anonymous"></script>
 
+	<script src="<c:url value='/static/common/assets/js/script.js' />"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script
+		src="<c:url value='/static/common/assets/js/layout-script.js' />"></script>
 
 </body>
 </html>

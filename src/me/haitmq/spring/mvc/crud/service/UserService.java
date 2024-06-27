@@ -7,7 +7,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import me.haitmq.spring.mvc.crud.common.LoginUser;
+import me.haitmq.spring.mvc.crud.dto.UserDTO;
 import me.haitmq.spring.mvc.crud.entity.User;
+import me.haitmq.spring.mvc.crud.entity.UserDonation;
 import me.haitmq.spring.mvc.crud.entity.role.UserRole;
 import me.haitmq.spring.mvc.crud.entity.status.DonationStatus;
 import me.haitmq.spring.mvc.crud.entity.status.UserStatus;
@@ -69,11 +71,11 @@ public interface UserService {
 	 */
 
 	// get/ read user
-	public boolean isAdmin(int theId);
+	public boolean isAdmin(Integer theId);
 
 	public boolean isAdmin(User user);
 
-	public boolean isActive(int theId);
+	public boolean isActive(Integer theId);
 
 	// check if login user is existed and get it
 	public boolean isUserExisted(LoginUser user);
@@ -93,4 +95,7 @@ public interface UserService {
 	// delete user
 	public void delete(int theId);
 
+	public User getUserJoinFetch(int theId);
+	
+	
 }

@@ -3,6 +3,7 @@
 
 
 <div class="popup col-12 col-sm-8 col-md-4">
+	<input type="hidden" id="successUpdate" value="${successUpdate}">
 	<div class="form-container donate-form" id="success-update">
 		<div class="container form-head">
 			<div class="form-title">

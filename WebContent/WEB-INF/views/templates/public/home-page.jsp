@@ -89,12 +89,9 @@
 <body>
 
 	<!-- Header layout -->
-	<jsp:include page="../common/header-layout-test.jsp">
+	<jsp:include page="../common/header-layout.jsp">
 		<jsp:param name="includePart" value="headerSection" />
 	</jsp:include>
-
-	
-
 
 	<section class="site-section content" id="m-content">
 	<input type="hidden" id="isLogined" value="${isLogined}" />
@@ -105,7 +102,6 @@
 
 				</div>
 			</div>
-
 
 			<div class="">
 				<div class="main-content">
@@ -125,8 +121,6 @@
 									<option value="20" ${donations.size == 20 ? 'selected' : ''}>20</option>
 								</select>
 
-
-
 							</div>
 							<div class="search-box">
 								<label for="searchingValue">Tìm kiếm:</label> <input type="text"
@@ -139,9 +133,6 @@
 
 						</div>
 					</div>
-
-
-
 
 					<!-- table-responsive -->
 					<div class="m-content list " id="data-list">
@@ -187,21 +178,15 @@
 											</th>
 											<td><p class="font-weight-bold mb-2">${tempDonation.code}</p></td>
 											<td>
-												<!-- <p class="mb-1">Bắt đầu:</p> -->
 												<p class="mb-2">${JSPDataFormat.dateFormat(tempDonation.startDate)}</p>
-												<!-- <p class="mb-1">Kết thúc:</p> -->
-												
+
 											</td>
 											<td>
-											<p class="mb-2">${JSPDataFormat.dateFormat(tempDonation.endDate)}</p>
-											
-											
+												<p class="mb-2">${JSPDataFormat.dateFormat(tempDonation.endDate)}</p>
+
 											</td>
 
-											<%-- <td><p>${JSPDataFormat.dateFormat(tempDonation.endDate)}</p></td> --%>
 											<td><p class="mb-2">${tempDonation.phoneNumber}</p></td>
-
-
 
 											<td class="action-c d-flex">
 
@@ -232,7 +217,6 @@
 										</tr>
 									</c:forEach>
 
-									
 								</tbody>
 							</table>
 							<script>
@@ -273,10 +257,6 @@
 
 						</div>
 
-
-
-
-
 					</div>
 
 				</div>
@@ -284,9 +264,6 @@
 			</div>
 		</div>
 	</section>
-	
-
-
 
 	<div class="overlay-container">
 		<div class="row">
@@ -309,7 +286,7 @@
 						
 						
 					<% } %>
-					<input type="hidden" id="successRegister" value="${successRegister}" />
+					
 					<jsp:include page="../public/form-modal/user-donation-modal/register-success-modal.jsp" />
 				
 				<% } else { %>
@@ -324,7 +301,7 @@
 
 
 
-	<jsp:include page="../common/footer-layout2.jsp">
+	<jsp:include page="../common/footer-layout.jsp">
 		<jsp:param name="includePart" value="footerSection" />
 	</jsp:include>
 

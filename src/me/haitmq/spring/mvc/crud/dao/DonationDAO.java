@@ -52,4 +52,8 @@ public interface DonationDAO {
 	// + delete a donation obj
 	public void delete(int theId);
 	
+	public Donation getDontaionJoinFetch(int theId);
+	
+	
+	public void merge(Donation donation);
 }

@@ -76,4 +76,7 @@ public interface DonationService {
 	public void saveOrUpdate(Donation donation);
 	
 	public void setTotalConfirmedDonate(int donationId);
+	
+	public Donation getDontaionJoinFetch(int theId);
+	
 }

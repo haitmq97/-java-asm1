@@ -6,7 +6,12 @@ import java.util.List;
 
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import me.haitmq.spring.mvc.crud.controller.AdminController;
 import me.haitmq.spring.mvc.crud.entity.Donation;
 import me.haitmq.spring.mvc.crud.entity.UserDonation;
 import me.haitmq.spring.mvc.crud.entity.status.DonationStatus;
@@ -19,15 +24,11 @@ import me.haitmq.spring.mvc.crud.validation.ValidDonationPeriod;
 @UniquedDonationCode(message = "Mã đã tồn tại")
 public class InitDonation {
 	
+	private static final Logger log = LoggerFactory.getLogger(InitDonation.class);
 
 	private int id;
 	
-
-	/*
 	@Pattern(regexp = "^[a-zA-Z]{2}[0-9]{3}$", message = "Mã phải gồm 2 kí tự chữ và 3 kí tự số")
-	
-	*/
-	
 	@NotBlank(message = "is required")
 	private String code;
 	
@@ -189,27 +190,36 @@ public class InitDonation {
 	
 	
 	public Donation copyPropertiesToDonationObj(Donation donation) {
-		donation.setId(this.getId());
-		donation.setName(this.getName());
-		donation.setCode(this.getCode());
-		donation.setStartDate(this.getStartDate());
-		donation.setEndDate(this.getEndDate());
-		donation.setOrganization(this.getOrganization());
-		donation.setPhoneNumber(this.getPhoneNumber());
-		donation.setStatus(this.getStatus());
-		
-		return donation;
+		try {
+			donation.setId(this.getId());
+			donation.setName(this.getName());
+			donation.setCode(this.getCode());
+			donation.setStartDate(this.getStartDate());
+			donation.setEndDate(this.getEndDate());
+			donation.setOrganization(this.getOrganization());
+			donation.setPhoneNumber(this.getPhoneNumber());
+			donation.setStatus(this.getStatus());
+			
+			return donation;
+		} catch (Exception e) {
+			log.error("InitDonation - copyPropertiesToDonationObj: {}", e);
+			return new Donation();
+		}
 	}
 	
 	public void getPropertiesFromDonationObj(Donation donation) {
-		this.setId(donation.getId());
-		this.setName(donation.getName());
-		this.setCode(donation.getCode());
-		this.setStartDate(donation.getStartDate());
-		this.setEndDate(donation.getEndDate());
-		this.setOrganization(donation.getOrganization());
-		this.setPhoneNumber(donation.getPhoneNumber());
-		this.setStatus(donation.getStatus());
+		try {
+			this.setId(donation.getId());
+			this.setName(donation.getName());
+			this.setCode(donation.getCode());
+			this.setStartDate(donation.getStartDate());
+			this.setEndDate(donation.getEndDate());
+			this.setOrganization(donation.getOrganization());
+			this.setPhoneNumber(donation.getPhoneNumber());
+			this.setStatus(donation.getStatus());
+		} catch (Exception e) {
+			log.error("InitDonation - getPropertiesFromDonationObj: {}", e);
+		}
 	}
 	
 

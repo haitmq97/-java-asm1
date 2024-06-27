@@ -30,26 +30,13 @@ public class UserDonation {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private int id;
-	
-	/*
-	@NotBlank(message = "is required")
-	@NotNull(message = "is required")
-	*/
+
 	@Column(name = "name")
 	private String name;
 	
 	@Column(name = "created_date")
 	private String createdDate;
-	
-	
-	/*
-	 @NotBlank
-	@Pattern(regexp = "^[1-9]\\d*000$", message = "")
-	@Min(value=5000, message="Số tiền quyên góp tối thiểu 5.000vnđ")  
-    @Max(value=500000000, message="Số tiền quyên góp tối đa 500.000.000vnđ")  
-	 */
-	
-	@Min(value=5000, message="Số tiền quyên góp tối thiểu 5.000vnđ")
+
 	@Column(name = "money")
 	private long money;
 	
@@ -70,8 +57,6 @@ public class UserDonation {
 	@ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
 	@JoinColumn(name = "donation_id")
 	private Donation donation;
-	
-
 	
 	// constructor
 	
@@ -160,15 +145,5 @@ public class UserDonation {
 				+ "]";
 	}
 
-	
-	
-	
 
-	
-	
-	
-
-	
-	
-	
 }

@@ -9,7 +9,7 @@
 <%@ page import="me.haitmq.spring.mvc.crud.content_path.ViewConstants"%>
 
 <div class="popup col-12 col-sm-8 col-md-6 col-lg-4">
-	
+	<input type="hidden" id="successRegister" value="${successRegister}" />
 	<div class="form-container donate-form " id="success-register">
 		<div class="container form-head">
 			<div class="form-title">

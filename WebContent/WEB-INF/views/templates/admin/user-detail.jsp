@@ -8,7 +8,8 @@
 <%@ page import="me.haitmq.spring.mvc.crud.utils.Time"%>
 <%@ page import="me.haitmq.spring.mvc.crud.entity.status.DonationStatus"%>
 <%@ page import="me.haitmq.spring.mvc.crud.entity.status.UserStatus"%>
-<%@ page import="me.haitmq.spring.mvc.crud.entity.status.UserDonationStatus"%>
+<%@ page
+	import="me.haitmq.spring.mvc.crud.entity.status.UserDonationStatus"%>
 
 <!DOCTYPE html>
 <html>
@@ -83,8 +84,6 @@
 <link rel="stylesheet"
 	href="<c:url value='/static/common/assets/css/style.css'/>" />
 
-
-
 <!-- customer js -->
 
 <script src="<c:url value='/static/common/assets/js/script.js' />"></script>
@@ -94,25 +93,19 @@
 </head>
 <body>
 
-	<jsp:include page="../common/header-layout-test.jsp">
+	<jsp:include page="../common/header-layout.jsp">
 		<jsp:param name="includePart" value="headerSection" />
 	</jsp:include>
-
-
 
 	<section class="site-section content">
 		<div class="container">
 			<div class="row mb-5 justify-content-center">
 				<div class="col-md-7 text-center">
 					<h2 class="section-title mb-2">Chi tiết người dùng</h2>
-					
-					
 
 				</div>
-				
 
 			</div>
-
 
 			<div class="donation-detail-containter">
 				<div class="row">
@@ -120,12 +113,12 @@
 					<div class="col-md-6">
 						<div class="p-3">
 							<div class="">
-							
+
 								<p class="font-weight-bold mb-1 text-align-left">Họ và tên:</p>
-								
+
 							</div>
 							<div class="border rounded bg-light">
-							
+
 								<p class="p-1 m-1">${user.fullName}</p>
 							</div>
 						</div>
@@ -138,11 +131,11 @@
 							<div class="border rounded bg-light">
 								<p class="p-1 m-1">${user.userName}</p>
 							</div>
-						
+
 						</div>
 					</div>
 				</div>
-				
+
 				<div class="row">
 					<!-- Row 2 -->
 					<div class="col-md-6">
@@ -158,12 +151,13 @@
 					<div class="col-md-6">
 						<div class="p-3">
 							<div class="">
-								<p class="font-weight-bold mb-1 text-align-left">Số điện thoại:</p>
+								<p class="font-weight-bold mb-1 text-align-left">Số điện
+									thoại:</p>
 							</div>
 							<div class="border rounded bg-light">
 								<p class="p-1 m-1">${user.phoneNumber}</p>
 							</div>
-						
+
 						</div>
 					</div>
 				</div>
@@ -187,11 +181,11 @@
 							<div class="border rounded bg-light">
 								<p class="p-1 m-1">${user.createdDate}</p>
 							</div>
-						
+
 						</div>
 					</div>
 				</div>
-				
+
 				<div class="row">
 					<!-- Row 2 -->
 					<div class="col-md-6">
@@ -212,17 +206,17 @@
 							<div class="border rounded bg-light">
 								<p class="p-1 m-1">${JSPDataFormat.userStatusFormat(user.status)}</p>
 							</div>
-						
+
 						</div>
 					</div>
 				</div>
-				
+
 			</div>
-			
-			<div class= "row mt-5">
+
+			<div class="row mt-5">
 				<div class="col-12">
-						
-						<div class="main-content">
+
+					<div class="main-content">
 						<div>
 							<h3 class="text-align-center">Danh sách các lượt quyên góp</h3>
 						</div>
@@ -232,7 +226,9 @@
 
 							<input type="hidden" id="userDonation-total"
 								value="${userDonations.totalElements}" />
-							<p id="table-script" class="mt-4 text-align-center font-weight-light font-italic text-muted">Hiện người dùng này chưa quyên góp</p>
+							<p id="table-script"
+								class="mt-4 text-align-center font-weight-light font-italic text-muted">Hiện
+								người dùng này chưa quyên góp</p>
 						</div>
 
 						<div class="table-container" id="list-container">
@@ -272,7 +268,6 @@
 									<table class="table table-striped table-content">
 										<thead class="tb-head-title bg-secondary">
 
-
 											<tr>
 												<th scope="col" class="th-custom col-2"><p>Ngày
 														quyên góp</p></th>
@@ -291,12 +286,9 @@
 											</tr>
 										</thead>
 
-
-
 										<tbody id="scrollableRows">
 											<c:forEach var="tempUserDonation"
 												items="${userDonations.content}">
-
 
 												<c:url var="confirmLink"
 													value="/admin/update_user_donations">
@@ -311,8 +303,6 @@
 														value="${UserDonationStatus.CANCELED}" />
 												</c:url>
 
-
-
 												<tr>
 													<td><p>${tempUserDonation.createdDate}</p></td>
 													<td><p>${JSPDataFormat.moneyFormat(tempUserDonation.money)}</p></td>
@@ -322,7 +312,8 @@
 													<td><p class="color-text">${JSPDataFormat.donationStatusFormat(tempUserDonation.donation.status)}</p></td>
 													<td><p class="color-text">${JSPDataFormat.userDonationStatusFormat(tempUserDonation.status)}</p></td>
 
-													<td class="action-c"><c:if
+													<td class="action-c">
+														<c:if
 															test="${tempUserDonation.status == UserDonationStatus.WAITING}">
 															<button
 																class="btn btn-success donation-btn donation-update-btn"
@@ -333,24 +324,20 @@
 
 															<button class="btn btn-danger donation-btn"
 																title="Chi tiết"
-																onclick="toDelete('${tempUserDonation.id}','#user-donation-cancel')">
+																onclick="openModalId('${tempUserDonation.id}','#user-donation-cancel')">
 																<span class="content-btn-text">Hủy</span>
 															</button>
-														</c:if></td>
+														</c:if>
+													</td>
 												</tr>
 
-
-
-
 											</c:forEach>
-
 
 										</tbody>
 									</table>
 									<script>
 										changeColorText();
 									</script>
-
 
 								</div>
 								<div>
@@ -364,15 +351,13 @@
 											<div>
 
 												<input id="totalPages" type="hidden"
-													value="${userDonations.totalPages}" /> <input
-													id="currentPage" type="hidden" name="currentPage"
+													value="${userDonations.totalPages}" /> 
+												<input id="currentPage" type="hidden" name="currentPage"
 													value="${userDonations.pageable.pageNumber+1}" />
 
 											</div>
 
 											<div id="pagination-container"></div>
-
-
 
 										</div>
 									</c:if>
@@ -391,223 +376,46 @@
 						</div>
 
 
-					</div>		
-					
-					
-					
-					
-					
-						<%-- 	<div>
-								<h3 class="text-align-center">Danh sách các lượt quyên góp của người dùng</h3>
-							</div>
-
-					<c:choose>
-
-						<c:when test="${userDonations.totalElements == 0}">
-							<p class="mt-4 text-align-center font-italic">Hiện người dùng này chưa quyên góp</p>
-						</c:when>
-
-
-
-						<c:otherwise>
-							<div class="d-flex justify-content-between flex-wrap mb-3">
-								<div class="page-selector">
-								
-										
-									<label for="size">Rows per
-										page:</label> 
-									<select id="pageSize" name="size"
-										class="entries-select rounded form-control">
-										<option value="3" ${userDonations.size == 3 ? 'selected' : ''}>3</option>
-										<option value="4" ${userDonations.size == 4 ? 'selected' : ''}>4</option>
-										<option value="5" ${userDonations.size == 5 ? 'selected' : ''}>5</option>
-										<option value="10" ${userDonations.size == 10 ? 'selected' : ''}>10</option>
-										<option value="15" ${userDonations.size == 15 ? 'selected' : ''}>15</option>
-										<option value="20" ${userDonations.size == 20 ? 'selected' : ''}>20</option>
-
-									</select>
-
-
-
-								</div>
-								<div class="search-box">
-									<label for="searching-input">Search:</label> <input type="text"
-										name="searching-input" id="searchingValue"
-										class="searching-input rounded p-2 form-control"
-										placeholder="by Code or by status ..."
-										value="${searchingValue}" />
-								</div>
-							</div>
-							<div>
-							<div class="" id="data-list">
-						<div class=" table-responsive">
-							<table class="table table-striped table-content">
-								<thead class="tb-head-title bg-secondary">
-									<tr>
-
-
-										<th scope="col" class="th-custom col-2 col-lg-3"><p>Tên đợt</p></th>
-										<th scope="col" class="th-custom"><p>Mã đợt</p></th>
-										<th scope="col" class="th-custom"><p>Trạng thái đợt</p></th>
-										<th scope="col" class="th-custom col-2"><p>Số tiền</p></th>
-										<th scope="col" class="th-custom"><p>Ngày quyên góp</p></th>
-										<th scope="col" class="th-custom col-1 col-lg-2"><p>Trạng thái</p></th>
-										<th scope="col" class="th-custom"><p>Hành động</p></th>
-									</tr>
-								</thead>
-
-
-
-								<tbody id="scrollableRows">
-									<c:forEach var="tempUserDonation" items="${userDonations.content}">
-
-										
-										<c:url var="confirmLink"
-											value="/admin/update_user_donations">
-											<c:param name="id" value="${tempUserDonation.id}" />
-											<c:param name="status" value="${UserDonationStatus.CONFIRMED}" />
-										</c:url>
-										
-										<c:url var="cancelLink"
-											value="/admin/update_user_donations">
-											<c:param name="id" value="${tempUserDonation.id}" />
-											<c:param name="status" value="${UserDonationStatus.CANCELED}" />
-										</c:url>
-
-
-
-													<tr>
-													<td><p class="font-weight-bold">${tempUserDonation.id}</p></td>
-													<td><p class="font-weight-bold">${tempUserDonation.name}</p></td>
-														<td><p class="font-weight-bold">${tempUserDonation.donation.name}</p></td>
-														<td><p class="font-weight-bold">${tempUserDonation.donation.code}</p></td>
-														<td><p class="font-weight-bold color-text">${JSPDataFormat.donationStatusFormat(tempUserDonation.donation.status)}</p></td>
-														<td><p>${JSPDataFormat.moneyFormat(tempUserDonation.money)}</p></td>
-														<td><p>${tempUserDonation.createdDate}</p></td>
-
-														<td><p class="font-weight-bold color-text">${JSPDataFormat.userDonationStatusFormat(tempUserDonation.status)}</p></td>
-
-														<td class="action-c"><c:if
-																test="${tempUserDonation.status == UserDonationStatus.WAITING}">
-																<button
-																	class="btn btn-success donation-btn donation-update-btn"
-																	title="Chi tiết"
-																	onclick="window.location.href='${confirmLink}'">
-																	<span class="content-btn-text">Xác nhận</span>
-																</button>
-
-																<button class="btn btn-danger donation-btn"
-																	title="Chi tiết"
-																	onclick="toDelete(${tempUserDonation.id} ,'#user-donation-cancel')">
-																	<span class="content-btn-text">Hủy</span>
-																</button>
-															</c:if></td>
-													</tr>
-
-
-
-
-												</c:forEach>
-
-
-								</tbody>
-							</table>
-						</div>
-
-
-						<div>
-							<div>
-								
-								<input id="currentPage1" type="hidden" value="${currentPage}" />
-
-								<input id="totalPages1" type="hidden"
-									value="${userDonations.totalPages}" /> <br> <input id="size1"
-									type="hidden" value="${currentSize}" /> <br> <input
-									id="searchingValue1" type="hidden" value="${searchingValue}" />
-
-								<input id="importUrl1" type="hidden"
-									value="${searchingValue}" />
-
-
-									
-									<input id="currentPage" type="hidden" name="currentPage"
-										value="${userDonations.pageable.pageNumber+1}" /> 
-
-
-							</div>
-							<div id="pagination-container"></div>
-
-
-
-
-						</div>
-
-					</div>
-						
-						
-						
-						</div>
-							
-						</c:otherwise>
-					</c:choose>
-
- --%>
-
-
-
-
-					
-				
-				
-				
-				</div>
-		
-						
-						
-						
-						
 					</div>
 
 
-
-
-
-
-
-
-
-					
-
-
 				</div>
-			
 
+			</div>
+
+		</div>
 
 	</section>
 
 
-<div class="overlay-container">
+	<div class="overlay-container">
 		<div class="row">
 			<div id="overlay" onclick="closeAllModal()"></div>
 			<div class="popup col-12 col-sm-8 col-md-4">
-		
-			<jsp:include page="../common/form-modal/user-donation-cancel-modal.jsp" />
-		
-		
+
+				<jsp:include
+				page="../admin/form-modal/user-donation-modal/user-donation-cancel-modal.jsp" />
+
+			<jsp:include
+				page="../admin/form-modal/user-donation-modal/user-donation-success-confirm-modal.jsp" />
+
+			<jsp:include
+				page="../admin/form-modal/user-donation-modal/user-donation-success-cancel-modal.jsp" />
+
+
+			</div>
+
 		</div>
-	
+
 	</div>
 
-</div>
 
-
-
-	<jsp:include page="../common/footer-layout2.jsp">
+	<jsp:include page="../common/footer-layout.jsp">
 		<jsp:param name="includePart" value="footerSection" />
 	</jsp:include>
 
 
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"
+	<script src="https://code.jquery.com/jquery-3.6.4.min.js"
 		crossorigin="anonymous"></script>
 
 

@@ -25,8 +25,6 @@
 <link rel="icon" type="image/x-icon"
 	href="<c:url value='/static/common/assets/img/icon/heart.ico' />">
 
-
-
 <link rel="stylesheet"
 	href="<c:url value='/static/user/assets/css/custom-bs.css' />">
 <link rel="stylesheet"
@@ -41,7 +39,6 @@
 	href="<c:url value='/static/user/assets/css/owl.carousel.min.css' />">
 <link rel="stylesheet"
 	href="<c:url value='/static/user/assets/css/animate.min.css' />">
-
 
 <script src="<c:url value='/static/user/assets/js/jquery.min.js' />"></script>
 <script
@@ -78,13 +75,10 @@
 	integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
 	crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-
 <!-- customer style -->
 
 <link rel="stylesheet"
 	href="<c:url value='/static/common/assets/css/style.css'/>" />
-
-
 
 <!-- customer js -->
 
@@ -95,11 +89,9 @@
 </head>
 <body>
 
-	<jsp:include page="../common/header-layout-test.jsp">
+	<jsp:include page="../common/header-layout.jsp">
 		<jsp:param name="includePart" value="headerSection" />
 	</jsp:include>
-
-
 
 	<section class="site-section content">
 		<div class="container">
@@ -107,13 +99,9 @@
 				<div class="col-md-7 text-center">
 					<h2 class="section-title mb-2">Chi tiết đợt quyên góp</h2>
 
-
-
 				</div>
 
-
 			</div>
-
 
 			<div class="donation-detail-containter">
 				<div class="row">
@@ -267,20 +255,17 @@
 			<div class="row mt-5">
 				<div class="col-12">
 
-
-
-
 					<div class="main-content">
 						<div>
 							<h3 class="text-align-center">Danh sách các lượt quyên góp</h3>
 						</div>
 
-
 						<div>
 
 							<input type="hidden" id="userDonation-total"
 								value="${userDonations.totalElements}" />
-							<p id="table-script" class="mt-4 text-align-center  font-italic text-muted">Hiện
+							<p id="table-script"
+								class="mt-4 text-align-center  font-italic text-muted">Hiện
 								đợt quyên góp này chưa có lượt quyên góp nào</p>
 						</div>
 
@@ -334,8 +319,6 @@
 											</tr>
 										</thead>
 
-
-
 										<tbody id="scrollableRows">
 											<c:forEach var="tempUserDonation"
 												items="${userDonations.content}">
@@ -354,8 +337,6 @@
 														value="${UserDonationStatus.CANCELED}" />
 												</c:url>
 
-
-
 												<tr>
 													<td><p>${tempUserDonation.createdDate}</p></td>
 													<td><p>${JSPDataFormat.moneyFormat(tempUserDonation.money)}</p></td>
@@ -364,7 +345,8 @@
 													<td><p class="font-weight-bold">${tempUserDonation.user.email}</p></td>
 													<td><p class="color-text">${JSPDataFormat.userDonationStatusFormat(tempUserDonation.status)}</p></td>
 
-													<td class="action-c"><c:if
+													<td class="action-c">
+														<c:if
 															test="${tempUserDonation.status == UserDonationStatus.WAITING}">
 															<button
 																class="btn btn-success donation-btn donation-update-btn"
@@ -375,49 +357,20 @@
 
 															<button class="btn btn-danger donation-btn"
 																title="Chi tiết"
-																onclick="toDelete('${tempUserDonation.id}','#user-donation-cancel')">
+																onclick="openModalId('${tempUserDonation.id}','#user-donation-cancel')">
 																<span class="content-btn-text">Hủy</span>
 															</button>
-														</c:if></td>
+														</c:if>
+													</td>
 												</tr>
 
-
-
-
 											</c:forEach>
-
 
 										</tbody>
 									</table>
 									<script>
 										changeColorText();
 									</script>
-									<%-- <div>
-										<c:if test="${userDonations.totalElements != 0}">
-											<p class="font-weight-light font-italic text-muted">Showing
-												${userDonations.number*userDonations.size +1} to
-												${userDonations.number*userDonations.size +userDonations.numberOfElements}
-												of ${userDonations.totalElements} entries</p>
-										</c:if>
-
-										<c:if test="${userDonations.totalElements == 0}">
-											<p>There are no entries to show</p>
-										</c:if>
-									</div>
-
-									<div>
-										<div>
-											<input id="totalPages" type="hidden"
-										value="${userDonations.totalPages}" />
-										<input id="currentPage" type="hidden" name="currentPage"
-										value="${userDonations.pageable.pageNumber+1}" />
-
-										</div>
-										<div id="pagination-container"></div>
-
-
-
-									</div> --%>
 
 								</div>
 								<div>
@@ -431,15 +384,13 @@
 											<div>
 
 												<input id="totalPages" type="hidden"
-													value="${userDonations.totalPages}" /> <input
-													id="currentPage" type="hidden" name="currentPage"
+													value="${userDonations.totalPages}" /> 
+												<input id="currentPage" type="hidden" name="currentPage"
 													value="${userDonations.pageable.pageNumber+1}" />
 
 											</div>
 
 											<div id="pagination-container"></div>
-
-
 
 										</div>
 									</c:if>
@@ -449,79 +400,46 @@
 											are no entries to show</p>
 									</c:if>
 
-
 								</div>
 
 							</div>
 
 						</div>
 
-
 					</div>
-
-
-
-
-
-
-
-
 
 				</div>
 
-
-
-
-
 			</div>
-
-
-
-
-
-
-
-
-
-
-
 
 		</div>
 
-
-
-
 	</section>
-
 
 	<div class="overlay-container">
 		<div class="row">
 			<div id="overlay" onclick="closeAllModal()"></div>
-			<div class="popup col-12 col-sm-8 col-md-4">
 
-				<jsp:include
-					page="../common/form-modal/user-donation-cancel-modal.jsp" />
+			<jsp:include
+				page="../admin/form-modal/user-donation-modal/user-donation-cancel-modal.jsp" />
 
-				
+			<jsp:include
+				page="../admin/form-modal/user-donation-modal/user-donation-success-confirm-modal.jsp" />
 
-			</div>
-
+			<jsp:include
+				page="../admin/form-modal/user-donation-modal/user-donation-success-cancel-modal.jsp" />
 
 		</div>
 
-
-
 	</div>
 
-	<jsp:include page="../common/footer-layout2.jsp">
+	<jsp:include page="../common/footer-layout.jsp">
 		<jsp:param name="includePart" value="footerSection" />
 	</jsp:include>
 
 
 	<script src="https://code.jquery.com/jquery-3.6.4.min.js"
 		crossorigin="anonymous"></script>
-
-
 
 	<script src="<c:url value='/static/common/assets/js/form.js' />"></script>
 

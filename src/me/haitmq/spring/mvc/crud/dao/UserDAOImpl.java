@@ -55,14 +55,11 @@ public class UserDAOImpl implements UserDAO {
 		return theQuery.getResultList();
 	}
 
-	
-	
 	@Override
 	public Page<User> findAll(Pageable pageable) {
 		String theQueryString = "from User u where u.showing = 1";
 
 		Query<User> theQuery = getSession().createQuery(theQueryString, User.class);
-
 
 		theQuery.setFirstResult((int) pageable.getOffset());
 		theQuery.setMaxResults(pageable.getPageSize());
@@ -76,10 +73,8 @@ public class UserDAOImpl implements UserDAO {
 	@Override
 	public Page<User> findByEmailOrUserNameOrPhoneNumber(Pageable pageable, String searchingValue) {
 
-		String theQueryString = "from User u where " 
-				+ "u.showing = 1 and ("
-				+ " u.userName like concat(:searchingValue, '%') or" 
-				+ " u.email like concat(:searchingValue, '%') or"
+		String theQueryString = "from User u where " + "u.showing = 1 and ("
+				+ " u.userName like concat(:searchingValue, '%') or" + " u.email like concat(:searchingValue, '%') or"
 				+ " u.phoneNumber like concat(:searchingValue, '%'))";
 
 		Query<User> theQuery = getSession().createQuery(theQueryString, User.class);
@@ -97,18 +92,14 @@ public class UserDAOImpl implements UserDAO {
 
 	@Override
 	public Page<User> findByEmailOrUserNameOrPhoneNumberOrStatus(String searchingValue, Pageable pageable) {
-		
+
 		UserStatus userStatus = FormatData.userStatusFormat(searchingValue);
-		
-		String theQueryString = 
-				"from User u where " 
-				+ "u.showing = 1 and ("
-				+ " u.status = :userStatus or"
-				+ " lower(u.userName) like lower(concat(:searchingValue, '%')) or" 
+
+		String theQueryString = "from User u where " + "u.showing = 1 and (" + " u.status = :userStatus or"
+				+ " lower(u.userName) like lower(concat(:searchingValue, '%')) or"
 				+ " lower(u.email) like lower(concat(:searchingValue, '%') ) or"
 				+ " lower(u.role.roleName) like lower(concat(:searchingValue, '%')) or"
 				+ " lower(u.phoneNumber) like lower(concat(:searchingValue, '%')))";
-
 
 		Query<User> theQuery = getSession().createQuery(theQueryString, User.class);
 
@@ -159,8 +150,7 @@ public class UserDAOImpl implements UserDAO {
 
 	@Override
 	public User getUserByUserNameOrEmail(String userNameOrEmail) {
-		String theQueryString = "from User u where " 
-				+ " u.userName =:userNameOrEmail or"
+		String theQueryString = "from User u where " + " u.userName =:userNameOrEmail or"
 				+ " u.email =:userNameOrEmail";
 
 		Query<User> theQuery = getSession().createQuery(theQueryString, User.class);
@@ -169,5 +159,14 @@ public class UserDAOImpl implements UserDAO {
 
 		return theQuery.uniqueResult();
 	}
+
+	
+	@Override
+	public User getUserJoinFetch(int theId) {
+		Query<User> theQuery = getSession().createQuery("from User u join fetch u.userDonations where u.id=:userId", User.class);
+		User result = theQuery.setParameter("userId", theId).getSingleResult();
+		return result;
+	}
+
 
 }

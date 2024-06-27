@@ -16,9 +16,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.Validator;
 import org.springframework.validation.annotation.Validated;
 
+import me.haitmq.spring.mvc.crud.common.InitDonation;
 import me.haitmq.spring.mvc.crud.dao.DonationDAO;
 import me.haitmq.spring.mvc.crud.dao.UserDonationDAO;
+import me.haitmq.spring.mvc.crud.dto.DonationDTO;
 import me.haitmq.spring.mvc.crud.entity.Donation;
+import me.haitmq.spring.mvc.crud.entity.User;
 import me.haitmq.spring.mvc.crud.entity.UserDonation;
 import me.haitmq.spring.mvc.crud.utils.*;
 import me.haitmq.spring.mvc.crud.entity.status.DonationStatus;
@@ -91,17 +94,31 @@ public class DonationServiceImpl implements DonationService {
 	@Transactional
 	public void update(Donation donation) {
 		if(isAbleToUpdate(donation)) {
-			//need handle for avoiding user change donation status from browser inspect
-			/*
-			Donation donation2 = donationDAO.getDontaion(donation.getId());
-			if (!donation2.getEndDate().equals(donation.getEndDate()) || !donation2.getStartDate().equals(donation.getStartDate())) {
-				donation2.setAutoUpdate(true);
+			InitDonation theExistingDonation = this.getInitDonation(donation.getId());
+			if (!theExistingDonation.getEndDate().equals(donation.getEndDate()) || !theExistingDonation.getStartDate().equals(donation.getStartDate())) {
+				//theExistingDonation.setAutoUpdate(true);
+				donation.setAutoUpdate(true);
+				
 			}
-			donationDAO.saveOrUpdate(donation2);
-			*/
-			donation.setAutoUpdate(true);
-			donationDAO.saveOrUpdate(donation);
+			
+			donationDAO.merge(donation);
 		}
+	}
+	
+	
+	@Transactional
+	public DonationDTO getDonationDTO(int theId) {
+		Donation theDonation = donationDAO.getDontaion(theId);
+		return new DonationDTO(theDonation, theDonation.getUserDonations());
+	}
+	
+	@Transactional
+	public InitDonation getInitDonation(int theId) {
+		Donation theDonation = donationDAO.getDontaion(theId);
+		InitDonation theInitDonation = new InitDonation();
+		
+		theInitDonation.getPropertiesFromDonationObj(theDonation);
+		return theInitDonation;
 	}
 	
 	
@@ -353,6 +370,13 @@ public class DonationServiceImpl implements DonationService {
 	}
 	
 	
+	@Override
+	@Transactional
+	public Donation getDontaionJoinFetch(int theId) {
 
+		return donationDAO.getDontaionJoinFetch(theId);
+	}
+	
+	
 
 }
