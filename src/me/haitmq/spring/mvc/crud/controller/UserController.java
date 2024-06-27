@@ -40,13 +40,6 @@ public class UserController {
 	@Autowired
 	private UserDonationService userDonationService;
 
-	
-
-	@PostMapping("/processRegister")
-	public String processRegister(@ModelAttribute("user") User theUser) {
-
-		return "redirect:/v1/home";
-	}
 
 	@GetMapping("/profile")
 	public String userProfile(HttpServletRequest request, @RequestParam(defaultValue = "1") int page,
@@ -72,7 +65,7 @@ public class UserController {
 			User currentUser = userService.getUser(currentUserId);
 			
 			// create an update user (initUser) for update model
-			boolean errorProcess=false;
+			//boolean errorProcess=false;
 			
 			InitUser updateUser = new InitUser();
 			
@@ -81,7 +74,7 @@ public class UserController {
 			// check if the last update is success
 			if (theModel.containsAttribute("errorUser")) {
 				updateUser = (InitUser) theModel.getAttribute("errorUser");
-	            errorProcess = true;
+	            //errorProcess = true;
 	        } else if(theModel.containsAttribute("successUpdate")) {
 	        
 	        	theModel.addAttribute("successUpdate", true);
@@ -96,7 +89,7 @@ public class UserController {
 			
 			theModel.addAttribute("process", "processUpdateUser");
 
-			theModel.addAttribute("errorProcess", errorProcess);
+			//theModel.addAttribute("errorProcess", errorProcess);
 			
 			theModel.addAttribute("user", updateUser);
 
@@ -108,24 +101,36 @@ public class UserController {
 			
 		} catch (IllegalStateException e) {
 
-			log.error("AdminController - donationlist - NO PERMISSION: {}", e);
+			log.error("UserController - userProfile - NOT LOGIN: {}", e);
 
 			return ViewConstants.V_ERROR_LOGIN;
 
 		} catch (Exception e) {
 
-			log.error("AdminController - donationlist - ERROR FUNCTIONNAL: {}", e);
+			log.error("UserController - userProfile - ERROR FUNCTIONNAL: {}", e);
 
 			return ViewConstants.V_ERROR;
 		}
 	}
 
 	
+	
+	// for user to update infomation in profile
 	@PostMapping("/processUpdateUser")
 	public String processUpdate(HttpServletRequest request, @ModelAttribute("user") InitUser theUser,
 			BindingResult theBindingResult, RedirectAttributes redirectAttributes) {
 
 		try {
+			
+			HttpSession session = request.getSession();
+
+			Integer currentUserId = SessionUtils.getCurrentUserId(session);
+
+			// check current user is login
+			if (currentUserId == null) {
+				throw new IllegalStateException("UserController-profile: User is not login.");
+			}
+			
 			if (BinddingResultsCustomFunction.isErrorForUpdateUser(theBindingResult, userService, theUser)) {
 				redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.user",
 						theBindingResult);
@@ -142,7 +147,17 @@ public class UserController {
 			}
 
 			return "redirect:" + SessionUtils.getCurrentEndpoint(request);
+			
+		} catch (IllegalStateException e) {
+
+			log.error("UserController - userProfile - NOT LOGIN: {}", e);
+
+			return ViewConstants.V_ERROR_LOGIN;
+
 		} catch (Exception e) {
+
+			log.error("UserController - userProfile - ERROR FUNCTIONNAL: {}", e);
+
 			return ViewConstants.V_ERROR;
 		}
 

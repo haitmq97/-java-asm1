@@ -246,7 +246,7 @@
 										
 										<td><p>${tempDonation.organization}</p></td>
 										<td><p>${tempDonation.phoneNumber}</p></td>
-										<td><p>${tempDonation.money}</p></td>
+										<td><p>${JSPDataFormat.moneyFormat(tempDonation.money)}</p></td>
 										<td>
 										
 											<p class="d-status font-weight-bold color-text ">${JSPDataFormat.donationStatusFormat(tempDonation.status)}</p>

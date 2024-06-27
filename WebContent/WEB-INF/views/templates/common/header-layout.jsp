@@ -128,7 +128,7 @@
 		</c:otherwise>
 	</c:choose>
 	
-	<% if (!isAdmin) { %>
+	<% if (!isLogined) { %>
 		<c:import url="${ViewConstants.E_LOGIN}" />
 	<% } %>
 	

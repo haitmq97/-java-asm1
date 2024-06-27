@@ -239,12 +239,20 @@
 				<div class="row">
 					<!-- Row 5 with full width -->
 					<div class="col-md-12">
-						<div class="p-3 border bg-light">
+						<div class="p-3">
 							<div class="">
 								<p class="font-weight-bold mb-1 text-align-left">Nội dung:</p>
 							</div>
 							<div class="border rounded bg-light">
-								<p class="p-1 m-1">${donation.description}</p>
+								<c:choose>
+									<c:when test="${empty donation.description}">
+										<p class="font-italic p-1 m-1 text-muted">Không có nội dung gì hiển thị</p>
+									</c:when>
+									<c:otherwise>
+										<p class="p-1 m-1">${donation.description}</p>
+									</c:otherwise>
+								</c:choose>
+								
 							</div>
 
 						</div>

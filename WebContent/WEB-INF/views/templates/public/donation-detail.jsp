@@ -120,9 +120,9 @@
 							<li class="mb-2"><strong class="text-black">Số điện
 									thoại: </strong> ${donation.phoneNumber}</li>
 							<li class="mb-2"><strong class="text-black">Tổng
-									tiền quyên góp nhận được:</strong> ${donation.money}</li>
+									tiền quyên góp nhận được:</strong> ${JSPDataFormat.moneyFormat(donation.money)}</li>
 							<li class="mb-2"><strong class="text-black">Trạng
-									thái:</strong> ${JSPDataFormat.donationStatusFormat(donation.status)}</li>
+									thái:</strong> <span class="color-text font-weight-bold">${JSPDataFormat.donationStatusFormat(donation.status)}</span></li>
 
 						</ul>
 					</div>

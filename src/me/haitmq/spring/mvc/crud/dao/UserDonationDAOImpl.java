@@ -28,7 +28,7 @@ import me.haitmq.spring.mvc.crud.utils.FormatData;
 @Repository
 public class UserDonationDAOImpl implements UserDonationDAO {
 	
-	private static final Logger log = LoggerFactory.getLogger(UserDonationDAO.class);
+	private static final Logger log = LoggerFactory.getLogger(UserDonationDAOImpl.class);
 	
 	@Autowired
 	private SessionFactory sessionFactory;
@@ -299,7 +299,7 @@ public class UserDonationDAOImpl implements UserDonationDAO {
 		String theQueryString = "from UserDonation ud"
 				 	+ " where ud.showing = 1"
 				 	+ " and ( ud.status = :userDonationStatus"
-					+ " or lower(ud.donation.code) like lower(:userDonationStatus)" 
+					+ " or lower(ud.donation.code) like lower(concat(:searchingValue, '%'))" 
 					+ " or lower(ud.user.userName) like lower(concat(:searchingValue, '%')))"
 					+ " order by ud.createdDate desc ,ud.status desc";
 
